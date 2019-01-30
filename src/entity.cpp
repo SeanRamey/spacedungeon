@@ -44,14 +44,16 @@ float Entity::calculateAngleTo(sf::Vector2f position){
     temp.x = this->position.x - position.x;
     temp.y = this->position.y - position.y;
     float newAngle;
+    if(temp.x == 0) temp.x += 0.001;
+    if(temp.y == 0) temp.y += 0.001;
     if(temp.x != 0 && temp.y != 0) {
         newAngle = radiansToDegrees(atanf((temp.y) / (temp.x)));
         if(position.x > this->position.x){
             newAngle += 180;    
-        }
+        } 
     } else {
         if(temp.x > 0) {
-            newAngle = 90;
+            newAngle = 300;
         }
     }
     return newAngle;
