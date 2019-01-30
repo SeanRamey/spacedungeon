@@ -4,3 +4,4 @@ build/*.o
 build/*.exe
 include/*
 lib/*
+losers
