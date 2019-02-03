@@ -61,6 +61,10 @@ void Level::update(sf::Time frameTime, sf::RenderWindow* window){
     }
 }
 
+void handleCollisions() {
+    
+}
+
 void Level::loadMap(std::string map, std::string images) {
 
     // Open the tile map data file for the level

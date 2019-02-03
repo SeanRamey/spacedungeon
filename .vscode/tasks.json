@@ -6,7 +6,7 @@
         {
             "label": "build debug",
             "type": "shell",
-            "command": "make all --jobs=2 BUILD=DEBUG",
+            "command": "make all --jobs=4",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -21,7 +21,7 @@
         {
             "label": "build release",
             "type": "shell",
-            "command": "make all --jobs=2 BUILD=RELEASE",
+            "command": "make all --jobs=4",
             "group": "build",
             "presentation": {
                 // Reveal the output only if unrecognized errors occur.
@@ -34,6 +34,18 @@
             "label": "clean",
             "type": "shell",
             "command": "make clean",
+            "group": "build",
+            "presentation": {
+                // Reveal the output only if unrecognized errors occur.
+                "reveal": "silent"
+            },
+            // Use the standard MS compiler pattern to detect errors, warnings and infos
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "cleandep",
+            "type": "shell",
+            "command": "make cleandep",
             "group": "build",
             "presentation": {
                 // Reveal the output only if unrecognized errors occur.

@@ -2,6 +2,7 @@
 build/*.d
 build/*.o
 build/*.exe
-include/*
-lib/*
-losers
+include/
+lib/
+*.o
+*.d

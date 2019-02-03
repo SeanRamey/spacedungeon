@@ -7,7 +7,9 @@
 	"settings": {
 		"files.associations": {
 			"*.make": "makefile",
-			"audio.h": "c"
+			"*.s": "gas",
+			"audio.h": "c",
+			"iostream": "cpp"
 		}
 	}
 }

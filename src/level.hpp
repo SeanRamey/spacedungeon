@@ -28,7 +28,7 @@ class Level{
 
     public:
         //virtual void updateView() = 0;
-        void handleCollision();
+        void handleCollisions();
         bool checkWon();
         void loadEntites(std::string);
         void loadMap(std::string map, std::string images);
