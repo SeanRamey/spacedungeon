@@ -3,7 +3,7 @@
 CFLAGS =
 CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11
 CPPFLAGS = -DSFML
-LDFLAGS =
+LDFLAGS = -static-libstdc++ -static
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
 
 # source directory
@@ -48,7 +48,10 @@ ifeq ($(OSTARGET),LINUX)
 	LDLIBS +=
 	RM := rm -f
 	RMDIR := rm -rf
+	MKDIR := mkdir -p
 	SLASH = /
+	CP := cp
+	PREFIX ?= /usr/local
 
 	# compiler/linker programs
 	CC := gcc
@@ -67,7 +70,10 @@ ifeq ($(OSTARGET),MACOSX)
 	LDLIBS +=
 	RM := rm -f
 	RMDIR := rm -rf
+	MKDIR := mkdir -p
+	CP := cp
 	SLASH = /
+	PREFIX ?= /usr/local
 
 	# compiler/linker programs
 	CC := gcc
@@ -86,7 +92,10 @@ ifeq ($(OSTARGET),WINDOWS)
 	LDLIBS += -lmingw32
 	RM := del /F/Q
 	RMDIR := rmdir /S/Q
+	MKDIR := mkdir
+	CP := robocopy
 	SLASH = \\
+	PREFIX ?=
 
 	# compiler/linker programs
 	CC := gcc
@@ -102,6 +111,7 @@ VPATH = $(INCDIRS)
 cppsrc = $(wildcard $(SRC)/*.cpp $(addsuffix /*.cpp,$(INCDIRS)))
 objects = $(patsubst $(SRC)/%.o,$(BUILD)/%.o,$(cppsrc:.cpp=.o))
 depends = $(objects:.o=.d)
+DESTDIR =
 
 all: $(BUILD)/$(program)
 	@echo build complete!
@@ -117,7 +127,7 @@ $(BUILD)/%.o: %.cpp
 $(objects) $(depends): | $(BUILD)
 
 $(BUILD):
-	@mkdir $(BUILD) $(addprefix $(BUILD)$(SLASH),$(cppdirs))
+	@$(MKDIR) $(BUILD) $(addprefix $(BUILD)$(SLASH),$(cppdirs))
 	@echo creating directories
 
 # rule to generate a dependency file
@@ -128,9 +138,26 @@ $(BUILD)/%.d: %.cpp
 # include all dependency files in the makefile
 -include $(depends)
 
-.PHONY: clean
+.PHONY: clean install uninstall
 clean:
 #	$(RM) $(subst /,$(SLASH),$(objects)) $(subst /,$(SLASH),$(depends)) $(subst /,$(SLASH),$(BUILD)/$(program))
 	@echo cleaning...
 	@$(RMDIR) $(BUILD)
 	@echo done.
+
+install: $(BUILD)/$(program)
+ifeq ($(OSTARGET),WINDOWS)
+	-$(CP) /S $(BUILD) $(DESTDIR)$(PREFIX)bin $(program)
+	-$(CP) /S data $(DESTDIR)$(PREFIX)bin$(SLASH)data
+	-$(CP) ./ $(DESTDIR)$(PREFIX)bin *.dll
+else
+	$(MKDIR) $(DESTDIR)$(PREFIX)/bin
+	$(CP) $< $(DESTDIR)$(PREFIX)/bin/$(program)
+endif
+
+uninstall:
+	$(RM) $(DESTDIR)$(PREFIX)bin$(SLASH)$(program)
+	$(RMDIR) $(DESTDIR)$(PREFIX)bin$(SLASH)data
+ifeq ($(OSTARGET),WINDOWS)
+	$(RM) $(DESTDIR)$(PREFIX)bin$(SLASH)*.dll
+endif
