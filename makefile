@@ -1,7 +1,30 @@
 
-OSTARGET ?= UNKNOWN
+
+CFLAGS =
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11
+CPPFLAGS = -DSFML
+LDFLAGS =
+LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
+
+# source directory
+SRC := src
+
+# where to find additional c++ source and header files
+# make sure to use the $(SLASH) variable for the directory seperator if
+# a subdirectory is included
+# example: dir$(SLASH)nextdir
+cppdirs = enemies
+
+# output directory
+BUILD := build
+
+# name of output program
+program = gamealpha
+
 
 # autodetect os
+OSTARGET ?= UNKNOWN
+
 ifeq ($(OSTARGET),UNKNOWN)
 	ifeq ($(OS),Windows_NT)
 		OSTARGET := WINDOWS
@@ -17,102 +40,97 @@ ifeq ($(OSTARGET),UNKNOWN)
 endif
 
 ifeq ($(OSTARGET),LINUX)
-	CFLAGS :=
-	CXXFLAGS := -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -I/usr/include
-	CPPFLAGS := -DSFML
-	LDFLAGS := -L/usr/lib
-	LDLIBS := -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
+	# OS specific options
+	CFLAGS +=
+	CXXFLAGS += -I/usr/include $(addprefix -I,$(INCDIRS))
+	CPPFLAGS +=
+	LDFLAGS += -L/usr/lib
+	LDLIBS +=
 	RM := rm -f
 	RMDIR := rm -rf
-
-	# source directory
-	SRC := src
-
-	# output directory
-	BUILD := build
+	SLASH = /
 
 	# compiler/linker programs
 	CC := gcc
 	CPP := g++
 	LD := g++
 
-	# name of output program
-	program := gamealpha
+	# extension of output program
+	program +=
 endif
 ifeq ($(OSTARGET),MACOSX)
-	CFLAGS :=
-	CXXFLAGS := -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -I/usr/include
-	CPPFLAGS := -DSFML
-	LDFLAGS := -L/usr/lib
-	LDLIBS := -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
+	# OS specific options
+	CFLAGS +=
+	CXXFLAGS += -I/usr/include $(addprefix -I,$(INCDIRS))
+	CPPFLAGS +=
+	LDFLAGS += -L/usr/lib
+	LDLIBS +=
 	RM := rm -f
 	RMDIR := rm -rf
-
-	# source directory
-	SRC := src
-
-	# output directory
-	BUILD := build
+	SLASH = /
 
 	# compiler/linker programs
 	CC := gcc
 	CPP := g++
 	LD := g++
 
-	# name of output program
-	program := gamealpha
+	# extension of output program
+	program +=
 endif
 ifeq ($(OSTARGET),WINDOWS)
-	CFLAGS :=
-	CXXFLAGS := -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -Iinclude
-	CPPFLAGS := -DSFML
-	LDFLAGS := -Llib
-	LDLIBS := -lmingw32 -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
+	# OS specific options
+	CFLAGS +=
+	CXXFLAGS += -Iinclude $(addprefix -I,$(INCDIRS))
+	CPPFLAGS +=
+	LDFLAGS += -Llib
+	LDLIBS += -lmingw32
 	RM := del /F/Q
 	RMDIR := rmdir /S/Q
-
-	# source directory
-	SRC := src
-
-	# output directory
-	BUILD := build
+	SLASH = \\
 
 	# compiler/linker programs
 	CC := gcc
 	CPP := g++
 	LD := g++
 
-	# name of output program
-	program := gamealpha.exe
+	# extension of output program
+	program := $(addsuffix .exe,$(program))
 endif
 
-cppsrc = $(wildcard $(SRC)/*.cpp)
+INCDIRS = $(SRC) $(addprefix $(SRC)/,$(cppdirs))
+VPATH = $(INCDIRS)
+cppsrc = $(wildcard $(SRC)/*.cpp $(addsuffix /*.cpp,$(INCDIRS)))
 objects = $(patsubst $(SRC)/%.o,$(BUILD)/%.o,$(cppsrc:.cpp=.o))
-#objects = $(cppsrc:.cpp=.o)
 depends = $(objects:.o=.d)
-#depends = $(patsubst  $(BUILD)/%.d,$(BUILD)/%.d,$(objects:.o=.d))
 
 all: $(BUILD)/$(program)
-
-$(BUILD):
-	mkdir $(BUILD)
+	@echo build complete!
 
 $(BUILD)/$(program): $(objects)
-	$(CXX) -o $@ $^ $(LDFLAGS) $(LDLIBS)
+	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
+	@echo linking $^ into $@ using these libraries $(LDLIBS)
 
-$(objects): $(BUILD)/%.o: $(SRC)/%.cpp | $(BUILD)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+$(BUILD)/%.o: %.cpp
+	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	@echo compiling $< to $@
 
-# rule to generate a dep file by using the C preprocessor
-$(BUILD)/%.d:  $(SRC)/%.cpp | $(BUILD)
+$(objects) $(depends): | $(BUILD)
+
+$(BUILD):
+	@mkdir $(BUILD) $(addprefix $(BUILD)$(SLASH),$(cppdirs))
+	@echo creating directories
+
+# rule to generate a dependency file
+$(BUILD)/%.d: %.cpp
 	@$(CPP) $(CXXFLAGS) $< -MM -MT $(@:.d=.o) >$@
+	@echo generating dependencies for $<
 
--include $(depends)   # include all dep files in the makefile
+# include all dependency files in the makefile
+-include $(depends)
 
-.PHONY: clean cleandep
+.PHONY: clean
 clean:
-	$(RM) $(subst /,\,$(objects)) RM $(subst /,\,$(depends)) $(subst /,\,$(program))
-	$(RMDIR) $(BUILD)
-
-cleandep:
-	$(RM) $(subst /,\,$(depends))
+#	$(RM) $(subst /,$(SLASH),$(objects)) $(subst /,$(SLASH),$(depends)) $(subst /,$(SLASH),$(BUILD)/$(program))
+	@echo cleaning...
+	@$(RMDIR) $(BUILD)
+	@echo done.
