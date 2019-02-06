@@ -117,22 +117,22 @@ all: $(BUILD)/$(program)
 	@echo build complete!
 
 $(BUILD)/$(program): $(objects)
-	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
+	$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 	@echo linking $^ into $@ using these libraries $(LDLIBS)
 
 $(BUILD)/%.o: %.cpp
-	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 	@echo compiling $< to $@
 
 $(objects) $(depends): | $(BUILD)
 
 $(BUILD):
-	@$(MKDIR) $(BUILD) $(addprefix $(BUILD)$(SLASH),$(cppdirs))
+	$(MKDIR) $(BUILD) $(addprefix $(BUILD)$(SLASH),$(cppdirs))
 	@echo creating directories
 
 # rule to generate a dependency file
 $(BUILD)/%.d: %.cpp
-	@$(CPP) $(CXXFLAGS) $< -MM -MT $(@:.d=.o) >$@
+	$(CPP) $(CXXFLAGS) $< -MM -MT $(@:.d=.o) >$@
 	@echo generating dependencies for $<
 
 # include all dependency files in the makefile
