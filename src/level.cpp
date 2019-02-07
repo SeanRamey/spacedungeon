@@ -38,9 +38,6 @@ bool Level::checkWon(){
 
 
 void Level::draw(sf::RenderWindow* window){
-    //for(Tile* tile : tiles){
-     //   tile->draw(window);
-    //}
     window->draw(backGroundSprite);
     playerShip->draw(window);
     for(Entity* entity : entities){
@@ -54,9 +51,9 @@ void Level::update(sf::Time frameTime, sf::RenderWindow* window){
     window->setView(view);
 
     playerShip->update(frameTime, window, entities);
-    //for(Tile* tile : tiles){
-     //   tile->update(frameTime, window, entities);
-    //}
+    for(Tile* tile : tiles){
+        tile->update(frameTime, window, entities);
+    }
     for(Entity* entity : entities){
         if(entity != playerShip){
             entity->update(frameTime, window, entities);

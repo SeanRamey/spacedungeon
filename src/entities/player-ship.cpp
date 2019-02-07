@@ -30,7 +30,6 @@ void PlayerShip::checkCollision(Entity* entity){
 
 }
 void PlayerShip::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities) {
-    gun.update(frameTime, window, entities);
     if(teleportTimer.getElapsedTime().asMilliseconds() > (int)BLINK_DELAY) {
         canBlink = true;
     }
@@ -42,6 +41,7 @@ void PlayerShip::update(sf::Time frameTime, sf::RenderWindow* window, std::vecto
         velocity *= FRICTION;
     }
     applyMovement(frameTime);
+    gun.update(frameTime, window, entities); 
     collisionBox.update(position.x, position.y);
 }
 
