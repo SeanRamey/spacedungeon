@@ -87,7 +87,6 @@ void Game::processEvents()
     }
 }
 
-void Game::handleCollisions()
-{
-
+void Game::handleCollisions() {
+    
 }
