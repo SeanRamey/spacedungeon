@@ -10,4 +10,8 @@
         "**/*.dll": true,
     },
     "C_Cpp.errorSquiggles": "Disabled",
+    "files.associations": {
+        "*.java": "java",
+        "streambuf": "cpp"
+    },
 }

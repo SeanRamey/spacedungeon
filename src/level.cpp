@@ -67,63 +67,54 @@ void handleCollisions() {
 
 void Level::loadMap(std::string map, std::string images) {
 
-    // Open the tile map data file for the level
-    std::ifstream file(map); 
-
-    if(!file.is_open()) {
-        Log::error("Failed to open file: " + map);
-        exit(-1);
-    }
-
-    // Get the first two numbers from the file
-    // (seperated by whitespace) and use them
-    // for the dimensions of the map
+    std::vector<char> fileData;
+    std::ifstream file(map);
     file >> mapSize.x >> mapSize.y;
-
-
-    // Load the rest of the file, and store each byte in data
-    std::vector<char> data;
-    data.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-
+    file.open(map);
+    fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     file.close();
 
-    // Format the file data by removing unwanted data (spaces and newlines)
-    for(unsigned int i = 0; i < data.size(); i++){
-        char ch = data[i];
-        if(ch == ' ' || ch == '\n') {
-            data.erase(data.begin() + i);
+    std::string buffer;
+    std::vector<std::string> finalData;
+    for(int i = 1; i < fileData.size(); i++){
+        switch(fileData[i]){
+            case ' ':
+                // add to final data the proper number read from the file
+                finalData.push_back(buffer); 
+                buffer.clear();
+                break;
+            case '\n':
+                finalData.push_back(buffer);
+                buffer.clear();
+                break;
+            default:
+                buffer.push_back(fileData[i]);
         }
     }
-
-    data.shrink_to_fit();
-
-    // Load the graphic data for the tiles
-    sf::Image tilesImage;
-    if(!tilesImage.loadFromFile(images)){
-        Log::error("Map tile images failed to load");
-        exit(-1);
+    // image loading and setting up
+    sf::Vector2u tileCount;
+    sf::Image tileImage;
+    if(!tileImage.loadFromFile(images)){
+        std::cout << "big boy error, couldn't load tile map";
     }
 
-    // Divide the image into tiles and store the count in each dimension
-    sf::Vector2u tileCount;
-    tileCount.x = tilesImage.getSize().x / tileSize;
-    tileCount.y = tilesImage.getSize().y / tileSize;
-    
-    // Load the tiles into seperate Textures from the image
+    tileCount.x = tileImage.getSize().x / tileSize; 
+    tileCount.y = tileImage.getSize().y / tileSize; 
+
     for(unsigned int y = 0; y < tileCount.y; y++) {
         for(unsigned int x = 0; x < tileCount.x; x++) {
             tileImages.push_back(new sf::Texture());
-            tileImages.at(y * tileCount.x + x)->loadFromImage(tilesImage, sf::IntRect(x * tileSize, y * tileSize, tileSize, tileSize));
+            tileImages.at(y * tileCount.x + x)->loadFromImage(tileImage, sf::IntRect(x * tileSize, y * tileSize, tileSize, tileSize));
         }
     }
 
     // Create Tiles in the map
     for(unsigned int y = 0; y < mapSize.y; y++) {
         for(unsigned int x = 0; x < mapSize.x; x++) {
-            if(data[x + y * mapSize.x] != '0') {
+            if(std::stoi(finalData[x + y * mapSize.x]) != 0) {
                 Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
                 tiles.push_back(tile);
-                tiles[tiles.size() - 1]->setImage(tileImages[data[x + y * mapSize.x] - '0' - 1]);
+                tiles[tiles.size() - 1]->setImage(tileImages[std::stoi(finalData[x + y * tileCount.x]) - 1]);
             } 
         }
     }
