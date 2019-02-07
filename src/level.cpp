@@ -17,6 +17,7 @@ tileSize(tileSize) {
     loadEntites(levelDataFilename);
     playerShip = new PlayerShip(50, 50, 32, 32);
     entities.push_back(playerShip);
+
 }
 
 Level::~Level(){
@@ -37,9 +38,10 @@ bool Level::checkWon(){
 
 
 void Level::draw(sf::RenderWindow* window){
-    for(Tile* tile : tiles){
-        tile->draw(window);
-    }
+    //for(Tile* tile : tiles){
+     //   tile->draw(window);
+    //}
+    window->draw(backGroundSprite);
     playerShip->draw(window);
     for(Entity* entity : entities){
         entity->draw(window);
@@ -50,10 +52,11 @@ void Level::update(sf::Time frameTime, sf::RenderWindow* window){
     view.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
     view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
     window->setView(view);
+
     playerShip->update(frameTime, window, entities);
-    for(Tile* tile : tiles){
-        tile->update(frameTime, window, entities);
-    }
+    //for(Tile* tile : tiles){
+     //   tile->update(frameTime, window, entities);
+    //}
     for(Entity* entity : entities){
         if(entity != playerShip){
             entity->update(frameTime, window, entities);
@@ -68,9 +71,19 @@ void handleCollisions() {
 void Level::loadMap(std::string map, std::string images) {
 
     std::vector<char> fileData;
-    std::ifstream file(map);
+    // Open the tile map data file for the level
+    std::ifstream file(map); 
+
+    if(!file.is_open()) {
+        Log::error("Failed to open file: " + map);
+        exit(-1);
+    }
+
+    // Get the first two numbers from the file
+    // (seperated by whitespace) and use them
+    // for the dimensions of the map
     file >> mapSize.x >> mapSize.y;
-    file.open(map);
+
     fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     file.close();
 
@@ -95,7 +108,7 @@ void Level::loadMap(std::string map, std::string images) {
     sf::Vector2u tileCount;
     sf::Image tileImage;
     if(!tileImage.loadFromFile(images)){
-        std::cout << "big boy error, couldn't load tile map";
+       Log::error("big boy error, couldn't load tile map");
     }
 
     tileCount.x = tileImage.getSize().x / tileSize; 
@@ -108,16 +121,25 @@ void Level::loadMap(std::string map, std::string images) {
         }
     }
 
+    sf::Image backGroundImage;
+    backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Black);
+
     // Create Tiles in the map
     for(unsigned int y = 0; y < mapSize.y; y++) {
         for(unsigned int x = 0; x < mapSize.x; x++) {
-            if(std::stoi(finalData[x + y * mapSize.x]) != 0) {
+            if(std::stoi(finalData.at(x + y * mapSize.x)) != std::stoi("0")) {
                 Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
                 tiles.push_back(tile);
-                tiles[tiles.size() - 1]->setImage(tileImages[std::stoi(finalData[x + y * tileCount.x]) - 1]);
-            } 
+                tiles[tiles.size() - 1]->setImage(tileImages[std::stoi(finalData[x + y * mapSize.x]) - 1]);
+            }
         }
     }
+    // loading backGround
+    for(Tile* tile : tiles){
+        backGroundImage.copy(tile->getTexture()->copyToImage(), tile->getPosition().x, tile->getPosition().y);
+    }
+    backGround.loadFromImage(backGroundImage); 
+    backGroundSprite.setTexture(backGround);
 }
 
 void Level::loadEntites(std::string path){

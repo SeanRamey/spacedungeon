@@ -9,10 +9,8 @@ void Tile::checkCollision(Entity* entity){
 
 }
 
-void Tile::draw(sf::RenderWindow* window){  
-    // std::cout << position.x << "  " << position.y << std::endl;
-    sprite.setPosition(position.x, position.y);
-    window->draw(sprite);
+const sf::Texture* Tile::getTexture(){
+    return this->sprite.getTexture();
 }
 
 Tile::Tile(unsigned int x, unsigned int y, unsigned int w, unsigned int h) :

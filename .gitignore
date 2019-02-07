@@ -6,3 +6,4 @@ include/
 lib/
 *.o
 *.d
+.vscode/tasks.json

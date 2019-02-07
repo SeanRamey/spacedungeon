@@ -14,6 +14,8 @@ class Level{
 
         std::vector<Entity*> entities;
         std::vector<Tile*> tiles;
+        sf::Texture backGround;
+        sf::Sprite backGroundSprite;
 
         PlayerShip* playerShip;
         std::vector<sf::Texture*> tileImages;

@@ -25,11 +25,22 @@ Entity::~Entity()
 {
 }
 
+bool windowContains(sf::View view, sf::Sprite sprite){
+    if(sprite.getPosition().x > -100 + view.getCenter().x - view.getSize().x / 2 && sprite.getPosition().x < 100 + view.getCenter().x + view.getSize().x / 2 &&
+       sprite.getPosition().y > -100 + view.getCenter().y - view.getSize().y / 2 && sprite.getPosition().y < 100 + view.getCenter().y + view.getSize().y / 2){
+        return true;
+    } else {
+        return false;
+    }
+}
 void Entity::draw(sf::RenderWindow* window) {
     sprite.setOrigin(size.x / 2, size.y / 2);
     sprite.setPosition(position.x, position.y);
     sprite.setRotation(angle);
-    window->draw(sprite);
+    if(windowContains(window->getView(), sprite)){
+        window->draw(sprite);
+    } else {
+    }
     // sf::RectangleShape shape = sf::RectangleShape(sf::Vector2f(this->collisionBox.w, this->collisionBox.h));
     // shape.setPosition(this->collisionBox.x, this->collisionBox.y);
     // window->draw(shape);

@@ -6,7 +6,7 @@
         {
             "label": "build debug",
             "type": "shell",
-            "command": "make all --jobs=4",
+            "command": "make all --jobs=2",
             "group": {
                 "kind": "build",
                 "isDefault": true
