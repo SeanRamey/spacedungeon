@@ -33,6 +33,7 @@ bool windowContains(sf::View view, sf::Sprite sprite){
         return false;
     }
 }
+
 void Entity::draw(sf::RenderWindow* window) {
     sprite.setOrigin(size.x / 2, size.y / 2);
     sprite.setPosition(position.x, position.y);
