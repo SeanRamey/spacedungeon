@@ -6,14 +6,13 @@
 #include "collision-box.hpp"
 #include "entity.hpp"
 #include "gun.hpp"
-#include <SFML\Window\KeyBoard.hpp>
-#include <SFML\Graphics.hpp>
 #include <stdlib.h>
 #include <stdio.h>
 #include <cmath>
 #include <chrono>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 
 class PlayerShip : public Entity {
     public:

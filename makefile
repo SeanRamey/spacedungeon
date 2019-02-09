@@ -3,7 +3,7 @@
 CFLAGS =
 CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11
 CPPFLAGS = -DSFML
-LDFLAGS = -static-libstdc++ -static
+LDFLAGS = -static-libstdc++
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
 
 # source directory
@@ -59,7 +59,7 @@ ifeq ($(OSTARGET),LINUX)
 	LD := g++
 
 	# extension of output program
-	program +=
+	#program +=
 endif
 ifeq ($(OSTARGET),MACOSX)
 	# OS specific options
@@ -81,7 +81,7 @@ ifeq ($(OSTARGET),MACOSX)
 	LD := g++
 
 	# extension of output program
-	program +=
+	#program +=
 endif
 ifeq ($(OSTARGET),WINDOWS)
 	# OS specific options
@@ -151,13 +151,14 @@ ifeq ($(OSTARGET),WINDOWS)
 	-$(CP) /S data $(DESTDIR)$(PREFIX)bin$(SLASH)data
 	-$(CP) ./ $(DESTDIR)$(PREFIX)bin *.dll
 else
-	$(MKDIR) $(DESTDIR)$(PREFIX)/bin
+	$(MKDIR) $(DESTDIR)$(PREFIX)/bin/$(program)
 	$(CP) $< $(DESTDIR)$(PREFIX)/bin/$(program)
+	$(CP) -r ./data $(DESTDIR)$(PREFIX)/bin/$(program)
 endif
 
 uninstall:
-	$(RM) $(DESTDIR)$(PREFIX)bin$(SLASH)$(program)
-	$(RMDIR) $(DESTDIR)$(PREFIX)bin$(SLASH)data
+	$(RMDIR) $(DESTDIR)$(PREFIX)/bin$(SLASH)$(program)
+	$(RMDIR) $(DESTDIR)$(PREFIX)/bin$(SLASH)$(program)/data
 ifeq ($(OSTARGET),WINDOWS)
 	$(RM) $(DESTDIR)$(PREFIX)bin$(SLASH)*.dll
 endif

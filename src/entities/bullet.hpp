@@ -1,8 +1,8 @@
 #ifndef BULLET_HPP
 #define BULLET_HPP
 #include "entity.hpp"
-#include "SFML/graphics.hpp"
-#include "SFML/system.hpp"
+#include "SFML/Graphics.hpp"
+#include "SFML/System.hpp"
 
 class Bullet : public Entity {
 
