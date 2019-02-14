@@ -116,6 +116,8 @@ DESTDIR =
 all: $(BUILD)/$(program)
 	@echo build complete!
 
+single: $(BUILD)/$(in).o
+
 $(BUILD)/$(program): $(objects)
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 	@echo linking $^ into $@ using these libraries $(LDLIBS)
