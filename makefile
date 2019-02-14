@@ -116,6 +116,7 @@ DESTDIR =
 all: $(BUILD)/$(program)
 	@echo build complete!
 
+# build single file
 single: $(BUILD)/$(in).o
 
 $(BUILD)/$(program): $(objects)
