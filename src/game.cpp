@@ -1,6 +1,5 @@
 #include "game.hpp"
 #include "random-numbers.hpp"
-#include <cstdio>
 #include "level.hpp"
 #include "resources.hpp"
 using namespace Input;
@@ -29,7 +28,7 @@ void Game::run()
     unsigned int updatesPerSecond = 0;
 
     window.setVerticalSyncEnabled(true);
-    Level level = Level("data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32);
+    Level level = Level("data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat");
     while (window.isOpen())
     {
         unprocessedTime = loopTimer.getElapsedTime() + unprocessedTime;
@@ -43,7 +42,7 @@ void Game::run()
             processEvents();
 
             // Update game objects
-            level.update(FRAME_TIME, &window);
+            level.update(FRAME_TIME, window);
             ++updatesPerSecond;
         }
 
@@ -85,8 +84,4 @@ void Game::processEvents()
 
         Input::handleEvent(&event);
     }
-}
-
-void Game::handleCollisions() {
-    
 }

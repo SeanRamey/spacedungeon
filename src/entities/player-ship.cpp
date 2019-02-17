@@ -26,9 +26,11 @@ PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h)
 PlayerShip::~PlayerShip() {
 
 }
+
 void PlayerShip::checkCollision(Entity* entity){
 
 }
+
 void PlayerShip::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities) {
     if(teleportTimer.getElapsedTime().asMilliseconds() > (int)BLINK_DELAY) {
         canBlink = true;

@@ -3,17 +3,18 @@
 #include "gun.hpp"
 #include <iostream>
 #include "basic-bullet.hpp"
+#include "level.hpp"
 #include "resources.hpp"
 #include "input.hpp"
 
 using namespace Resources;
 using namespace Input;
 
-void Gun::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities){
-    for(int i = 0; i < bullets.size(); i++){
-        bullets[i]->update(frameTime, window, entities);
-        if(bullets[i]->isDead()){
+void Gun::update(sf::Time frameTime) {
+    for(int i = 0; i < bullets.size(); i++) {
+        if(bullets[i]->isDead()) {
             bullets[i]->onDeath();
+            
             bullets.erase(bullets.begin() + i);
         }
     }
@@ -30,20 +31,24 @@ void Gun::shoot(){
     }
 }
 
-void Gun::draw(sf::RenderWindow* window){
+void Gun::draw(sf::RenderWindow* window) {
     for(int i = 0; i < bullets.size(); i++){
         bullets[i]->draw(window);
     }
 }
 
-Gun::Gun(Entity* parent, unsigned int type){
+void Gun::setType(unsigned int type) {
+    this->type = type;
+}
+
+Gun::Gun(Entity* parent, unsigned int type) {
     this->parent = parent;
     this->type = type;
 }
 
 
-Gun::~Gun(){
-    for(int i = 0; i < bullets.size(); i++){
+Gun::~Gun() {
+    for(int i = 0; i < bullets.size(); i++) {
         delete bullets[i];
         bullets.resize(bullets.size() - 1);
     }

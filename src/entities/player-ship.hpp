@@ -1,9 +1,9 @@
 #ifndef PLAYER_SHIP_HPP
 #define PLAYER_SHIP_HPP
 
+//#include "sfmlpch.hpp"
 #include "input.hpp"
 #include "othermath.h"
-#include "collision-box.hpp"
 #include "entity.hpp"
 #include "gun.hpp"
 #include <stdlib.h>
@@ -25,8 +25,6 @@ class PlayerShip : public Entity {
         void teleport(float angle);
         void firePrimary();
         void fireSpecial();
-        void damage(unsigned int amount);
-        void repair(unsigned int amount);
         void giveSpecialAmmo(unsigned int amount);
         void giveSpecialWeapon();
         void draw(sf::RenderWindow* window);

@@ -30,13 +30,15 @@ class Level{
 
     public:
         //virtual void updateView() = 0;
-        void handleCollisions();
+        void processCollisions();
         bool checkWon();
         void loadEntites(std::string);
         void loadMap(std::string map, std::string images);
-        void update(sf::Time frameTime, sf::RenderWindow* window);
-        void draw(sf::RenderWindow* window);
-        Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize);
+        void addEntity(Entity* entity);
+        void deleteEntity(Entity* entity);
+        void update(sf::Time frameTime, sf::RenderWindow& window);
+        void draw(sf::RenderWindow& window);
+        Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize = 32);
         ~Level();
 };
 #endif

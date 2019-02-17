@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -15,7 +16,7 @@ tileSize(tileSize) {
     loadMap(levelMapFilename, tileImagesFilename);
     Resources::load();
     loadEntites(levelDataFilename);
-    playerShip = new PlayerShip(50, 50, 32, 32);
+    playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP));
     entities.push_back(playerShip);
 
 }
@@ -37,32 +38,46 @@ bool Level::checkWon(){
 }
 
 
-void Level::draw(sf::RenderWindow* window){
-    window->draw(backGroundSprite);
-    playerShip->draw(window);
+void Level::draw(sf::RenderWindow& window){
+    window.draw(backGroundSprite);
+    //window.draw(playerShip);
     for(Entity* entity : entities){
-        entity->draw(window);
+        window.draw(*entity);
     }
 }
 
-void Level::update(sf::Time frameTime, sf::RenderWindow* window){
-    view.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
+void Level::update(sf::Time frameTime, sf::RenderWindow& window){
+    view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
     view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
-    window->setView(view);
+    window.setView(view);
 
-    playerShip->update(frameTime, window, entities);
+    playerShip->update(frameTime);
     for(Tile* tile : tiles){
-        tile->update(frameTime, window, entities);
+        tile->update(frameTime);
     }
     for(Entity* entity : entities){
         if(entity != playerShip){
-            entity->update(frameTime, window, entities);
+            entity->update(frameTime);
         }
     }
 }
 
-void handleCollisions() {
+void Level::processCollisions() {
     
+}
+
+void Level::addEntity(Entity* entity) {
+    if(entity == nullptr) {
+        return; // not valid pointer
+    }
+    entities.push_back(entity);
+}
+
+void Level::deleteEntity(Entity* entity) {
+    if(entity != nullptr) {
+        delete entity; // delete the entity before removal
+    }
+    entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
 }
 
 void Level::loadMap(std::string map, std::string images) {
@@ -153,19 +168,22 @@ void Level::loadEntites(std::string path){
     fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     file.close();
 
+
     std::vector<std::string> buffer;
     std::string number;
     Entity* entity;
-    for(int i = 0; i < fileData.size(); i++){
-        if(std::isdigit(fileData[i])){
+    for(int i = 0; i < fileData.size(); i++) {
+        sf::Vector2u entityPosition;
+        if(std::isdigit(fileData[i])) {
             number += fileData[i];
         } else if(fileData[i] == '\n'){
             buffer.push_back(number);
-            number = "";
+            number.clear();
+            entityPosition.x = std::stoi(buffer[0]);
+            entityPosition.y = std::stoi(buffer[1]);
             switch(std::stoi(buffer[2])) {
-                case Entity::ALIEN_SHIP:
-                entity = new AlienShip(std::stoi(buffer[0]), std::stoi(buffer[1]), 32, 32);
-                ((AlienShip*)entity)->setTexture(Resources::get(Resources::ID::AlienShip));
+                case 1:
+                entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP));
             }
 
             entities.push_back(entity);
@@ -173,7 +191,7 @@ void Level::loadEntites(std::string path){
         } else {
             // comma
             buffer.push_back(number);
-            number = "";
+            number.clear();
         }
     }
 }

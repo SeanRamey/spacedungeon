@@ -9,10 +9,8 @@ class Gun {
     public: 
         Gun(Entity*, unsigned int);
         ~Gun();
-        void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities);
+        void update(sf::Time frameTime);
         void draw(sf::RenderWindow* window);
         void shoot();
-        void setType(unsigned int type){
-            this->type = type;
-        }
+        void setType(unsigned int type);
 };
