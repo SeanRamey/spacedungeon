@@ -21,7 +21,7 @@
         {
             "label": "build release",
             "type": "shell",
-            "command": "make all --jobs=4",
+            "command": "make all --jobs=2",
             "group": "build",
             "presentation": {
                 // Reveal the output only if unrecognized errors occur.

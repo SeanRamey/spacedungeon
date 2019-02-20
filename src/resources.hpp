@@ -4,9 +4,10 @@
 namespace Resources {
     extern sf::RenderWindow* window;
     enum ID : int {
-        PlayerShip,
-        AlienShip,
-        Bullet,
+        PLAYERSHIP,
+        ALIENSHIP,
+        BULLET,
+        SPECIALBULLET,
         NUM_RESOURCES
     };
 

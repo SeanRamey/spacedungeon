@@ -3,6 +3,7 @@
 #include "bullet.hpp"
 #include "entity.hpp"
 #include "tile.hpp"
+#include "special-bullet-split.hpp"
 
 class SpecialBullet : public Bullet {
     public:
@@ -13,6 +14,9 @@ class SpecialBullet : public Bullet {
 
     private:
         void checkCollision(Entity* entity);
+
+        short numSplits;
+        std::vector<SpecialBulletShrapnel> splitoffs;
 };
 
 #endif

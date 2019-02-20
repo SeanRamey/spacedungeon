@@ -1,5 +1,6 @@
 #include "bullet.hpp"
 #include <vector>
+#include <future>
 
 class Gun {
     private:
@@ -14,6 +15,7 @@ class Gun {
         sf::Vector2u specialBulletSize;
         unsigned int specialBulletSpeed;
         unsigned int specialBulletDamage;
+
 
     public: 
         Gun(Entity*, unsigned int);

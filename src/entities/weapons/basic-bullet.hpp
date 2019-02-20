@@ -14,6 +14,5 @@ class BasicBullet : public Bullet {
         void checkCollision(Entity* entity);
         void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities);
 
-        void onDeath();
 };
 #endif

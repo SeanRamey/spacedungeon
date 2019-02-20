@@ -66,6 +66,14 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "atomic": "cpp",
+        "condition_variable": "cpp",
+        "resumable": "cpp",
+        "functional": "cpp",
+        "future": "cpp",
+        "mutex": "cpp",
+        "xthread": "cpp",
+        "thread": "cpp"
     },
 }

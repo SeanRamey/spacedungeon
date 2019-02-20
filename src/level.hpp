@@ -36,6 +36,7 @@ class Level{
         void loadMap(std::string map, std::string images);
         void update(sf::Time frameTime, sf::RenderWindow* window);
         void draw(sf::RenderWindow* window);
+        
         Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize);
         ~Level();
 };

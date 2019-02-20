@@ -25,6 +25,7 @@ class PlayerShip : public Entity {
         void teleport(float angle);
         void firePrimary();
         void fireSpecial();
+
         void damage(unsigned int amount);
         void repair(unsigned int amount);
         void giveSpecialAmmo(unsigned int amount);
@@ -44,17 +45,20 @@ class PlayerShip : public Entity {
         bool left = false;
 
         Gun gun;
+        Gun specialGun;
         
     // teleporting
         bool shouldBlink;
         bool canBlink;
         sf::Clock teleportTimer;
         sf::Clock shootTimer;
+        sf::Clock specialShootTimer;
 
         const unsigned int MAX_SPEED = 1000; // MAX_SPEED MUST BE LARGER THAN ACCELERATION
         const unsigned int ACCELERATION = 100;
         const unsigned int BLINK_DELAY = 750; // in milliseconds
         const unsigned int SHOOT_DELAY = 200;
+        const unsigned int SPECIAL_SHOOT_DELAY = 500;
         const unsigned int BLINK_DISTANCE = 100;
         const unsigned int MAX_SHIELD_LEVEL = 5;
         const unsigned int MAX_POWER_LEVEL = 10;

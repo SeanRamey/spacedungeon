@@ -12,15 +12,17 @@ using namespace std;
 
 PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture) 
 : Entity(x, y, w, h),
-  gun(this, 0U) {
+  gun(this, 0U), 
+  specialGun(this, 1U) {
     sprite.setTexture(*texture);
     type = Entity::types::PLAYER_SHIP;
 }
 
 PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h) 
 : Entity(x, y, w, h),
-  gun(this, 0) {
-    setTexture(Resources::get(Resources::ID::PlayerShip));
+  gun(this, 0U), 
+  specialGun(this, 1U) {
+    setTexture(Resources::get(Resources::ID::PLAYERSHIP));
 }
 
 PlayerShip::~PlayerShip() {
@@ -42,6 +44,7 @@ void PlayerShip::update(sf::Time frameTime, sf::RenderWindow* window, std::vecto
     }
     applyMovement(frameTime);
     gun.update(frameTime, window, entities); 
+    specialGun.update(frameTime, window, entities);
     collisionBox.update(position.x, position.y);
 }
 
@@ -63,10 +66,11 @@ void PlayerShip::handleUserInput() {
         teleport(angle);
     }
     if(Input::checkMouse(sf::Mouse::Left)){
-        if(shootTimer.getElapsedTime().asMilliseconds() > (int)SHOOT_DELAY){
-            gun.shoot();
-            shootTimer.restart();
-        }
+        firePrimary();      
+        std::cout << "basic bullet shot" << std::endl;
+    }
+    if(Input::checkMouse(sf::Mouse::Right)){
+        fireSpecial();
     }
 }
 
@@ -88,11 +92,17 @@ void PlayerShip::teleport(float angle) {
 }
 
 void PlayerShip::firePrimary() {
-
+    if(shootTimer.getElapsedTime().asMilliseconds() > (int)SHOOT_DELAY){
+        gun.shoot();
+        shootTimer.restart();
+    }
 }
 
 void PlayerShip::fireSpecial() {
-
+    if(specialShootTimer.getElapsedTime().asMilliseconds() > (int)SPECIAL_SHOOT_DELAY) {
+        specialGun.shoot();
+        specialShootTimer.restart();
+    }
 }
 
 void PlayerShip::damage(unsigned int amount) {
@@ -114,4 +124,5 @@ void PlayerShip::giveSpecialWeapon() {
 void PlayerShip::draw(sf::RenderWindow* window){
     Entity::draw(window);
     gun.draw(window);
+    specialGun.draw(window);
 }

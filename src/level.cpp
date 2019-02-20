@@ -62,7 +62,7 @@ void Level::update(sf::Time frameTime, sf::RenderWindow* window){
 }
 
 void handleCollisions() {
-    
+
 }
 
 void Level::loadMap(std::string map, std::string images) {
@@ -165,7 +165,7 @@ void Level::loadEntites(std::string path){
             switch(std::stoi(buffer[2])) {
                 case Entity::ALIEN_SHIP:
                 entity = new AlienShip(std::stoi(buffer[0]), std::stoi(buffer[1]), 32, 32);
-                ((AlienShip*)entity)->setTexture(Resources::get(Resources::ID::AlienShip));
+                ((AlienShip*)entity)->setTexture(Resources::get(Resources::ID::ALIENSHIP));
             }
 
             entities.push_back(entity);

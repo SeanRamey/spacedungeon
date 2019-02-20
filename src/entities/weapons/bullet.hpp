@@ -11,7 +11,7 @@ class Bullet : public Entity {
         
         ~Bullet();
         bool isDead();
-        virtual void onDeath() = 0;
+        virtual void onDeath();
 
     protected:
         unsigned int initialSpeed;

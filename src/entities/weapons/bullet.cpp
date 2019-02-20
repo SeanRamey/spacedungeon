@@ -26,3 +26,7 @@ void Bullet::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<En
 bool Bullet::isDead(){
     return dead;
 }
+
+void Bullet::onDeath(){
+
+}

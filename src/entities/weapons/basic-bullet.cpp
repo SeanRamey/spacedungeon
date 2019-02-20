@@ -41,8 +41,3 @@ void BasicBullet::update(sf::Time frameTime, sf::RenderWindow* window, std::vect
     applyMovement(frameTime);
     collisionBox.update(position.x, position.y);
 }
-
-
-void BasicBullet::onDeath(){
-    // nothing to see here 
-}

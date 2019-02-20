@@ -6,6 +6,7 @@
 #include "special-bullet.hpp"
 #include "resources.hpp"
 #include "input.hpp"
+#include <future>
 
 using namespace Resources;
 using namespace Input;
@@ -14,14 +15,14 @@ void Gun::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entit
     for(int i = 0; i < bullets.size(); i++){
         bullets[i]->update(frameTime, window, entities);
         if(bullets[i]->isDead()){
-            bullets[i]->onDeath();
+            auto r = std::async(std::launch::async, bullets[i]->onDeath());
+            r.get();
             bullets.erase(bullets.begin() + i);
         }
     }
 }
 
 void Gun::shoot(){
-    // std::cout << "bullet shot" << std::endl;
     switch(type){
         case 0:
             {
@@ -35,6 +36,7 @@ void Gun::shoot(){
                 SpecialBullet* specialBullet = new SpecialBullet(parent->getPosition(), specialBulletSize, specialBulletSpeed, specialBulletDamage);
                 specialBullet->setTexture(Resources::get(Resources::ID::SPECIALBULLET));
                 bullets.push_back(specialBullet);
+                std::cout << "special bullet shot" << std::endl;
                 break;
         }
     }
@@ -53,6 +55,13 @@ void Gun::setType(unsigned int type){
 Gun::Gun(Entity* parent, unsigned int type){
     this->parent = parent;
     this->type = type;
+    this->basicBulletSpeed = 1500;
+    this->basicBulletSize = sf::Vector2u(16, 8);
+    this->basicBulletDamage = 1;
+
+    this->specialBulletSpeed = 500;
+    this->specialBulletSize = sf::Vector2u(32, 32);
+    this->specialBulletDamage = 2;
 }
 
 
