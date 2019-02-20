@@ -2,6 +2,7 @@
 #define ANIMATION_HPP
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <vector>
 class Animation {
     private:
         short currentFrame;
@@ -10,9 +11,10 @@ class Animation {
         sf::Clock timer;
 
         std::vector<std::vector<sf::Texture>> textures;
+        std::vector<int> stateLengths;
 
     public:
-        void init(sf::Image image, sf::Vector2u spriteSize, int* stateLengths, int totalFrames);
+        void init(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths);
         void update();
         void setState(short state);
         void setDelay(sf::Time delay);
@@ -20,6 +22,5 @@ class Animation {
         Animation();
         ~Animation();
     
-    std::vector<int> stateLengths;
 };
 #endif

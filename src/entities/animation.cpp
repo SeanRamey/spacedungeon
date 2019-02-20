@@ -1,21 +1,21 @@
 #include "animation.hpp"
 #include "math.h"
 
-void Animation::init(sf::Image image, sf::Vector2u spriteSize, int* stateLengths, int totalFrames){
+     
+void Animation::init(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths){
     timer.restart();
-    for(int i = 0; i < (sizeof(stateLengths) / sizeof(stateLengths)); i++){
-        this->stateLengths.push_back(stateLengths[i]);
-    }
+    this->stateLengths = stateLengths;
     sf::Vector2u imageSize = image.getSize();
     sf::Vector2u spriteCount = sf::Vector2u(imageSize.x / spriteSize.x, imageSize.y / spriteSize.y);
-
     int currentFramePosition = 0; 
     int currentState = 0;
     sf::Vector2i currentPosition;
     textures.push_back(std::vector<sf::Texture>());
     for(int i = 0; i < spriteCount.x; i++){
         for(int j = 0; j < spriteCount.y; j++){
+            currentFramePosition++;
             if(currentFramePosition > stateLengths[currentState]){
+                textures.push_back(std::vector<sf::Texture>());
                 currentFramePosition = 0;
                 currentState++;
             }
@@ -26,7 +26,7 @@ void Animation::init(sf::Image image, sf::Vector2u spriteSize, int* stateLengths
 
             textures.at(currentState).push_back(texture);
         } 
-    } 
+    }
 }
 
 sf::Texture* Animation::getCurrentTexture(){
