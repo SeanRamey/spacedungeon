@@ -5,13 +5,13 @@
 #include <iostream>
 #include <algorithm>
 
-AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture)
-: Entity(x,y,w,h)
+AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level)
+: Entity(x,y,w,h, level)
 {
 }
 
-AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h)
-: Entity(x,y,w,h)
+AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, Level* level)
+: Entity(x,y,w,h, level)
 {
     type = Entity::types::ALIEN_SHIP;
 }
@@ -31,13 +31,10 @@ void AlienShip::checkCollision(Entity* entity){
     }
 }
 
-void AlienShip::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities)
+void AlienShip::update(sf::Time frameTime, sf::RenderWindow* window)
 {
     updateAI();
     // collision goes here
-    for(Entity* entity : entities){
-        checkCollision(entity);
-    }
     applyMovement(frameTime);
     collisionBox.update(position.x, position.y);
 }

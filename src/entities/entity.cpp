@@ -5,20 +5,22 @@
 #include <algorithm>
 #include <iostream>
 
-Entity::Entity(sf::Vector2f position, sf::Vector2f size)
+Entity::Entity(sf::Vector2f position, sf::Vector2f size, Level* level)
 : position(position.x,position.y)
 , size(size.x, size.y)
 , collisionBox(position.x, position.y, size.x, size.y)
 {
-
+    this->angle = 0;
+    this->level = level;
 }
 
-Entity::Entity(float x, float y, unsigned int w, unsigned int h)
+Entity::Entity(float x, float y, unsigned int w, unsigned int h, Level* level)
 : position(x,y)
 , size(w,h)
 , collisionBox(x, y, w, h)
 {
-
+    this->angle = 0;
+    this->level = level;
 }
 
 Entity::~Entity()
@@ -112,6 +114,10 @@ void Entity::addVelocity(sf::Vector2f newVelocity) {
 sf::Vector2f Entity::getVelocity() {
     return velocity;
 }
+
+Level* Entity::getLevel(){
+    return this->level;
+} 
 
 void Entity::applyMovement(sf::Time frameTime){
     nextPosition.x += velocity.x * frameTime.asSeconds();

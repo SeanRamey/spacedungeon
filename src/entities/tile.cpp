@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "tile.hpp"
-void Tile::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities){
+void Tile::update(sf::Time frameTime, sf::RenderWindow* window){
 
 }
 
@@ -13,8 +13,8 @@ const sf::Texture* Tile::getTexture(){
     return this->sprite.getTexture();
 }
 
-Tile::Tile(unsigned int x, unsigned int y, unsigned int w, unsigned int h) :
-Entity(x, y, w, h),
+Tile::Tile(unsigned int x, unsigned int y, unsigned int w, unsigned int h, Level* level) :
+Entity(x, y, w, h, level),
 collisionBox(x, y, w, h){
     sprite.setPosition(x, y);
 }

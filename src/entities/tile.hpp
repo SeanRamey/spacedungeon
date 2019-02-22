@@ -11,10 +11,10 @@ class Tile : public Entity {
         CollisionBox collisionBox;
         void setImage(sf::Texture* image);
         void checkCollision(Entity* entity);
-        void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities);
+        void update(sf::Time frameTime, sf::RenderWindow* window);
         const sf::Texture* getTexture();    
 
-        Tile(unsigned int, unsigned int, unsigned int, unsigned int);
+        Tile(unsigned int, unsigned int, unsigned int, unsigned int, Level* level);
         ~Tile();
 };
 #endif

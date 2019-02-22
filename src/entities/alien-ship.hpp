@@ -10,10 +10,10 @@
 class AlienShip : public Entity
 {
     public:
-        AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture);
-        AlienShip(float x, float y, unsigned int w, unsigned int h);
+        AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level);
+        AlienShip(float x, float y, unsigned int w, unsigned int h, Level* level);
         ~AlienShip();
-        void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities);
+        void update(sf::Time frameTime, sf::RenderWindow* window);
         void setMovement(sf::Vector2f movement);
         void checkCollision(Entity* entities);
         sf::Vector2f getMovement();

@@ -6,7 +6,11 @@
 #include <vector>
 #include "collision-box.hpp"
 
+class Level;
 class Entity {
+
+    private:
+        Level* level; 
 
     protected:
         sf::Vector2f position;
@@ -16,13 +20,15 @@ class Entity {
         float angle;
 
         sf::Sprite sprite;
+
+        void addEntity(Entity* entiites);
     public:
         CollisionBox collisionBox;
 
         enum types : int {PLAYER_SHIP, ALIEN_SHIP, TILE};
         types type;
 
-        virtual void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities) = 0;
+        virtual void update(sf::Time frameTime, sf::RenderWindow* window) = 0;
         virtual void draw(sf::RenderWindow* window);
         // virtual void getNextPosition(sf::Time frameTime) = 0;
         virtual void setVelocity(sf::Vector2f vector);
@@ -34,9 +40,12 @@ class Entity {
         virtual float calculateAngleTo(sf::Vector2f position);
         virtual void face(sf::Vector2f position);
         virtual sf::Vector2u getSize();
+
+        Level* getLevel(); 
+
         sf::Vector2f getPosition();
-        Entity(sf::Vector2f position, sf::Vector2f size);
-        Entity(float x, float y, unsigned int w, unsigned int h);
+        Entity(sf::Vector2f position, sf::Vector2f size, Level* level);
+        Entity(float x, float y, unsigned int w, unsigned int h, Level* level); 
         ~Entity();
         
         unsigned int MAX_SPEED = 1000; // MAX_SPEED MUST BE LARGER THAN ACCELERATION

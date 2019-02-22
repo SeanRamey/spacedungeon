@@ -9,9 +9,9 @@
 using namespace Resources;
 using namespace Input;
 
-void Gun::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities){
+void Gun::update(sf::Time frameTime, sf::RenderWindow* window){
     for(int i = 0; i < bullets.size(); i++){
-        bullets[i]->update(frameTime, window, entities);
+        bullets[i]->update(frameTime, window);
         if(bullets[i]->isDead()){
             bullets[i]->onDeath();
             bullets.erase(bullets.begin() + i);
@@ -23,7 +23,7 @@ void Gun::shoot(){
     // std::cout << "bullet shot" << std::endl;
     switch(type){
         case 0:
-            BasicBullet* bullet = new BasicBullet(parent->getPosition(), sf::Vector2u(8, 16), 1500, 1, sf::milliseconds(3000));
+            BasicBullet* bullet = new BasicBullet(parent->getPosition(), sf::Vector2u(8, 16), 1500, 1, sf::milliseconds(3000), parent->getLevel());
             bullet->setTexture(Resources::get(Resources::ID::Bullet));
             bullets.push_back(bullet);
 

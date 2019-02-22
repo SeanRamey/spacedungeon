@@ -16,11 +16,11 @@
 
 class PlayerShip : public Entity {
     public:
-        PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture);
-        PlayerShip(float x, float y, unsigned int w, unsigned int h);
+        PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level);
+        PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* level);
         ~PlayerShip();
 
-        void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities);
+        void update(sf::Time frameTime, sf::RenderWindow* window); 
         void handleUserInput();
         void teleport(float angle);
         void firePrimary();

@@ -8,8 +8,8 @@
 #include "resources.hpp"
 using namespace Input;
 
-BasicBullet::BasicBullet(sf::Vector2f position, sf::Vector2u size, unsigned int MAX_SPEED, unsigned int DAMAGE, sf::Time maxTimeAlive):
-Bullet(position, size, MAX_SPEED, DAMAGE, maxTimeAlive){
+BasicBullet::BasicBullet(sf::Vector2f position, sf::Vector2u size, unsigned int MAX_SPEED, unsigned int DAMAGE, sf::Time maxTimeAlive, Level* level):
+Bullet(position, size, MAX_SPEED, DAMAGE, maxTimeAlive, level){
     offset = Util::GetRandomNumber(0, 8) - 4;
 }
 
@@ -28,12 +28,8 @@ void BasicBullet::checkCollision(Entity* entity){
     }
 }
 
-void BasicBullet::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities){
-    for(Entity* e : entities){
-        if(e != this && dynamic_cast<PlayerShip*>(e) == nullptr){
-            checkCollision(e);
-        }
-    }
+void BasicBullet::update(sf::Time frameTime, sf::RenderWindow* window){
+
     if(timeAlive.getElapsedTime().asMilliseconds() > maxTimeAlive.asMilliseconds()){
         this->dead = true;
     }

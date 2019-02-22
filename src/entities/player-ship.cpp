@@ -10,15 +10,15 @@
 
 using namespace std;
 
-PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture) 
-: Entity(x, y, w, h),
+PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level) 
+: Entity(x, y, w, h, level),
   gun(this, 0U) {
     sprite.setTexture(*texture);
     type = Entity::types::PLAYER_SHIP;
 }
 
-PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h) 
-: Entity(x, y, w, h),
+PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* level) 
+: Entity(x, y, w, h, level),
   gun(this, 0) {
     setTexture(Resources::get(Resources::ID::PlayerShip));
 }
@@ -29,7 +29,7 @@ PlayerShip::~PlayerShip() {
 void PlayerShip::checkCollision(Entity* entity){
 
 }
-void PlayerShip::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities) {
+void PlayerShip::update(sf::Time frameTime, sf::RenderWindow* window) {
     if(teleportTimer.getElapsedTime().asMilliseconds() > (int)BLINK_DELAY) {
         canBlink = true;
     }
@@ -41,7 +41,7 @@ void PlayerShip::update(sf::Time frameTime, sf::RenderWindow* window, std::vecto
         velocity *= FRICTION;
     }
     applyMovement(frameTime);
-    gun.update(frameTime, window, entities); 
+    gun.update(frameTime, window); 
     collisionBox.update(position.x, position.y);
 }
 
