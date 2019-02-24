@@ -7,12 +7,12 @@ class BasicBullet : public Bullet {
         int offset;
 
     public:
-        BasicBullet(sf::Vector2f, sf::Vector2u, unsigned int, unsigned int);
+        BasicBullet(sf::Vector2f, sf::Vector2u, unsigned int, unsigned int, Level* level);
         ~BasicBullet();
 
     protected:
         void checkCollision(Entity* entity);
-        void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities);
+        void update(sf::Time frameTime, sf::RenderWindow* window);
 
 };
 #endif

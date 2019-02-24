@@ -11,9 +11,9 @@
 using namespace Resources;
 using namespace Input;
 
-void Gun::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities){
+void Gun::update(sf::Time frameTime, sf::RenderWindow* window){
     for(int i = 0; i < bullets.size(); i++){
-        bullets[i]->update(frameTime, window, entities);
+        bullets[i]->update(frameTime, window);
         if(bullets[i]->isDead()){
             auto r = std::async(std::launch::async, bullets[i]->onDeath());
             r.get();
@@ -26,14 +26,14 @@ void Gun::shoot(){
     switch(type){
         case 0:
             {
-                BasicBullet* bullet = new BasicBullet(parent->getPosition(), basicBulletSize, basicBulletSpeed, basicBulletDamage);
+                BasicBullet* bullet = new BasicBullet(parent->getPosition(), basicBulletSize, basicBulletSpeed, basicBulletDamage, parent->getLevel());
                 bullet->setTexture(Resources::get(Resources::ID::BULLET));
                 bullets.push_back(bullet);
                 break;
             }
         case 1:
             {
-                SpecialBullet* specialBullet = new SpecialBullet(parent->getPosition(), specialBulletSize, specialBulletSpeed, specialBulletDamage);
+                SpecialBullet* specialBullet = new SpecialBullet(parent->getPosition(), specialBulletSize, specialBulletSpeed, specialBulletDamage, parent->getLevel());
                 specialBullet->setTexture(Resources::get(Resources::ID::SPECIALBULLET));
                 bullets.push_back(specialBullet);
                 std::cout << "special bullet shot" << std::endl;

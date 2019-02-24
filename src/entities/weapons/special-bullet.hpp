@@ -7,10 +7,10 @@
 
 class SpecialBullet : public Bullet {
     public:
-        SpecialBullet(sf::Vector2f position, sf::Vector2u size, unsigned int speed, unsigned int damage);
+        SpecialBullet(sf::Vector2f position, sf::Vector2u size, unsigned int speed, unsigned int damage, Level* level);
         ~SpecialBullet();
         void onDeath();
-        void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities);
+        void update(sf::Time frameTime, sf::RenderWindow* window);
 
     private:
         void checkCollision(Entity* entity);

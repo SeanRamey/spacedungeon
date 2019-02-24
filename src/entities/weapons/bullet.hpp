@@ -6,8 +6,8 @@
 
 class Bullet : public Entity {
     public:
-        Bullet(sf::Vector2f, sf::Vector2u, unsigned int, unsigned int, sf::Time);
-        virtual void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities);
+        Bullet(sf::Vector2f, sf::Vector2u, unsigned int, unsigned int, sf::Time, Level* level);
+        virtual void update(sf::Time frameTime, sf::RenderWindow* window);
         
         ~Bullet();
         bool isDead();

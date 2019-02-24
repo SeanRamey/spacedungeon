@@ -3,8 +3,8 @@
 #include "othermath.h"
 #include <iostream>
 
-SpecialBullet::SpecialBullet(sf::Vector2f position, sf::Vector2u size, unsigned int speed, unsigned int damage) :
-Bullet(position, size, speed, damage, sf::milliseconds(3000)){
+SpecialBullet::SpecialBullet(sf::Vector2f position, sf::Vector2u size, unsigned int speed, unsigned int damage, Level* level) :
+Bullet(position, size, speed, damage, sf::milliseconds(3000), level){
 }
 
 SpecialBullet::~SpecialBullet(){
@@ -18,12 +18,7 @@ void SpecialBullet::onDeath(){
     }
 }
 
-void SpecialBullet::update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities){
-    for(Entity* e : entities){
-        if(e != this && dynamic_cast<PlayerShip*>(e) == nullptr){
-            checkCollision(e);
-        }
-    }
+void SpecialBullet::update(sf::Time frameTime, sf::RenderWindow* window){ 
     if(timeAlive.getElapsedTime().asMilliseconds() > maxTimeAlive.asMilliseconds()){
         this->dead = true;
     }
