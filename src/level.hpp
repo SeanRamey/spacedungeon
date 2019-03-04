@@ -8,15 +8,12 @@
 #include "tile.hpp"
 #include "alien-ship.hpp"
 
-
 class Level{
     private:
 
         std::vector<Entity*> entities;
         std::vector<Tile*> tiles;
-        sf::Texture backGround;
-        sf::Sprite backGroundSprite;
-
+        
         PlayerShip* playerShip;
         std::vector<sf::Texture*> tileImages;
 
@@ -32,7 +29,10 @@ class Level{
         //virtual void updateView() = 0;
         void handleCollisions();
         bool checkWon();
+        void addEntity(Entity* entity);
+        void removeEntity(Entity* entity);
         void loadEntites(std::string);
+        PlayerShip* getPlayer();
         void loadMap(std::string map, std::string images);
         void update(sf::Time frameTime, sf::RenderWindow* window);
         void draw(sf::RenderWindow* window);

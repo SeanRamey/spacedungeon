@@ -1,4 +1,8 @@
+#ifndef GUN_HPP
+#define GUN_HPP
 #include "bullet.hpp"
+#include "basic-bullet.hpp"
+#include "special-bullet.hpp"
 #include <vector>
 #include <future>
 
@@ -20,8 +24,11 @@ class Gun {
     public: 
         Gun(Entity*, unsigned int);
         ~Gun();
+
+        std::vector<Bullet*>* getBullets();
         void update(sf::Time frameTime, sf::RenderWindow* window);
         void draw(sf::RenderWindow* window);
         void shoot();
         void setType(unsigned int type);
 };
+#endif

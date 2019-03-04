@@ -12,6 +12,7 @@
 #define ALIEN_SHIP_FILE "data/graphics/alien-ship.png"
 #define BULLET_FILE "data/graphics/bullet.png"
 #define BIG_BULLET_FILE "data/graphics/big-bullet.png"
+#define SHRAPNEL_FILE "data/graphics/shrapnel.png"
 
 namespace Resources {
 
@@ -22,7 +23,8 @@ namespace Resources {
         PLAYER_SHIP_FILE,
         ALIEN_SHIP_FILE,
         BULLET_FILE,
-        BIG_BULLET_FILE
+        BIG_BULLET_FILE,
+        SHRAPNEL_FILE
     };
 
     void load() {

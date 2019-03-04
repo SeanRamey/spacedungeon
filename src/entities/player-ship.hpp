@@ -4,8 +4,8 @@
 #include "input.hpp"
 #include "othermath.h"
 #include "collision-box.hpp"
-#include "entity.hpp"
 #include "gun.hpp"
+#include "entity.hpp"
 #include <stdlib.h>
 #include <stdio.h>
 #include <cmath>
@@ -33,6 +33,9 @@ class PlayerShip : public Entity {
         void draw(sf::RenderWindow* window);
 
         void checkCollision(Entity* entity);
+
+        Gun* getPrimaryWeapon();
+        Gun* getSecondaryWeapon();
 
     private:
     // stats

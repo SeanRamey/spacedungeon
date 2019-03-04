@@ -34,10 +34,6 @@ void AlienShip::checkCollision(Entity* entity){
 void AlienShip::update(sf::Time frameTime, sf::RenderWindow* window)
 {
     updateAI();
-    // collision goes here
-    for(Entity* entity : entities){
-        checkCollision(entity);
-    }
     applyMovement(frameTime);
     collisionBox.update(position.x, position.y);
 }

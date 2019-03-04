@@ -1,3 +1,5 @@
+#include <cfloat>
+#include "level.hpp"
 #include "entity.hpp"
 #include "othermath.h"
 #include "log.hpp"
@@ -10,7 +12,7 @@ Entity::Entity(sf::Vector2f position, sf::Vector2f size, Level* level)
 , size(size.x, size.y)
 , collisionBox(position.x, position.y, size.x, size.y)
 {
-
+    this->level = level;
 }
 
 Entity::Entity(float x, float y, unsigned int w, unsigned int h, Level* level)
@@ -18,7 +20,7 @@ Entity::Entity(float x, float y, unsigned int w, unsigned int h, Level* level)
 , size(w,h)
 , collisionBox(x, y, w, h)
 {
-
+    this->level = level;
 }
 
 Entity::~Entity()
@@ -56,8 +58,8 @@ float Entity::calculateAngleTo(sf::Vector2f position){
     temp.x = this->position.x - position.x;
     temp.y = this->position.y - position.y;
     float newAngle;
-    if(temp.x == 0) temp.x += 0.001;
-    if(temp.y == 0) temp.y += 0.001;
+    if(temp.x == 0) temp.x += FLT_MIN;
+    if(temp.y == 0) temp.y += FLT_MIN;
     if(temp.x != 0 && temp.y != 0) {
         newAngle = radiansToDegrees(atanf((temp.y) / (temp.x)));
         if(position.x > this->position.x){

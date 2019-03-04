@@ -8,6 +8,7 @@ namespace Resources {
         ALIENSHIP,
         BULLET,
         SPECIALBULLET,
+        SHRAPNEL,
         NUM_RESOURCES
     };
 

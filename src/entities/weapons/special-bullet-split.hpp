@@ -8,7 +8,7 @@ class SpecialBulletShrapnel : public Bullet{
 
     public:
         void update(sf::Time frameTime, sf::RenderWindow* window);
-        SpecialBulletShrapnel(sf::Vector2f endPosition, sf::Vector2u size, unsigned int speed, unsigned int damage, Level* level);
+        SpecialBulletShrapnel(sf::Vector2f position, sf::Vector2f finalPosition, sf::Vector2u size, unsigned int speed, unsigned int damage, Level* level);
         ~SpecialBulletShrapnel();
 };
 #endif

@@ -15,7 +15,7 @@ tileSize(tileSize) {
     loadMap(levelMapFilename, tileImagesFilename);
     Resources::load();
     loadEntites(levelDataFilename);
-    playerShip = new PlayerShip(50, 50, 32, 32);
+    playerShip = new PlayerShip(50, 50, 32, 32, this);
     entities.push_back(playerShip);
 
 }
@@ -36,10 +36,25 @@ bool Level::checkWon(){
     return false;
 }
 
+PlayerShip* Level::getPlayer(){
+    return this->playerShip;
+}
+void Level::addEntity(Entity* entity){
+    entities.push_back(entity);
+}
+
+void Level::removeEntity(Entity* entity){
+    entities.erase(std::find(entities.begin(), entities.end(), entity));
+    if(entity != nullptr){
+        delete entity;
+    }
+    entities.shrink_to_fit(); 
+}
 
 void Level::draw(sf::RenderWindow* window){
-    window->draw(backGroundSprite);
-    playerShip->draw(window);
+    for(Tile* tile : tiles){
+        tile->draw(window);
+    }
     for(Entity* entity : entities){
         entity->draw(window);
     }
@@ -50,13 +65,17 @@ void Level::update(sf::Time frameTime, sf::RenderWindow* window){
     view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
     window->setView(view);
 
-    playerShip->update(frameTime, window, entities);
     for(Tile* tile : tiles){
-        tile->update(frameTime, window, entities);
+        tile->update(frameTime, window);
+    }
+
+    playerShip->update(frameTime, window);
+    for(Tile* tile : tiles){
+        tile->update(frameTime, window);
     }
     for(Entity* entity : entities){
         if(entity != playerShip){
-            entity->update(frameTime, window, entities);
+            entity->update(frameTime, window);
         }
     }
 }
@@ -127,23 +146,12 @@ void Level::loadMap(std::string map, std::string images) {
     for(unsigned int y = 0; y < mapSize.y; y++) {
         for(unsigned int x = 0; x < mapSize.x; x++) {
             if(mapData.at(x + y * mapSize.x) != 0) {
-                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
+                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize, this);
                 tiles.push_back(tile);
                 tiles[tiles.size() - 1]->setImage(tileImages[mapData[x + y * mapSize.x] - 1]);
             }
         }
     }
-
-    // Create an image of the entire map so that only 1 draw call is needed for the whole map
-    sf::Image backGroundImage;
-    backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Black);
-
-    for(Tile* tile : tiles){
-        backGroundImage.copy(tile->getTexture()->copyToImage(), tile->getPosition().x, tile->getPosition().y);
-    }
-
-    backGround.loadFromImage(backGroundImage); 
-    backGroundSprite.setTexture(backGround);
 }
 
 void Level::loadEntites(std::string path){
@@ -164,7 +172,7 @@ void Level::loadEntites(std::string path){
             number = "";
             switch(std::stoi(buffer[2])) {
                 case Entity::ALIEN_SHIP:
-                entity = new AlienShip(std::stoi(buffer[0]), std::stoi(buffer[1]), 32, 32);
+                entity = new AlienShip(std::stoi(buffer[0]), std::stoi(buffer[1]), 32, 32, this);
                 ((AlienShip*)entity)->setTexture(Resources::get(Resources::ID::ALIENSHIP));
             }
 

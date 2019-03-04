@@ -1,20 +1,28 @@
 #include "special-bullet.hpp"
+#include "resources.hpp"
 #include "player-ship.hpp"
 #include "othermath.h"
 #include <iostream>
+#include "level.hpp"
 
 SpecialBullet::SpecialBullet(sf::Vector2f position, sf::Vector2u size, unsigned int speed, unsigned int damage, Level* level) :
-Bullet(position, size, speed, damage, sf::milliseconds(3000), level){
+Bullet(position, size, speed, damage, sf::milliseconds(1000), level){
+    numSplits = 32;
 }
 
 SpecialBullet::~SpecialBullet(){
 }
 
 void SpecialBullet::onDeath(){
-    float degreeSplit = 360 / numSplits;
+    double degreeSplit = 360 / numSplits; // 45
     for(int i = 0; i < numSplits; i++){
         sf::Vector2f finalPosition;
-        finalPosition.x = position.x + 1;
+        finalPosition.x = position.x + cosf(degreesToRadians(i * degreeSplit));
+        finalPosition.y = position.y + sinf(degreesToRadians(i * degreeSplit));
+        SpecialBulletShrapnel* shrapnel = new SpecialBulletShrapnel(position, finalPosition, sf::Vector2u(10, 10), 1500, 1, level); 
+        shrapnel->setTexture(Resources::get(Resources::ID::SHRAPNEL));
+        level->addEntity(shrapnel);
+        level->getPlayer()->getSecondaryWeapon()->getBullets()->push_back(shrapnel);
     }
 }
 

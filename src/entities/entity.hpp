@@ -6,17 +6,15 @@
 #include <vector>
 #include "collision-box.hpp"
 
+class Level;
 class Entity {
-
-    private:
-        Level* level;
-
     protected:
         sf::Vector2f position;
         sf::Vector2u size;
         sf::Vector2f nextPosition;
         sf::Vector2f velocity;
         float angle;
+        Level* level;
 
         sf::Sprite sprite;
     public:

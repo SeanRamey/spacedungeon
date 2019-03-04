@@ -14,11 +14,26 @@ Entity(position.x, position.y, size.x, size.y, level){
     this->MAX_SPEED = MAX_SPEED;
 }
 
+Bullet::Bullet(sf::Vector2f position, sf::Vector2f finalPosition, sf::Vector2u size, unsigned int MAX_SPEED, unsigned int DAMAGE, sf::Time maxTimeAlive, Level* level) :
+Entity(position.x, position.y, size.x, size.y, level){
+    this->initialSpeed = MAX_SPEED;
+    this->maxTimeAlive = maxTimeAlive;
+    this->damage = DAMAGE;
+    timeAlive = sf::Clock();
+    dead = false;
+    face(finalPosition);
+    this->MAX_SPEED = MAX_SPEED;
+}
+
 Bullet::~Bullet(){
 }
 
 void Bullet::update(sf::Time frameTime, sf::RenderWindow* window){
     
+}
+
+void Bullet::checkCollision(Entity* entity){
+
 }
 
 bool Bullet::isDead(){

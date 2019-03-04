@@ -10,7 +10,7 @@
 
 using namespace std;
 
-PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture) 
+PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level) 
 : Entity(x, y, w, h, level),
   gun(this, 0U), 
   specialGun(this, 1U) {
@@ -18,7 +18,7 @@ PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Tex
     type = Entity::types::PLAYER_SHIP;
 }
 
-PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h) 
+PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* level) 
 : Entity(x, y, w, h, level),
   gun(this, 0U), 
   specialGun(this, 1U) {
@@ -44,7 +44,7 @@ void PlayerShip::update(sf::Time frameTime, sf::RenderWindow* window) {
     }
     applyMovement(frameTime);
     gun.update(frameTime, window); 
-    specialGun.update(frameTime, window, entities);
+    specialGun.update(frameTime, window);
     collisionBox.update(position.x, position.y);
 }
 
@@ -67,7 +67,6 @@ void PlayerShip::handleUserInput() {
     }
     if(Input::checkMouse(sf::Mouse::Left)){
         firePrimary();      
-        std::cout << "basic bullet shot" << std::endl;
     }
     if(Input::checkMouse(sf::Mouse::Right)){
         fireSpecial();
@@ -125,4 +124,13 @@ void PlayerShip::draw(sf::RenderWindow* window){
     Entity::draw(window);
     gun.draw(window);
     specialGun.draw(window);
+}
+
+
+Gun* PlayerShip::getPrimaryWeapon(){
+    return &this->gun;
+}
+
+Gun* PlayerShip::getSecondaryWeapon(){
+    return &this->specialGun;
 }

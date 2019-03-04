@@ -5,7 +5,6 @@
 #include <SFML/System.hpp>
 #include <vector>
 #include "entity.hpp"
-#include "tile.hpp"
 
 class AlienShip : public Entity
 {
