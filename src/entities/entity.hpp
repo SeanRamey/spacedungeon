@@ -17,6 +17,8 @@ class Entity {
         Level* level;
 
         sf::Sprite sprite;
+
+        void addEntity(Entity* entiites);
     public:
         CollisionBox collisionBox;
 

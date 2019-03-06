@@ -58,6 +58,7 @@ void Level::draw(sf::RenderWindow* window){
     for(Entity* entity : entities){
         entity->draw(window);
     }
+
 }
 
 void Level::update(sf::Time frameTime, sf::RenderWindow* window){
@@ -70,9 +71,6 @@ void Level::update(sf::Time frameTime, sf::RenderWindow* window){
     }
 
     playerShip->update(frameTime, window);
-    for(Tile* tile : tiles){
-        tile->update(frameTime, window);
-    }
     for(Entity* entity : entities){
         if(entity != playerShip){
             entity->update(frameTime, window);
