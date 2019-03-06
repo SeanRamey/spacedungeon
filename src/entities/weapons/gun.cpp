@@ -1,5 +1,3 @@
-#ifndef GUN_CPP
-#define GUN_CPP
 #include "level.hpp"
 #include "gun.hpp"
 #include <iostream>
@@ -69,4 +67,3 @@ std::vector<Bullet*>* Gun::getBullets(){
 Gun::~Gun(){
 
 }
-#endif
