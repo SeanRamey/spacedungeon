@@ -61,8 +61,8 @@ class PlayerShip : public Entity {
         const unsigned int ACCELERATION = 100;
         const unsigned int BLINK_DELAY = 750; // in milliseconds
         const unsigned int SHOOT_DELAY = 200;
-        const unsigned int SPECIAL_SHOOT_DELAY = 500;
-        const unsigned int BLINK_DISTANCE = 100;
+        const unsigned int SPECIAL_SHOOT_DELAY = 1000;
+        const unsigned int BLINK_DISTANCE = 200;
         const unsigned int MAX_SHIELD_LEVEL = 5;
         const unsigned int MAX_POWER_LEVEL = 10;
         const float FRICTION = 0.95;

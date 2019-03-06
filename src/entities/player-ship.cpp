@@ -75,15 +75,16 @@ void PlayerShip::handleUserInput() {
 
 void PlayerShip::teleport(float angle) {
     if(canBlink) {
-        nextPosition.x += BLINK_DISTANCE * cosf(degreesToRadians(angle - 90));
-        nextPosition.y += BLINK_DISTANCE * sinf(degreesToRadians(angle - 90));
-        // velocity.x += 1;
-        // velocity.y += 1;
-        // float velocityAngle = radiansToDegrees(atanf(velocity.y / velocity.x));
-        // velocity.x -= 1;
-        // velocity.y -= 1;
-        // nextPosition.x += BLINK_DISTANCE * cosf(degreesToRadians(velocityAngle));
-        // nextPosition.y += BLINK_DISTANCE * sinf(degreesToRadians(velocityAngle));
+        float blinkDistance = sqrtf(pow((Input::mousePosition.x + Resources::window->getView().getCenter().x - Resources::window->getSize().x / 2) - position.x, 2) + powf((Input::mousePosition.y + Resources::window->getView().getCenter().y - Resources::window->getSize().y / 2) - position.y, 2));
+        if(blinkDistance < BLINK_DISTANCE){
+            // uses mouse position
+            nextPosition.x += blinkDistance * cosf(degreesToRadians(angle - 90));
+            nextPosition.y += blinkDistance * sinf(degreesToRadians(angle - 90));
+        } else {
+            // max distance 
+            nextPosition.x += BLINK_DISTANCE * cosf(degreesToRadians(angle - 90));
+            nextPosition.y += BLINK_DISTANCE * sinf(degreesToRadians(angle - 90));
+        }
         canBlink = false;
         teleportTimer.restart();
     }
