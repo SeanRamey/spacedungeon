@@ -160,8 +160,8 @@ else
 endif
 
 uninstall:
-	$(RMDIR) $(DESTDIR)$(PREFIX)/bin$(SLASH)$(program)
-	$(RMDIR) $(DESTDIR)$(PREFIX)/bin$(SLASH)$(program)/data
-ifeq ($(OSTARGET),WINDOWS)
-	$(RM) $(DESTDIR)$(PREFIX)bin$(SLASH)*.dll
+ifeq ($(OSTARGET), WINDOWS) 
+	$(RMDIR) $(DESTDIR)$(PREFIX)/bin
+else 
+	$(RMDIR) $(DESTDIR)$(PREFIX)$(SLASH)bin$(SLASH)$(program)
 endif
