@@ -11,6 +11,7 @@ Entity::Entity(sf::Vector2f position, sf::Vector2f size, Level* level)
 : position(position.x,position.y)
 , size(size.x, size.y)
 , collisionBox(position.x, position.y, size.x, size.y)
+, animation()
 {
     this->level = level;
 }
@@ -19,6 +20,7 @@ Entity::Entity(float x, float y, unsigned int w, unsigned int h, Level* level)
 : position(x,y)
 , size(w,h)
 , collisionBox(x, y, w, h)
+, animation()
 {
     this->level = level;
 }
@@ -36,7 +38,12 @@ bool windowContains(sf::View view, sf::Sprite sprite){
     }
 }
 
-void Entity::draw(sf::RenderWindow* window) {
+void Entity::draw(sf::RenderWindow* window) { 
+    animation.update();
+    if(animation.getCurrentTexture() != nullptr){
+        sprite.setTexture(*animation.getCurrentTexture());
+    }
+        
     sprite.setOrigin(size.x / 2, size.y / 2);
     sprite.setPosition(position.x, position.y);
     sprite.setRotation(angle);
@@ -74,10 +81,8 @@ float Entity::calculateAngleTo(sf::Vector2f position){
 }
 
 void Entity::setVelocity(sf::Vector2f velocity) {
-    // apply the velocity
-    this->velocity.x = velocity.x;
-    this->velocity.y = velocity.y;
-
+    // apply the velocity this->velocity.x = velocity.x; this->velocity.y = velocity.y;
+   
     // then make sure velocity doesn't exceed MAX_SPEED
     // FORMULA: 
     // Let m be the allowed maximum speed and v=(v₁,v₂) be the current velocity. 
@@ -142,6 +147,18 @@ void Entity::setTexture(sf::Texture* texture) {
     sprite.setTexture(*texture);
 }
 
+void Entity::setAnimation(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths){
+    animation.init(image, spriteSize, stateLengths);
+}
+
 sf::Vector2u Entity::getSize() {
     return size;
+}
+
+void Entity::setState(short state){
+    animation.setState(state);
+}
+
+void Entity::setDelay(sf::Time delay){
+    animation.setDelay(delay);
 }

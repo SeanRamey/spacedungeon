@@ -4,6 +4,7 @@
 
 #include "resources.hpp"
 #include <future>
+#include "log.hpp"
 
 using namespace Resources;
 using namespace Input;
@@ -32,7 +33,13 @@ void Gun::shoot(){
         case 1:
             {
                 SpecialBullet* specialBullet = new SpecialBullet(parent->getPosition(), specialBulletSize, specialBulletSpeed, specialBulletDamage, parent->getLevel());
-                specialBullet->setTexture(Resources::get(Resources::ID::SPECIALBULLET));
+                sf::Image image;
+                if(!image.loadFromFile("data/graphics/big-bullet_test.png")){
+                    Log::error("failed to load special bullet texture");     
+                }
+                specialBullet->setAnimation(image, specialBulletSize, specialBulletStateLengths);
+                specialBullet->setDelay(sf::milliseconds(100));
+                specialBullet->setState(0);
                 parent->getLevel()->addEntity(specialBullet);
                 bullets.push_back(specialBullet);
                 break;

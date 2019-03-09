@@ -20,6 +20,7 @@ class Gun {
         unsigned int specialBulletSpeed;
         unsigned int specialBulletDamage;
 
+        std::vector<int> specialBulletStateLengths = {3};
 
     public: 
         Gun(Entity*, unsigned int);

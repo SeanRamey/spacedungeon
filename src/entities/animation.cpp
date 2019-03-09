@@ -1,5 +1,6 @@
 #include "animation.hpp"
 #include "math.h"
+#include <iostream>
 
      
 void Animation::init(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths){
@@ -29,12 +30,14 @@ void Animation::init(sf::Image image, sf::Vector2u spriteSize, std::vector<int> 
     }
 }
 
-sf::Texture* Animation::getCurrentTexture(){
+const sf::Texture* Animation::getCurrentTexture(){
+    if(textures.empty()) return nullptr;
+    std::cout << currentFrame;
     return &textures.at(currentState).at(currentFrame);
 }
 
 void Animation::update(){
-    if(timer.getElapsedTime().asMilliseconds() > delay.asMilliseconds()){
+    if(timer.getElapsedTime().asMilliseconds() > delay.asMilliseconds() && !stateLengths.empty()){
         timer.restart();
         currentFrame++;
         if(currentFrame > stateLengths[currentState] - 1){
