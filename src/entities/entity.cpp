@@ -81,7 +81,9 @@ float Entity::calculateAngleTo(sf::Vector2f position){
 }
 
 void Entity::setVelocity(sf::Vector2f velocity) {
-    // apply the velocity this->velocity.x = velocity.x; this->velocity.y = velocity.y;
+    // apply the velocity 
+    this->velocity.x = velocity.x; 
+    this->velocity.y = velocity.y;
    
     // then make sure velocity doesn't exceed MAX_SPEED
     // FORMULA: 
