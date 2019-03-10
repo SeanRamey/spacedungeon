@@ -21,7 +21,7 @@ void Animation::init(sf::Image image, sf::Vector2u spriteSize, std::vector<int> 
                 currentState++;
             }
 
-            currentPosition = sf::Vector2i(32 * (i % spriteCount.x), 32 * (floor(j / spriteCount.y)));
+            currentPosition = sf::Vector2i(spriteSize.x * (i % spriteCount.x), spriteSize.y * (floor(j / spriteCount.y)));
             sf::Texture texture;
             texture.loadFromImage(image, sf::IntRect(currentPosition.x, currentPosition.y, spriteSize.x, spriteSize.y));
 
@@ -32,7 +32,6 @@ void Animation::init(sf::Image image, sf::Vector2u spriteSize, std::vector<int> 
 
 const sf::Texture* Animation::getCurrentTexture(){
     if(textures.empty()) return nullptr;
-    std::cout << currentFrame;
     return &textures.at(currentState).at(currentFrame);
 }
 

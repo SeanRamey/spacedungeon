@@ -25,7 +25,13 @@ void Gun::shoot(){
         case 0:
             {
                 BasicBullet* bullet = new BasicBullet(parent->getPosition(), basicBulletSize, basicBulletSpeed, basicBulletDamage, parent->getLevel());
-                bullet->setTexture(Resources::get(Resources::ID::BULLET));
+                sf::Image image;
+                if(!image.loadFromFile("data/graphics/bullet_test.png")){
+                    Log::error("failed to load normal bullet texture");
+                }
+                bullet->setAnimation(image, basicBulletSize, basicBulletStateLengths);
+                bullet->setDelay(sf::milliseconds(50));
+                bullet->setState(0);
                 parent->getLevel()->addEntity(bullet);
                 bullets.push_back(bullet);
                 break;
@@ -59,7 +65,7 @@ Gun::Gun(Entity* parent, unsigned int type){
     this->parent = parent;
     this->type = type;
     this->basicBulletSpeed = 1000;
-    this->basicBulletSize = sf::Vector2u(16, 8);
+    this->basicBulletSize = sf::Vector2u(8, 16);
     this->basicBulletDamage = 1;
 
     this->specialBulletSpeed = 500;
