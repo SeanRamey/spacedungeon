@@ -14,6 +14,7 @@ Entity::Entity(sf::Vector2f position, sf::Vector2f size, Level* level)
 , animation()
 {
     this->level = level;
+    this->angle = 0;
 }
 
 Entity::Entity(float x, float y, unsigned int w, unsigned int h, Level* level)
@@ -23,6 +24,7 @@ Entity::Entity(float x, float y, unsigned int w, unsigned int h, Level* level)
 , animation()
 {
     this->level = level;
+    this->angle = 0;
 }
 
 Entity::~Entity()
