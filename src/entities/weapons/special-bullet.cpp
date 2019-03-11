@@ -4,10 +4,11 @@
 #include "othermath.h"
 #include <iostream>
 #include "level.hpp"
+#include "random-numbers.hpp"
 
 SpecialBullet::SpecialBullet(sf::Vector2f position, sf::Vector2u size, unsigned int speed, unsigned int damage, Level* level) :
 Bullet(position, size, speed, damage, sf::milliseconds(1000), level){
-    numSplits = 32;
+    numSplits = 8;
 }
 
 SpecialBullet::~SpecialBullet(){
@@ -17,8 +18,8 @@ void SpecialBullet::onDeath(){
     double degreeSplit = 360 / numSplits; // 45
     for(int i = 0; i < numSplits; i++){
         sf::Vector2f finalPosition;
-        finalPosition.x = position.x + cosf(degreesToRadians(i * degreeSplit));
-        finalPosition.y = position.y + sinf(degreesToRadians(i * degreeSplit));
+        finalPosition.x = position.x + cosf(degreesToRadians(i * (degreeSplit + Util::GetRandomNumber(-5, 5))));
+        finalPosition.y = position.y + sinf(degreesToRadians(i * (degreeSplit + Util::GetRandomNumber(-5, 5))));
         SpecialBulletShrapnel* shrapnel = new SpecialBulletShrapnel(position, finalPosition, sf::Vector2u(10, 10), 1500, 1, level); 
         shrapnel->setTexture(Resources::get(Resources::ID::SHRAPNEL));
         level->addEntity(shrapnel);

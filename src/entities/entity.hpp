@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "collision-box.hpp"
+#include "animation.hpp"
 
 class Level;
 class Entity {
@@ -17,6 +18,8 @@ class Entity {
         Level* level;
 
         sf::Sprite sprite;
+
+        Animation animation;
 
         void addEntity(Entity* entiites);
     public:
@@ -37,6 +40,9 @@ class Entity {
         virtual float calculateAngleTo(sf::Vector2f position);
         virtual void face(sf::Vector2f position);
         virtual sf::Vector2u getSize();
+        void setAnimation(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths);
+        void setState(short state);
+        void setDelay(sf::Time delay);
 
         Level* getLevel();
         sf::Vector2f getPosition();
