@@ -13,11 +13,8 @@ void SpecialBulletShrapnel::update(sf::Time frameTime, sf::RenderWindow* window)
     collisionBox.update(position.x, position.y); 
 }
 
-
-
-
 SpecialBulletShrapnel::SpecialBulletShrapnel(sf::Vector2f position, sf::Vector2f finalPosition, sf::Vector2u size, unsigned int speed, unsigned int damage, Level* level) :
-Bullet(position, finalPosition, size, speed, damage, sf::milliseconds(30), level){
+Bullet(position, finalPosition, size, speed, damage, sf::milliseconds(10), level){
     this->finalPosition = finalPosition;
 }
 

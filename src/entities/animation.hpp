@@ -18,7 +18,7 @@ class Animation {
         void update();
         void setState(short state);
         void setDelay(sf::Time delay);
-        sf::Texture* getCurrentTexture();
+        const sf::Texture* getCurrentTexture();
         Animation();
         ~Animation();
     
