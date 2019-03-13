@@ -88,22 +88,3 @@ void AlienShip::firingState() {
 void AlienShip::fire() {
 
 }
-
-// void AlienShip::draw(sf::RenderTarget &target, sf::RenderStates states) {
-//     //target.draw(sprite, states);
-//     //Entity::draw(target, states);
-
-//     states.transform *= getTransform(); // will apply all transformations on the entity to the sprite when it is drawn
-
-//     if(windowContains(target.getView(), sprite)) {
-//         target.draw(sprite, states);
-//     }
-// }
-
-// void AlienShip::setTexture(sf::Texture* texture) {
-//     if(texture == nullptr) {
-//         Log::error("Enitity::setTexture(): Texture pointer invalid. The texture probably wasn't loaded.");
-//         exit(-1);
-//     }
-//     sprite.setTexture(*texture);
-//}

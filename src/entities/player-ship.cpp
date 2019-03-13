@@ -13,13 +13,15 @@ using namespace std;
 
 PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level) 
 : Entity(x, y, w, h, texture, level, 25),
-  gun(this, 0) {
+  gun(this, 0),
+  specialGun(this, 1) {
     type = Entity::Type::PLAYER_SHIP;
 }
 
 PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level) 
 : Entity(position, size, texture, level, 25),
-  gun(this, 0) {
+  gun(this, 0),
+  specialGun(this, 1) {
       type = Entity::Type::PLAYER_SHIP;
 }
 
@@ -46,6 +48,7 @@ void PlayerShip::update(sf::Time frameTime) {
     Entity::update(frameTime);
     limitVelocity(MAX_SPEED);
     gun.update(frameTime);
+    specialGun.update(frameTime);
 }
 
 void PlayerShip::handleUserInput() {
@@ -66,10 +69,10 @@ void PlayerShip::handleUserInput() {
         teleport(getRotation());
     }
     if(Input::checkMouse(sf::Mouse::Left)){
-        if(shootTimer.getElapsedTime().asMilliseconds() > (int)SHOOT_DELAY){
-            gun.shoot();
-            shootTimer.restart();
-        }
+        firePrimary();      
+    }
+    if(Input::checkMouse(sf::Mouse::Right)){
+        fireSpecial();
     }
 }
 
@@ -86,11 +89,17 @@ void PlayerShip::teleport(float angle) {
 }
 
 void PlayerShip::firePrimary() {
-
+    if(shootTimer.getElapsedTime().asMilliseconds() > (int)SHOOT_DELAY){
+        gun.shoot();
+        shootTimer.restart();
+    }
 }
 
 void PlayerShip::fireSpecial() {
-
+    if(specialShootTimer.getElapsedTime().asMilliseconds() > (int)SPECIAL_SHOOT_DELAY) {
+        specialGun.shoot();
+        specialShootTimer.restart();
+    }
 }
 
 void PlayerShip::giveSpecialAmmo(unsigned int amount) {
@@ -99,4 +108,12 @@ void PlayerShip::giveSpecialAmmo(unsigned int amount) {
 
 void PlayerShip::giveSpecialWeapon() {
 
+}
+
+Gun* PlayerShip::getPrimaryWeapon(){
+    return &this->gun;
+}
+
+Gun* PlayerShip::getSecondaryWeapon(){
+    return &this->specialGun;
 }

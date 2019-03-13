@@ -38,16 +38,35 @@ bool Level::checkWon(){
     return false;
 }
 
+PlayerShip* Level::getPlayer(){
+    return this->playerShip;
+}
+void Level::addEntity(Entity* entity){
+    entities.push_back(entity);
+}
+
+void Level::removeEntity(Entity* entity){
+    entities.erase(std::find(entities.begin(), entities.end(), entity));
+    if(entity != nullptr){
+        delete entity;
+    }
+    entities.shrink_to_fit(); 
+}
 
 void Level::draw(sf::RenderWindow& window){
-    window.draw(backGroundSprite);
+    //window.draw(backGroundSprite);
 
     //window.draw(playerShip);
+    for(Tile* tile : tiles){
+        tile->draw(window);
+    }
     for(Entity* entity : entities){
         window.draw(*entity);
     }
+
 }
 
+<<<<<<< HEAD
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
     if(!playerIsDead) {
@@ -57,8 +76,20 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     //playerShip->update(frameTime);
     for(Tile* tile : tiles){
         tile->update(frameTime);
+=======
+void Level::update(sf::Time frameTime, sf::RenderWindow* window){
+    view.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
+    view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
+    window->setView(view);
+
+    for(Tile* tile : tiles){
+        tile->update(frameTime, window);
+>>>>>>> master
     }
+
+    playerShip->update(frameTime, window);
     for(Entity* entity : entities){
+<<<<<<< HEAD
         entity->update(frameTime);
     }
     processCollisions();
@@ -117,10 +148,15 @@ void Level::processCollisions() {
         if(typeMatches(pair, Entity::Type::PLAYER_SHIP, Entity::Type::ALIEN_SHIP)) {
             pair.entity1->damage(1); // damage player ship
             pair.entity2->destroy(); // destroy alien ship
+=======
+        if(entity != playerShip){
+            entity->update(frameTime, window);
+>>>>>>> master
         }
     }
 }
 
+<<<<<<< HEAD
 void Level::addEntity(Entity* entity) {
     if(entity == nullptr) {
         return; // not valid pointer
@@ -138,6 +174,10 @@ void Level::deleteEntity(Entity* entity) {
     }
     entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
     entities.shrink_to_fit();
+=======
+void handleCollisions() {
+
+>>>>>>> master
 }
 
 void Level::loadMap(std::string map, std::string images) {
@@ -202,12 +242,13 @@ void Level::loadMap(std::string map, std::string images) {
     for(unsigned int y = 0; y < mapSize.y; y++) {
         for(unsigned int x = 0; x < mapSize.x; x++) {
             if(mapData.at(x + y * mapSize.x) != 0) {
-                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
+                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize, this);
                 tiles.push_back(tile);
                 tiles[tiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x] - 1]);
             }
         }
     }
+<<<<<<< HEAD
 
     // Create an image of the entire map so that only 1 draw call is needed for the whole map
     sf::Image backGroundImage;
@@ -219,6 +260,8 @@ void Level::loadMap(std::string map, std::string images) {
 
     backGround.loadFromImage(backGroundImage); 
     backGroundSprite.setTexture(backGround);
+=======
+>>>>>>> master
 }
 
 void Level::loadEntites(std::string path){
@@ -242,8 +285,14 @@ void Level::loadEntites(std::string path){
             entityPosition.x = std::stoi(buffer[0]);
             entityPosition.y = std::stoi(buffer[1]);
             switch(std::stoi(buffer[2])) {
+<<<<<<< HEAD
                 case 1:
                 entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, Resources::get(Resources::ID::ALIEN_SHIP), this);
+=======
+                case Entity::ALIEN_SHIP:
+                entity = new AlienShip(std::stoi(buffer[0]), std::stoi(buffer[1]), 32, 32, this);
+                ((AlienShip*)entity)->setTexture(Resources::get(Resources::ID::ALIENSHIP));
+>>>>>>> master
             }
 
             entities.push_back(entity);

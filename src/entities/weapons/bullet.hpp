@@ -6,16 +6,14 @@
 #include "SFML/System.hpp"
 
 class Bullet : public Entity {
-
-    private:
-
     public:
-        Bullet(sf::Vector2f, sf::Vector2u, unsigned int, unsigned int, sf::Time);
-        virtual void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities);
+        Bullet(sf::Vector2f, sf::Vector2u, unsigned int, unsigned int, sf::Time, Level* level);
+        Bullet(sf::Vector2f, sf::Vector2f, sf::Vector2u, unsigned int, unsigned int, sf::Time, Level* level);
+        virtual void update(sf::Time frameTime, sf::RenderWindow* window);
         
         ~Bullet();
         bool isDead();
-        virtual void onDeath() = 0;
+        virtual void onDeath();
 
     protected:
         unsigned int initialSpeed;
@@ -28,7 +26,7 @@ class Bullet : public Entity {
 
         sf::Vector2f finalPosition;
 
-        virtual void checkCollision(Entity* entity) = 0;
+        virtual void checkCollision(Entity* entity);
     
 };
 #endif 

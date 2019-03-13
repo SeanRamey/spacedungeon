@@ -10,6 +10,8 @@
 #define PLAYER_SHIP_FILE "data/graphics/player-ship.png"
 #define ALIEN_SHIP_FILE "data/graphics/alien-ship.png"
 #define BULLET_FILE "data/graphics/bullet.png"
+#define BIG_BULLET_FILE "data/graphics/big-bullet_test.png"
+#define SHRAPNEL_FILE "data/graphics/shrapnel.png"
 
 namespace Resources {
 
@@ -19,7 +21,9 @@ namespace Resources {
     static std::string fileList[] = {
         PLAYER_SHIP_FILE,
         ALIEN_SHIP_FILE,
-        BULLET_FILE
+        BULLET_FILE,
+        BIG_BULLET_FILE,
+        SHRAPNEL_FILE
     };
 
     void load() {

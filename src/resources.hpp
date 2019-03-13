@@ -9,6 +9,8 @@ namespace Resources {
         PLAYER_SHIP,
         ALIEN_SHIP,
         BULLET,
+        SPECIALBULLET,
+        SHRAPNEL,
         NUM_RESOURCES
     };
 

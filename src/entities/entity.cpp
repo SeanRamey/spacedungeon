@@ -1,3 +1,5 @@
+#include <cfloat>
+#include "level.hpp"
 #include "entity.hpp"
 #include "othermath.h"
 #include "log.hpp"
@@ -59,9 +61,8 @@ float Entity::calculateAngleTo(sf::Vector2f otherPosition){
     temp.x = thisPosition.x - otherPosition.x;
     temp.y = thisPosition.y - otherPosition.y;
     float newAngle;
-    // TODO: Fix this!
-    if(temp.x == 0) temp.x += 0.001;
-    if(temp.y == 0) temp.y += 0.001;
+    if(temp.x == 0) temp.x += FLT_MIN;
+    if(temp.y == 0) temp.y += FLT_MIN;
     if(temp.x != 0 && temp.y != 0) {
         newAngle = radiansToDegrees(atanf((temp.y) / (temp.x)));
         if(otherPosition.x > thisPosition.x){
