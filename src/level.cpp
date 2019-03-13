@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -16,7 +17,7 @@ tileSize(tileSize) {
     loadMap(levelMapFilename, tileImagesFilename);
     Resources::load();
     loadEntites(levelDataFilename);
-    playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP));
+    playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this);
     entities.push_back(playerShip);
 
 }
@@ -40,6 +41,7 @@ bool Level::checkWon(){
 
 void Level::draw(sf::RenderWindow& window){
     window.draw(backGroundSprite);
+
     //window.draw(playerShip);
     for(Entity* entity : entities){
         window.draw(*entity);
@@ -48,22 +50,75 @@ void Level::draw(sf::RenderWindow& window){
 
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
-    view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
+    if(!playerIsDead) {
+         view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
+    }
     window.setView(view);
-
-    playerShip->update(frameTime);
+    //playerShip->update(frameTime);
     for(Tile* tile : tiles){
         tile->update(frameTime);
     }
     for(Entity* entity : entities){
-        if(entity != playerShip){
-            entity->update(frameTime);
-        }
+        entity->update(frameTime);
+    }
+    processCollisions();
+}
+
+bool typeMatches(CollisionPair& pair, Entity::Type type1, Entity::Type type2) {
+    if(pair.entity1->type == type1 && pair.entity2->type == type2) {
+        return true;
+    }
+    else if(pair.entity1->type == type2 && pair.entity2->type == type1) {
+        Entity* tempEntity = pair.entity1;
+        pair.entity1 = pair.entity2;
+        pair.entity2 = tempEntity;
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
 void Level::processCollisions() {
-    
+
+    // std::vector<CollisionPair> collisions;
+    // for(Entity* entity1 : entities) {
+    //     for(Entity* entity2 : entities) {
+    //         if(entity1 != entity2 && entity1->getCollisionRect().intersects(entity2->getCollisionRect())) {
+    //             std::cout << "Collision found!\n";
+    //             if(collisions.empty()) {
+    //                 CollisionPair collisionPair = {entity1, entity2};
+    //                 collisions.push_back(collisionPair);
+    //                 std::cout << "first collision added\n";
+    //             }
+    //             for(CollisionPair pair : collisions) {
+    //                 if((pair.entity1 == entity1 && pair.entity2 == entity2) || (pair.entity1 == entity2 && pair.entity2 == entity1)) {
+    //                     CollisionPair collisionPair = {entity1, entity2};
+    //                     collisions.push_back(collisionPair);
+    //                     std::cout << "collision added\n";
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    std::vector<CollisionPair> collisions;
+    for(int i = 0; i < entities.size(); i++){
+        for(int j = i; j < entities.size(); j++){
+            Entity* entity1 = entities.at(i);
+            Entity* entity2 = entities.at(j);
+            if(entity1 != entity2 && entity1->getCollisionRect().intersects(entity2->getCollisionRect())){
+                collisions.push_back(CollisionPair{entity1, entity2});
+            }
+        }
+    }
+
+    for(CollisionPair pair : collisions) {
+        if(typeMatches(pair, Entity::Type::PLAYER_SHIP, Entity::Type::ALIEN_SHIP)) {
+            pair.entity1->damage(1); // damage player ship
+            pair.entity2->destroy(); // destroy alien ship
+        }
+    }
 }
 
 void Level::addEntity(Entity* entity) {
@@ -74,10 +129,15 @@ void Level::addEntity(Entity* entity) {
 }
 
 void Level::deleteEntity(Entity* entity) {
+    if(entity == playerShip) {
+        playerIsDead = true;
+        playerShip = nullptr;
+    }
     if(entity != nullptr) {
         delete entity; // delete the entity before removal
     }
     entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
+    entities.shrink_to_fit();
 }
 
 void Level::loadMap(std::string map, std::string images) {
@@ -144,7 +204,7 @@ void Level::loadMap(std::string map, std::string images) {
             if(mapData.at(x + y * mapSize.x) != 0) {
                 Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
                 tiles.push_back(tile);
-                tiles[tiles.size() - 1]->setImage(tileImages[mapData[x + y * mapSize.x] - 1]);
+                tiles[tiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x] - 1]);
             }
         }
     }
@@ -153,8 +213,8 @@ void Level::loadMap(std::string map, std::string images) {
     sf::Image backGroundImage;
     backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Black);
 
-    for(Tile* tile : tiles){
-        backGroundImage.copy(tile->getTexture()->copyToImage(), tile->getPosition().x, tile->getPosition().y);
+    for(Tile* tile : tiles) {
+        backGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
     }
 
     backGround.loadFromImage(backGroundImage); 
@@ -183,7 +243,7 @@ void Level::loadEntites(std::string path){
             entityPosition.y = std::stoi(buffer[1]);
             switch(std::stoi(buffer[2])) {
                 case 1:
-                entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP));
+                entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, Resources::get(Resources::ID::ALIEN_SHIP), this);
             }
 
             entities.push_back(entity);

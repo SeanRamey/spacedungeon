@@ -8,21 +8,25 @@
 
 bool windowContains(sf::View view, sf::Sprite sprite);
 
-Entity::Entity(sf::Vector2f position, sf::Vector2f size, sf::Texture* texture, Level* level)
+Entity::Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints)
 : velocity(0,0)
 , collisionRect(position.x, position.y, size.x, size.y)
 , sprite(*texture)
-, hitpoints(1)
+, isDead(false)
+, hitPoints(hitPoints)
 , level(level) {
+    setOrigin(sf::Vector2f(size.x/2, size.y/2));
     setPosition(position);
 }
 
-Entity::Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level)
+Entity::Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints)
 : velocity(0,0)
 , collisionRect(x,y,w,h)
 , sprite(*texture)
-, hitpoints(1)
+, isDead(false)
+, hitPoints(hitPoints)
 , level(level) {
+    setOrigin(sf::Vector2f(w/2, h/2));
     setPosition(x,y);
 }
 
@@ -31,19 +35,22 @@ Entity::~Entity() {
 
 void Entity::update(sf::Time frameTime) {
     move(velocity * frameTime.asSeconds());
+    collisionRect.left = getPosition().x;
+    collisionRect.top = getPosition().y;
 }
 
-void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) {
+void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform(); // will apply all transformations on the entity to the sprite when it is drawn
 
-    if(windowContains(target.getView(), sprite)) {
+
+    //if(windowContains(target.getView(), sprite)) {
         target.draw(sprite, states);
-    }
+    //}
 
 }
 
 void Entity::face(sf::Vector2f position){
-    rotate(calculateAngleTo(position) - 90); // minus 90 degrees because SFML assumes a different direction is 0
+    setRotation(calculateAngleTo(position) - 90); // minus 90 degrees because SFML assumes a different direction is 0
 }
 
 float Entity::calculateAngleTo(sf::Vector2f otherPosition){
@@ -52,7 +59,7 @@ float Entity::calculateAngleTo(sf::Vector2f otherPosition){
     temp.x = thisPosition.x - otherPosition.x;
     temp.y = thisPosition.y - otherPosition.y;
     float newAngle;
-    #warning "This needs to be fixed"
+    // TODO: Fix this!
     if(temp.x == 0) temp.x += 0.001;
     if(temp.y == 0) temp.y += 0.001;
     if(temp.x != 0 && temp.y != 0) {
@@ -102,11 +109,46 @@ sf::FloatRect Entity::getCollisionRect() {
     return collisionRect;
 }
 
-bool windowContains(sf::View view, sf::Sprite sprite){
+bool Entity::windowContains(sf::View view, sf::Sprite sprite) const {
     if(sprite.getPosition().x > -100 + view.getCenter().x - view.getSize().x / 2 && sprite.getPosition().x < 100 + view.getCenter().x + view.getSize().x / 2 &&
        sprite.getPosition().y > -100 + view.getCenter().y - view.getSize().y / 2 && sprite.getPosition().y < 100 + view.getCenter().y + view.getSize().y / 2){
         return true;
     }
         
     return false;
+}
+
+unsigned int Entity::getHitpoints() {
+    return hitPoints;
+}
+
+void Entity::repair(unsigned int hitPoints) {
+    if(this->hitPoints - hitPoints >= 0) {
+        this->hitPoints -= hitPoints;
+    }
+}
+
+void Entity::damage(unsigned int hitPoints) {
+    if(this->hitPoints - hitPoints <= 0) {
+        this->hitPoints = 0;
+        destroy();
+    }
+    else if(this->hitPoints - hitPoints > 0) {
+        this->hitPoints -= hitPoints;
+    }
+}
+
+void Entity::setHitpoints(unsigned int hitPoints) {
+    this->hitPoints = hitPoints;
+}
+
+void Entity::destroy() {
+    hitPoints = 0;
+    isDead = true;
+    std::cout << "Entity " << this << " has been destroyed\n";
+    level->deleteEntity(this);
+}
+
+bool Entity::isDestroyed() {
+    return isDead;
 }

@@ -50,7 +50,7 @@ void Game::run()
         window.clear(sf::Color::Black);
 
         // Draw graphics to buffer
-        level.draw(&window);
+        level.draw(window);
 
         // Display buffer
         window.display();

@@ -3,13 +3,14 @@
 #include <iostream>
 #include <algorithm>
 
-AlienShip::AlienShip(sf::Vector2f position, sf::Vector2f size, sf::Texture* texture)
-: Entity(position, size, texture) {
+AlienShip::AlienShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level)
+: Entity(position, size, texture, level) {
+    type = Entity::Type::ALIEN_SHIP;
 }
 
-AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture)
-: Entity(x,y,w,h,texture) {
-    //type = Entity::types::ALIEN_SHIP;
+AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level)
+: Entity(x, y, w, h, texture, level) {
+    type = Entity::Type::ALIEN_SHIP;
 }
 
 AlienShip::~AlienShip() {
@@ -87,6 +88,17 @@ void AlienShip::firingState() {
 void AlienShip::fire() {
 
 }
+
+// void AlienShip::draw(sf::RenderTarget &target, sf::RenderStates states) {
+//     //target.draw(sprite, states);
+//     //Entity::draw(target, states);
+
+//     states.transform *= getTransform(); // will apply all transformations on the entity to the sprite when it is drawn
+
+//     if(windowContains(target.getView(), sprite)) {
+//         target.draw(sprite, states);
+//     }
+// }
 
 // void AlienShip::setTexture(sf::Texture* texture) {
 //     if(texture == nullptr) {

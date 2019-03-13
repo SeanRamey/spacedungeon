@@ -2,6 +2,7 @@
 build/*.d
 build/*.o
 build/*.exe
+bin/
 include/
 lib/
 *.o

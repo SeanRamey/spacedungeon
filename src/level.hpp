@@ -8,8 +8,13 @@
 #include "tile.hpp"
 #include "alien-ship.hpp"
 
+struct CollisionPair {
+    Entity *entity1;
+    Entity *entity2;
+};
 
-class Level{
+
+class Level {
     private:
 
         std::vector<Entity*> entities;
@@ -29,7 +34,6 @@ class Level{
         bool playerIsDead;
 
     public:
-        //virtual void updateView() = 0;
         void processCollisions();
         bool checkWon();
         void loadEntites(std::string);
@@ -38,6 +42,7 @@ class Level{
         void deleteEntity(Entity* entity);
         void update(sf::Time frameTime, sf::RenderWindow& window);
         void draw(sf::RenderWindow& window);
+        sf::View getView() {return view;};
         Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize = 32);
         ~Level();
 };

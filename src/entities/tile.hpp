@@ -6,14 +6,20 @@
 #include <vector>
 #include "entity.hpp"
 
-class Tile : public Entity {
+class Tile {
     public:
-        void setImage(sf::Texture* image);
-        void checkCollision(Entity* entity);
-        void update(sf::Time frameTime, sf::RenderWindow* window, std::vector<Entity*> entities);
-        const sf::Texture* getTexture();    
+        void setTexture(sf::Texture* image);
+        void update(sf::Time frameTime);
+        const sf::Texture* getTexture();
 
-        Tile(unsigned int, unsigned int, unsigned int, unsigned int);
+        Tile(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
+        Tile(sf::Vector2f position, sf::Vector2u size);
         ~Tile();
+
+        sf::Vector2u position;
+        sf::Vector2u size;
+
+    private:
+        sf::Sprite sprite;
 };
 #endif
