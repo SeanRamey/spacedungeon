@@ -60,7 +60,7 @@ class PlayerShip : public Entity {
         const unsigned int MAX_SPEED = 1000; // MAX_SPEED MUST BE LARGER THAN ACCELERATION
         const unsigned int ACCELERATION = 100;
         const unsigned int BLINK_DELAY = 750; // in milliseconds
-        const unsigned int SHOOT_DELAY = 200;
+        const unsigned int SHOOT_DELAY = 100;
         const unsigned int SPECIAL_SHOOT_DELAY = 1000;
         const unsigned int BLINK_DISTANCE = 200;
         const unsigned int MAX_SHIELD_LEVEL = 5;

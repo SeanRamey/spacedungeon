@@ -23,6 +23,7 @@ PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* 
   gun(this, 0U), 
   specialGun(this, 1U) {
     setTexture(Resources::get(Resources::ID::PLAYERSHIP));
+
 }
 
 PlayerShip::~PlayerShip() {

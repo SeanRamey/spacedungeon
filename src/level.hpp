@@ -7,6 +7,7 @@
 #include "player-ship.hpp"
 #include "tile.hpp"
 #include "alien-ship.hpp"
+#include "UI-text-element.hpp"
 
 class Level{
     private:
@@ -24,6 +25,9 @@ class Level{
 
         bool hasWon;
         bool playerIsDead;
+
+        // healthbar
+        UITextElement healthBar;
 
     public:
         //virtual void updateView() = 0;

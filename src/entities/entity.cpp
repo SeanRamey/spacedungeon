@@ -13,6 +13,7 @@ Entity::Entity(sf::Vector2f position, sf::Vector2f size, Level* level)
 , collisionBox(position.x, position.y, size.x, size.y)
 , animation()
 {
+    sprite.setOrigin(size.x / 2, size.y / 2);
     this->level = level;
     this->angle = 0;
 }
@@ -23,6 +24,7 @@ Entity::Entity(float x, float y, unsigned int w, unsigned int h, Level* level)
 , collisionBox(x, y, w, h)
 , animation()
 {
+    sprite.setOrigin(size.x / 2, size.y / 2);
     this->level = level;
     this->angle = 0;
 }
@@ -41,21 +43,16 @@ bool windowContains(sf::View view, sf::Sprite sprite){
 }
 
 void Entity::draw(sf::RenderWindow* window) { 
-    animation.update();
     if(animation.getCurrentTexture() != nullptr){
+        animation.update();
         sprite.setTexture(*animation.getCurrentTexture());
     }
         
-    sprite.setOrigin(size.x / 2, size.y / 2);
     sprite.setPosition(position.x, position.y);
     sprite.setRotation(angle);
-    if(windowContains(window->getView(), sprite)){
+    //if(windowContains(window->getView(), sprite)){
         window->draw(sprite);
-    } else {
-    }
-    // sf::RectangleShape shape = sf::RectangleShape(sf::Vector2f(this->collisionBox.w, this->collisionBox.h));
-    // shape.setPosition(this->collisionBox.x, this->collisionBox.y);
-    // window->draw(shape);
+    //}
 }
 
 void Entity::face(sf::Vector2f position){
@@ -151,13 +148,14 @@ void Entity::setTexture(sf::Texture* texture) {
     sprite.setTexture(*texture);
 }
 
+sf::Vector2u Entity::getSize() {
+    return size;
+}
+
 void Entity::setAnimation(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths){
     animation.init(image, spriteSize, stateLengths);
 }
 
-sf::Vector2u Entity::getSize() {
-    return size;
-}
 
 void Entity::setState(short state){
     animation.setState(state);

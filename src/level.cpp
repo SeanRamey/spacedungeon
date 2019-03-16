@@ -11,13 +11,13 @@
 
 Level::Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize) :
 playerShip(nullptr),
-tileSize(tileSize) {
+tileSize(tileSize) ,
+healthBar(sf::Vector2i(100, 100), "data/graphics/arial.ttf", ""){
     loadMap(levelMapFilename, tileImagesFilename);
     Resources::load();
     loadEntites(levelDataFilename);
     playerShip = new PlayerShip(50, 50, 32, 32, this);
     entities.push_back(playerShip);
-
 }
 
 Level::~Level(){
@@ -58,16 +58,16 @@ void Level::draw(sf::RenderWindow* window){
     for(Entity* entity : entities){
         entity->draw(window);
     }
-
+    playerShip->draw(window);
+    window->draw(healthBar);
 }
 
 void Level::update(sf::Time frameTime, sf::RenderWindow* window){
     view.setSize(sf::Vector2f(window->getSize().x, window->getSize().y));
-    view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
+    view.setCenter(floor(playerShip->getPosition().x), floor(playerShip->getPosition().y));
     window->setView(view);
-
     for(Tile* tile : tiles){
-        tile->update(frameTime, window);
+       tile->update(frameTime, window);
     }
 
     playerShip->update(frameTime, window);
@@ -76,6 +76,12 @@ void Level::update(sf::Time frameTime, sf::RenderWindow* window){
             entity->update(frameTime, window);
         }
     }
+    
+
+    /* TODO: make sure to add player health as opposed to entities.size()
+    for after merge with collisions where health was added */
+    healthBar.setPosition(sf::Vector2i(floor(view.getCenter().x - view.getSize().x / 2), floor(view.getCenter().y - view.getSize().y / 2)));
+    healthBar.setText(std::to_string(entities.size()));
 }
 
 void handleCollisions() {
@@ -124,7 +130,7 @@ void Level::loadMap(std::string map, std::string images) {
     // Load the tileset source image
     sf::Image tilesetImage;
     if(!tilesetImage.loadFromFile(images)){
-       Log::error("big boy error, couldn't load tile map");
+       Log::error("failed to load tile map image: " + images);
     }
 
     // Store how many tiles are in the tileset
