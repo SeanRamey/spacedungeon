@@ -2,12 +2,11 @@
 #include "math.h"
 #include <iostream>
 
-     
 void Animation::init(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths){
     timer.restart();
     this->stateLengths = stateLengths;
     sf::Vector2u imageSize = image.getSize();
-    sf::Vector2u spriteCount = sf::Vector2u(imageSize.x / spriteSize.x, imageSize.y / spriteSize.y);
+    sf::Vector2u spriteCount = sf::Vector2u(imageSize.x / spriteSize.x, imageSize.y / spriteSize.y); // TODO: Fix Arithmetic error
     int currentFramePosition = 0; 
     int currentState = 0;
     sf::Vector2i currentPosition;
@@ -53,9 +52,14 @@ void Animation::setDelay(sf::Time delay){
     this->delay = delay;
 }
 
-Animation::Animation(){
+Animation::Animation(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths){
     this->currentState = 0;
     this->currentFrame = 0;
+    init(image, spriteSize, stateLengths);
+}
+
+Animation::Animation(){
+    
 }
 
 Animation::~Animation(){

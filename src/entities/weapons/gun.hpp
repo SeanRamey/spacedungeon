@@ -4,33 +4,29 @@
 #include "basic-bullet.hpp"
 #include "special-bullet.hpp"
 #include <vector>
-#include <future>
 
 class Gun {
-    private:
-        Entity* parent;
-        std::vector<Bullet*> bullets;
-        unsigned int type;
 
-        sf::Vector2u basicBulletSize;
-        unsigned int basicBulletSpeed; 
-        unsigned int basicBulletDamage;
+    public:
+        enum Type{
+            BASIC_GUN,
+            BIG_GUN,
+            NUM_GUNS
+        };
 
-        sf::Vector2u specialBulletSize;
-        unsigned int specialBulletSpeed;
-        unsigned int specialBulletDamage;
-
-        std::vector<int> specialBulletStateLengths = {3};
-        std::vector<int> basicBulletStateLengths = {4};
-
-    public: 
-        Gun(Entity*, unsigned int);
+    public:
+        Gun(Entity* owner, Type gunType);
         ~Gun();
 
-        std::vector<Bullet*>* getBullets();
-        void update(sf::Time frameTime, sf::RenderWindow* window);
-        void draw(sf::RenderWindow* window);
-        void shoot();
-        void setType(unsigned int type);
+        void shoot(sf::Vector2f targetPosition);
+        void setType(Type gunType);
+
+    private:
+        Entity* owner;
+        Type gunType;
+
+        // TODO: Clean this out
+        std::vector<int> specialBulletStateLengths = {3};
+        std::vector<int> basicBulletStateLengths = {4};
 };
 #endif

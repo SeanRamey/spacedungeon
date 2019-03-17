@@ -13,23 +13,19 @@ using namespace std;
 
 PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level) 
 : Entity(x, y, w, h, texture, level, 25),
-  gun(this, 0),
-  specialGun(this, 1) {
+  gun(this, Gun::Type::BASIC_GUN),
+  specialGun(this, Gun::Type::BIG_GUN) {
     type = Entity::Type::PLAYER_SHIP;
 }
 
 PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level) 
 : Entity(position, size, texture, level, 25),
-  gun(this, 0),
-  specialGun(this, 1) {
+  gun(this, Gun::Type::BASIC_GUN),
+  specialGun(this, Gun::Type::BIG_GUN) {
       type = Entity::Type::PLAYER_SHIP;
 }
 
 PlayerShip::~PlayerShip() {
-
-}
-
-void PlayerShip::checkCollision(Entity* entity){
 
 }
 
@@ -47,8 +43,6 @@ void PlayerShip::update(sf::Time frameTime) {
     }
     Entity::update(frameTime);
     limitVelocity(MAX_SPEED);
-    gun.update(frameTime);
-    specialGun.update(frameTime);
 }
 
 void PlayerShip::handleUserInput() {
@@ -90,14 +84,16 @@ void PlayerShip::teleport(float angle) {
 
 void PlayerShip::firePrimary() {
     if(shootTimer.getElapsedTime().asMilliseconds() > (int)SHOOT_DELAY){
-        gun.shoot();
+        sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
+        gun.shoot(mousePosition);
         shootTimer.restart();
     }
 }
 
 void PlayerShip::fireSpecial() {
     if(specialShootTimer.getElapsedTime().asMilliseconds() > (int)SPECIAL_SHOOT_DELAY) {
-        specialGun.shoot();
+        sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
+        specialGun.shoot(mousePosition);
         specialShootTimer.restart();
     }
 }

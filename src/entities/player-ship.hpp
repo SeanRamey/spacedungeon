@@ -17,30 +17,16 @@
 class PlayerShip : public Entity {
     public:
         PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level);
-<<<<<<< HEAD
         PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level);
         ~PlayerShip();
 
         void update(sf::Time frameTime);
-=======
-        PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* level);
-        ~PlayerShip();
-
-        void update(sf::Time frameTime, sf::RenderWindow* window);
->>>>>>> master
         void handleUserInput();
         void teleport(float angle);
         void firePrimary();
         void fireSpecial();
-<<<<<<< HEAD
-=======
-
-        void damage(unsigned int amount);
-        void repair(unsigned int amount);
->>>>>>> master
         void giveSpecialAmmo(unsigned int amount);
         void giveSpecialWeapon();
-        void checkCollision(Entity* entity);
 
         Gun* getPrimaryWeapon();
         Gun* getSecondaryWeapon();

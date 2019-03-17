@@ -7,26 +7,22 @@
 
 class Bullet : public Entity {
     public:
-        Bullet(sf::Vector2f, sf::Vector2u, unsigned int, unsigned int, sf::Time, Level* level);
-        Bullet(sf::Vector2f, sf::Vector2f, sf::Vector2u, unsigned int, unsigned int, sf::Time, Level* level);
-        virtual void update(sf::Time frameTime, sf::RenderWindow* window);
-        
-        ~Bullet();
-        bool isDead();
-        virtual void onDeath();
+        Bullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, sf::Vector2u size, unsigned int initialSpeed, unsigned int damage, Level* level, sf::Time maxTimeAlive = sf::seconds(3));
+        virtual ~Bullet();
+        virtual void update(sf::Time frameTime);
+        unsigned int getDamage();
 
     protected:
+        Entity* owner;
         unsigned int initialSpeed;
         unsigned int damage;
-
-        bool dead;
 
         sf::Clock timeAlive;
         sf::Time maxTimeAlive;
 
-        sf::Vector2f finalPosition;
+        sf::Vector2f targetPosition;
 
-        virtual void checkCollision(Entity* entity);
+    private:
     
 };
 #endif 

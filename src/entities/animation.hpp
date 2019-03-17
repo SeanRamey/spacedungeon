@@ -3,10 +3,12 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <vector>
+
+// TODO: Animation needs a rewrite
 class Animation {
     private:
-        short currentFrame;
-        short currentState;
+        unsigned int currentFrame;
+        unsigned int currentState;
         sf::Time delay;
         sf::Clock timer;
 
@@ -19,6 +21,7 @@ class Animation {
         void setState(short state);
         void setDelay(sf::Time delay);
         const sf::Texture* getCurrentTexture();
+        Animation(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths);
         Animation();
         ~Animation();
     

@@ -13,10 +13,13 @@ bool windowContains(sf::View view, sf::Sprite sprite);
 Entity::Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints)
 : velocity(0,0)
 , collisionRect(position.x, position.y, size.x, size.y)
-, sprite(*texture)
+, sprite()
 , isDead(false)
 , hitPoints(hitPoints)
 , level(level) {
+    if(texture != nullptr) {
+        sprite.setTexture(*texture);
+    }
     setOrigin(sf::Vector2f(size.x/2, size.y/2));
     setPosition(position);
 }
@@ -24,10 +27,13 @@ Entity::Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, L
 Entity::Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints)
 : velocity(0,0)
 , collisionRect(x,y,w,h)
-, sprite(*texture)
+, sprite()
 , isDead(false)
 , hitPoints(hitPoints)
 , level(level) {
+    if(texture != nullptr) {
+        sprite.setTexture(*texture);
+    }
     setOrigin(sf::Vector2f(w/2, h/2));
     setPosition(x,y);
 }
@@ -39,6 +45,10 @@ void Entity::update(sf::Time frameTime) {
     move(velocity * frameTime.asSeconds());
     collisionRect.left = getPosition().x;
     collisionRect.top = getPosition().y;
+    if(animation.getCurrentTexture() != nullptr){
+        animation.update();
+        sprite.setTexture(*animation.getCurrentTexture());
+    }
 }
 
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -106,6 +116,10 @@ sf::Vector2u Entity::getSize() {
     return sf::Vector2u(rect.width, rect.height);
 }
 
+Level* Entity::getLevel() {
+    return level;
+}
+
 sf::FloatRect Entity::getCollisionRect() {
     return collisionRect;
 }
@@ -119,8 +133,24 @@ bool Entity::windowContains(sf::View view, sf::Sprite sprite) const {
     return false;
 }
 
+void Entity::setAnimation(Animation newAnimation){
+    animation = newAnimation;
+}
+
+void Entity::setState(short state){
+    animation.setState(state);
+}
+
+void Entity::setDelay(sf::Time delay){
+    animation.setDelay(delay);
+}
+
 unsigned int Entity::getHitpoints() {
     return hitPoints;
+}
+
+void Entity::setTexture(sf::Texture* texture) {
+    sprite.setTexture(*texture);
 }
 
 void Entity::repair(unsigned int hitPoints) {
@@ -146,8 +176,6 @@ void Entity::setHitpoints(unsigned int hitPoints) {
 void Entity::destroy() {
     hitPoints = 0;
     isDead = true;
-    std::cout << "Entity " << this << " has been destroyed\n";
-    level->deleteEntity(this);
 }
 
 bool Entity::isDestroyed() {
