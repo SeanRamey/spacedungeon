@@ -24,9 +24,5 @@ class Gun {
     private:
         Entity* owner;
         Type gunType;
-
-        // TODO: Clean this out
-        std::vector<int> specialBulletStateLengths = {3};
-        std::vector<int> basicBulletStateLengths = {4};
 };
 #endif

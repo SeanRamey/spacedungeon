@@ -19,8 +19,6 @@ class Entity : public sf::Transformable, public sf::Drawable {
         virtual void update(sf::Time frameTime);
         Level* getLevel();
         void setAnimation(Animation newAnimation);
-        void setState(short state);
-        void setDelay(sf::Time delay);
         void setTexture(sf::Texture* texture);
         sf::Vector2f getVelocity();
         void setVelocity(sf::Vector2f vector);

@@ -45,10 +45,11 @@ void Entity::update(sf::Time frameTime) {
     move(velocity * frameTime.asSeconds());
     collisionRect.left = getPosition().x;
     collisionRect.top = getPosition().y;
-    if(animation.getCurrentTexture() != nullptr){
-        animation.update();
-        sprite.setTexture(*animation.getCurrentTexture());
+    if(animation.getTexture() != nullptr) {
+        animation.update(frameTime);
+        sprite.setTextureRect(animation.getCurrentCellRect());
     }
+    
 }
 
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -135,14 +136,8 @@ bool Entity::windowContains(sf::View view, sf::Sprite sprite) const {
 
 void Entity::setAnimation(Animation newAnimation){
     animation = newAnimation;
-}
-
-void Entity::setState(short state){
-    animation.setState(state);
-}
-
-void Entity::setDelay(sf::Time delay){
-    animation.setDelay(delay);
+    sprite.setTexture(*animation.getTexture());
+    sprite.setTextureRect(animation.getCurrentCellRect());
 }
 
 unsigned int Entity::getHitpoints() {

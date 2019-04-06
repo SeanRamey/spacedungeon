@@ -21,31 +21,17 @@ void Gun::shoot(sf::Vector2f targetPosition){
     switch(gunType){
         case BASIC_GUN:
             {
-                // TODO: Fix animations
                 BasicBullet* bullet = new BasicBullet(owner->getPosition(), targetPosition, owner, owner->getLevel());
-                //Bullet* bullet = new Bullet(owner->getPosition(), targetPosition, owner, sf::Vector2u(8,16), 1000, 1, owner->getLevel());
-                // sf::Image image;
-                // if(!image.loadFromFile("data/graphics/bullet_test.png")){
-                //     Log::error("failed to load normal bullet texture");
-                // }
-                // Animation basicBulletAnimation = Animation(image, sf::Vector2u(8,16), basicBulletStateLengths);
-                // bullet->setAnimation(basicBulletAnimation);
-                // bullet->setDelay(sf::milliseconds(50));
-                // bullet->setState(0);
+                Animation basicBulletAnimation = Animation(Resources::get(Resources::ID::BULLET), 30, sf::Vector2u(8,16));
+                bullet->setAnimation(basicBulletAnimation);
                 owner->getLevel()->addEntity(bullet);
                 break;
             }
         case BIG_GUN:
             {
                 SpecialBullet* specialBullet = new SpecialBullet(owner->getPosition(), targetPosition, owner, owner->getLevel());
-                // sf::Image image;
-                // if(!image.loadFromFile("data/graphics/big-bullet_test.png")){
-                //     Log::error("failed to load special bullet texture");     
-                // }
-                // Animation specialBulletAnimation = Animation(image, sf::Vector2u(32,32), specialBulletStateLengths);
-                // specialBullet->setAnimation(specialBulletAnimation);
-                // specialBullet->setDelay(sf::milliseconds(100));
-                // specialBullet->setState(0);
+                Animation specialBulletAnimation = Animation(Resources::get(Resources::ID::SPECIALBULLET), 15, sf::Vector2u(32,32));
+                specialBullet->setAnimation(specialBulletAnimation);
                 owner->getLevel()->addEntity(specialBullet);
                 break;
         }

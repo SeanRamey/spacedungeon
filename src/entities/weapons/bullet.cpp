@@ -8,7 +8,7 @@
 #include "othermath.h"
 
 Bullet::Bullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, sf::Vector2u size, unsigned int initialSpeed, unsigned int damage, Level* level, sf::Time maxTimeAlive) :
-Entity(position, size, Resources::get(Resources::ID::BULLET), level){
+Entity(position, size, nullptr, level){
     this->type = Entity::Type::BULLET;
     this->initialSpeed = initialSpeed;
     this->maxTimeAlive = maxTimeAlive;
@@ -26,7 +26,6 @@ void Bullet::update(sf::Time frameTime){
     if(timeAlive.getElapsedTime().asMilliseconds() > maxTimeAlive.asMilliseconds()){
         destroy();
     }
-    std::cout << getPosition().x << ", " << getPosition().y << std::endl;
     Entity::update(frameTime);
 }
 

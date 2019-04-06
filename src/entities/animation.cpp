@@ -2,66 +2,110 @@
 #include "math.h"
 #include <iostream>
 
-void Animation::init(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths){
-    timer.restart();
-    this->stateLengths = stateLengths;
-    sf::Vector2u imageSize = image.getSize();
-    sf::Vector2u spriteCount = sf::Vector2u(imageSize.x / spriteSize.x, imageSize.y / spriteSize.y); // TODO: Fix Arithmetic error
-    int currentFramePosition = 0; 
-    int currentState = 0;
-    sf::Vector2i currentPosition;
-    textures.push_back(std::vector<sf::Texture>());
-    for(int i = 0; i < spriteCount.x; i++){
-        for(int j = 0; j < spriteCount.y; j++){
-            currentFramePosition++;
-            if(currentFramePosition > stateLengths[currentState]){
-                textures.push_back(std::vector<sf::Texture>());
-                currentFramePosition = 0;
-                currentState++;
+
+
+Animation::Animation(sf::Texture* sourceTexture, unsigned int cellsPerSecond, sf::Vector2u cellSize, bool repeating) 
+: numCells(0,0)
+, cellSize(cellSize)
+, sourceTexture(sourceTexture)
+, repeating(repeating)
+, finished(false)
+, paused(false)
+, currentCell(0)
+{
+    timePerCell = sf::seconds(1.0/cellsPerSecond);
+    timeBeforeNextCell = timePerCell;
+    numCells.x = sourceTexture->getSize().x / cellSize.x;
+    numCells.y = sourceTexture->getSize().y / cellSize.y;
+}
+
+Animation::Animation() 
+: numCells(0,0)
+, cellSize(0,0)
+, sourceTexture(nullptr)
+, timePerCell(sf::Time::Zero)
+, timeBeforeNextCell(sf::Time::Zero)
+, repeating(false)
+, finished(true)
+, paused(true)
+, currentCell(0) {
+
+}
+
+Animation::~Animation() {
+
+}
+
+void Animation::update(sf::Time frameTime) {
+    if(!paused) {
+        if(finished) {
+            if(repeating) {
+                restart();
             }
-
-            currentPosition = sf::Vector2i(spriteSize.x * (i % spriteCount.x), spriteSize.y * (floor(j / spriteCount.y)));
-            sf::Texture texture;
-            texture.loadFromImage(image, sf::IntRect(currentPosition.x, currentPosition.y, spriteSize.x, spriteSize.y));
-
-            textures.at(currentState).push_back(texture);
-        } 
-    }
-}
-
-const sf::Texture* Animation::getCurrentTexture(){
-    if(textures.empty()) return nullptr;
-    return &textures.at(currentState).at(currentFrame);
-}
-
-void Animation::update(){
-    if(timer.getElapsedTime().asMilliseconds() > delay.asMilliseconds() && !stateLengths.empty()){
-        timer.restart();
-        currentFrame++;
-        if(currentFrame > stateLengths[currentState] - 1){
-            currentFrame = 0;
+        } else {
+            if(timeBeforeNextCell <= sf::Time::Zero) {
+                // Make sure to not go past the number of cells
+                if(currentCell + 1 < numCells.x * numCells.y) {
+                    ++currentCell;
+                } else {
+                    finished = true;
+                }
+                timeBeforeNextCell += timePerCell; // += to make sure extra time carries over
+            } else {
+                timeBeforeNextCell -= frameTime;
+            }
         }
     }
 }
 
-void Animation::setState(short state){
-    currentState = state;
+sf::IntRect Animation::getCurrentCellRect() {
+    sf::IntRect textureRect;
+
+    // get x,y coordinates of current cell
+    unsigned int cellX;
+    unsigned int cellY;
+    cellX = currentCell % numCells.x;
+    if(currentCell - cellX > 0) {
+        cellY = (currentCell - cellX) / numCells.x;
+    } else {
+        cellY = 0;
+    }
+
+    textureRect.left = cellX * cellSize.x;
+    textureRect.top = cellY * cellSize.y;
+    textureRect.width = cellSize.x;
+    textureRect.height = cellSize.y;
+
+    return textureRect;
+
 }
 
-void Animation::setDelay(sf::Time delay){
-    this->delay = delay;
+sf::Texture* Animation::getTexture() {
+    return sourceTexture;
 }
 
-Animation::Animation(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths){
-    this->currentState = 0;
-    this->currentFrame = 0;
-    init(image, spriteSize, stateLengths);
+void Animation::restart() {
+    currentCell = 0;
+    timeBeforeNextCell = timePerCell;
+    finished = false;
 }
 
-Animation::Animation(){
-    
+void Animation::pause() {
+    paused = true;
 }
 
-Animation::~Animation(){
+void Animation::unpause() {
+    paused = false;
+}
 
+bool Animation::isFinished() {
+    return finished;
+}
+
+bool Animation::isRepeating() {
+    return repeating;
+}
+
+bool Animation::isPaused() {
+    return paused;
 }

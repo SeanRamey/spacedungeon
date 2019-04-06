@@ -5,7 +5,7 @@
 #include <cmath>
 
 SpecialBulletSplit::SpecialBulletSplit(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, Level* level) :
-Bullet(position, targetPosition, owner, SIZE, SPEED, DAMAGE, level, sf::milliseconds(10)){
+Bullet(position, targetPosition, owner, sf::Vector2u(10,10), 1500, 1, level, sf::milliseconds(10)){
     accelerate(sf::Vector2f(this->initialSpeed * cosf(degreesToRadians(getRotation() - 90)), this->initialSpeed * sinf(degreesToRadians(getRotation() - 90))));
 }
 

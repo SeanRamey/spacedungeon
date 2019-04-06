@@ -7,7 +7,7 @@
 #include "random-numbers.hpp"
 
 SpecialBullet::SpecialBullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, Level* level) :
-Bullet(position, targetPosition, owner, SIZE, SPEED, DAMAGE, level, sf::seconds(1)){
+Bullet(position, targetPosition, owner, sf::Vector2u(32,32), 200, 2, level, sf::seconds(1)){
     numSplits = 8;
     accelerate(sf::Vector2f(this->initialSpeed * cosf(degreesToRadians(getRotation() - 90)), this->initialSpeed * sinf(degreesToRadians(getRotation() - 90))));
 }
@@ -29,5 +29,8 @@ void SpecialBullet::destroy(){
 }
 
 void SpecialBullet::update(sf::Time frameTime){ 
-    Bullet::update(frameTime);
+    if(timeAlive.getElapsedTime().asMilliseconds() > maxTimeAlive.asMilliseconds() || getPosition() == targetPosition){
+        destroy();
+    }
+    Entity::update(frameTime);
 }
