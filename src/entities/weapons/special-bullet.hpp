@@ -7,18 +7,16 @@
 
 class SpecialBullet : public Bullet {
     public:
-        SpecialBullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, Level* level);
+        SpecialBullet(sf::Vector2f position, sf::Vector2u size, unsigned int speed, unsigned int damage, Level* level);
         ~SpecialBullet();
-        void update(sf::Time frameTime);
-        void destroy();
+        void onDeath();
+        void update(sf::Time frameTime, sf::RenderWindow* window);
 
     private:
-        const unsigned int SPEED = 500;
-        const sf::Vector2u SIZE = sf::Vector2u(32,32);
-        const unsigned int DAMAGE = 2;
+        void checkCollision(Entity* entity);
 
-        unsigned int numSplits;
-        std::vector<SpecialBulletSplit> splitoffs;
+        short numSplits;
+        std::vector<SpecialBulletShrapnel> splitoffs;
 };
 
 #endif

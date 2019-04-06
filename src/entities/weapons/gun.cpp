@@ -3,41 +3,80 @@
 #include <iostream>
 
 #include "resources.hpp"
+#include <future>
 #include "log.hpp"
 
 using namespace Resources;
 using namespace Input;
 
-Gun::Gun(Entity* owner, Gun::Type gunType){
-    this->owner = owner;
-    this->gunType = gunType;
+void Gun::update(sf::Time frameTime, sf::RenderWindow* window){
+    for(int i = 0; i < bullets.size(); i++){
+        if(bullets[i]->isDead()){
+            bullets[i]->onDeath();
+            parent->getLevel()->removeEntity(bullets[i]);
+            bullets.erase(std::find(bullets.begin(), bullets.end(), bullets[i])); 
+            bullets.shrink_to_fit();
+        }
+    }
 }
 
-Gun::~Gun(){
-
-}
-
-void Gun::shoot(sf::Vector2f targetPosition){
-    switch(gunType){
-        case BASIC_GUN:
+void Gun::shoot(){
+    switch(type){
+        case 0:
             {
-                BasicBullet* bullet = new BasicBullet(owner->getPosition(), targetPosition, owner, owner->getLevel());
-                Animation basicBulletAnimation = Animation(Resources::get(Resources::ID::BULLET), 30, sf::Vector2u(8,16));
-                bullet->setAnimation(basicBulletAnimation);
-                owner->getLevel()->addEntity(bullet);
+                BasicBullet* bullet = new BasicBullet(parent->getPosition(), basicBulletSize, basicBulletSpeed, basicBulletDamage, parent->getLevel());
+                sf::Image image;
+                if(!image.loadFromFile("data/graphics/bullet_test.png")){
+                    Log::error("failed to load normal bullet texture");
+                }
+                bullet->setAnimation(image, basicBulletSize, basicBulletStateLengths);
+                bullet->setDelay(sf::milliseconds(50));
+                bullet->setState(0);
+                parent->getLevel()->addEntity(bullet);
+                bullets.push_back(bullet);
                 break;
             }
-        case BIG_GUN:
+        case 1:
             {
-                SpecialBullet* specialBullet = new SpecialBullet(owner->getPosition(), targetPosition, owner, owner->getLevel());
-                Animation specialBulletAnimation = Animation(Resources::get(Resources::ID::SPECIALBULLET), 15, sf::Vector2u(32,32));
-                specialBullet->setAnimation(specialBulletAnimation);
-                owner->getLevel()->addEntity(specialBullet);
+                SpecialBullet* specialBullet = new SpecialBullet(parent->getPosition(), specialBulletSize, specialBulletSpeed, specialBulletDamage, parent->getLevel());
+                sf::Image image;
+                if(!image.loadFromFile("data/graphics/big-bullet_test.png")){
+                    Log::error("failed to load special bullet texture");     
+                }
+                specialBullet->setAnimation(image, specialBulletSize, specialBulletStateLengths);
+                specialBullet->setDelay(sf::milliseconds(100));
+                specialBullet->setState(0);
+                parent->getLevel()->addEntity(specialBullet);
+                bullets.push_back(specialBullet);
                 break;
         }
     }
 }
 
-void Gun::setType(Gun::Type gunType){
-    this->gunType = gunType;
+void Gun::draw(sf::RenderWindow* window){
+
+}
+
+void Gun::setType(unsigned int type){
+    this->type = type;
+}
+
+Gun::Gun(Entity* parent, unsigned int type){
+    this->parent = parent;
+    this->type = type;
+    this->basicBulletSpeed = 1000;
+    this->basicBulletSize = sf::Vector2u(8, 16);
+    this->basicBulletDamage = 1;
+
+    this->specialBulletSpeed = 500;
+    this->specialBulletSize = sf::Vector2u(32, 32);
+    this->specialBulletDamage = 2;
+}
+
+std::vector<Bullet*>* Gun::getBullets(){
+    return &this->bullets;
+}
+
+Gun::~Gun(){
+
 }

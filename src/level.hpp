@@ -9,13 +9,7 @@
 #include "alien-ship.hpp"
 #include "UI-text-element.hpp"
 
-struct CollisionPair {
-    Entity *entity1;
-    Entity *entity2;
-};
-
-
-class Level {
+class Level{
     private:
 
         std::vector<Entity*> entities;
@@ -23,9 +17,6 @@ class Level {
         
         PlayerShip* playerShip;
         std::vector<sf::Texture*> tileImages;
-
-        sf::Sprite backGroundSprite;
-        sf::Texture backGroundTexture;
 
         sf::Vector2u mapSize;
         unsigned int tileSize;
@@ -39,18 +30,18 @@ class Level {
         UITextElement healthBar;
 
     public:
-        void processCollisions();
+        //virtual void updateView() = 0;
+        void handleCollisions();
         bool checkWon();
+        void addEntity(Entity* entity);
+        void removeEntity(Entity* entity);
         void loadEntites(std::string);
-        void removeDestroyedEntities();
         PlayerShip* getPlayer();
         void loadMap(std::string map, std::string images);
-        void addEntity(Entity* entity);
-        void deleteEntity(Entity* entity);
-        void update(sf::Time frameTime, sf::RenderWindow& window);
-        void draw(sf::RenderWindow& window);
-        sf::View getView() {return view;};
-        Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize = 32);
+        void update(sf::Time frameTime, sf::RenderWindow* window);
+        void draw(sf::RenderWindow* window);
+        
+        Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize);
         ~Level();
 };
 #endif

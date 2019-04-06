@@ -1,3 +1,4 @@
+#include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <cstdio>
 #include <vector>
@@ -9,7 +10,7 @@
 
 #define PLAYER_SHIP_FILE "data/graphics/player-ship.png"
 #define ALIEN_SHIP_FILE "data/graphics/alien-ship.png"
-#define BULLET_FILE "data/graphics/bullet_test.png"
+#define BULLET_FILE "data/graphics/bullet.png"
 #define BIG_BULLET_FILE "data/graphics/big-bullet_test.png"
 #define SHRAPNEL_FILE "data/graphics/shrapnel.png"
 

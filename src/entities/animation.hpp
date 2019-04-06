@@ -3,32 +3,24 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <vector>
-
 class Animation {
     private:
-        sf::Vector2u numCells;
-        sf::Vector2u cellSize;
-        sf::Texture* sourceTexture;
-        sf::Time timePerCell;
-        sf::Time timeBeforeNextCell;
-        bool repeating;
-        bool finished;
-        bool paused;
-        unsigned int currentCell;
+        short currentFrame;
+        short currentState;
+        sf::Time delay;
+        sf::Clock timer;
+
+        std::vector<std::vector<sf::Texture>> textures;
+        std::vector<int> stateLengths;
 
     public:
-        Animation(sf::Texture* sourceTexture, unsigned int cellsPerSecond, sf::Vector2u cellSize, bool isRepeating = true);
+        void init(sf::Image image, sf::Vector2u spriteSize, std::vector<int> stateLengths);
+        void update();
+        void setState(short state);
+        void setDelay(sf::Time delay);
+        const sf::Texture* getCurrentTexture();
         Animation();
         ~Animation();
-        void update(sf::Time frameTime);
-        void restart();
-        void pause();
-        void unpause();
-        bool isFinished();
-        bool isRepeating();
-        bool isPaused();
-        sf::IntRect getCurrentCellRect();
-        sf::Texture* getTexture();
     
 };
 #endif

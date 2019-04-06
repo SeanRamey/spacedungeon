@@ -3,17 +3,12 @@
 #include "bullet.hpp"
 #include "entity.hpp"
 
-class SpecialBulletSplit : public Bullet{
+class SpecialBulletShrapnel : public Bullet{
+    private:
 
     public:
-        SpecialBulletSplit(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, Level* level);
-        ~SpecialBulletSplit();
-
-        void update(sf::Time frameTime);
-
-    private:
-        const unsigned int SPEED = 1500;
-        const sf::Vector2u SIZE = sf::Vector2u(10,10);
-        const unsigned int DAMAGE = 1;
+        void update(sf::Time frameTime, sf::RenderWindow* window);
+        SpecialBulletShrapnel(sf::Vector2f position, sf::Vector2f finalPosition, sf::Vector2u size, unsigned int speed, unsigned int damage, Level* level);
+        ~SpecialBulletShrapnel();
 };
 #endif

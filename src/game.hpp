@@ -1,7 +1,6 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-//#include "sfmlpch.hpp"
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -20,7 +19,9 @@ class Game
     ~Game();
     void run();
     private:
+    void loadTextures();
     void processEvents();
+    void handleCollisions();
 };
 
 #endif

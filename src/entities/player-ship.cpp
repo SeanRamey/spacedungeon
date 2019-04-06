@@ -3,7 +3,6 @@
 #include "othermath.h"
 #include "resources.hpp"
 #include "log.hpp"
-#include "level.hpp"
 #include <cstdlib>
 #include <iostream>
 #include <chrono>
@@ -12,56 +11,60 @@
 using namespace std;
 
 PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level) 
-: Entity(x, y, w, h, texture, level, 25),
-  gun(this, Gun::Type::BASIC_GUN),
-  specialGun(this, Gun::Type::BIG_GUN) {
-    type = Entity::Type::PLAYER_SHIP;
+: Entity(x, y, w, h, level),
+  gun(this, 0U), 
+  specialGun(this, 1U) {
+    sprite.setTexture(*texture);
+    type = Entity::types::PLAYER_SHIP;
 }
 
-PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level) 
-: Entity(position, size, texture, level, 25),
-  gun(this, Gun::Type::BASIC_GUN),
-  specialGun(this, Gun::Type::BIG_GUN) {
-      type = Entity::Type::PLAYER_SHIP;
+PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* level) 
+: Entity(x, y, w, h, level),
+  gun(this, 0U), 
+  specialGun(this, 1U) {
+    setTexture(Resources::get(Resources::ID::PLAYERSHIP));
 
 }
 
 PlayerShip::~PlayerShip() {
 
 }
+void PlayerShip::checkCollision(Entity* entity){
 
-void PlayerShip::update(sf::Time frameTime) {
+}
+void PlayerShip::update(sf::Time frameTime, sf::RenderWindow* window) {
     if(teleportTimer.getElapsedTime().asMilliseconds() > (int)BLINK_DELAY) {
         canBlink = true;
     }
 
     handleUserInput();
-    sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
-    face(mousePosition);
+    face(sf::Vector2f(Input::mousePosition.x + window->getView().getCenter().x - window->getSize().x / 2, Input::mousePosition.y + window->getView().getCenter().y - window->getSize().y / 2)); // face the mouse cursor
     // slow down ship
     if(!up && !down && !left && !right) {
         velocity *= FRICTION;
     }
-    Entity::update(frameTime);
-    limitVelocity(MAX_SPEED);
+    applyMovement(frameTime);
+    gun.update(frameTime, window); 
+    specialGun.update(frameTime, window);
+    collisionBox.update(position.x, position.y);
 }
 
 void PlayerShip::handleUserInput() {
     
     if(up = Input::checkKey(sf::Keyboard::W)) {
-        accelerate(sf::Vector2f(0, -(float)ACCELERATION));
+        addVelocity(sf::Vector2f(0, -(float)ACCELERATION));
     }
     if(left = Input::checkKey(sf::Keyboard::A)) {
-        accelerate(sf::Vector2f(-(float)ACCELERATION, 0));
+        addVelocity(sf::Vector2f(-(float)ACCELERATION, 0));
     }
     if(down = Input::checkKey(sf::Keyboard::S)) {
-        accelerate(sf::Vector2f(0, (float)ACCELERATION));
+        addVelocity(sf::Vector2f(0, (float)ACCELERATION));
     }
     if(right = Input::checkKey(sf::Keyboard::D)) {
-        accelerate(sf::Vector2f((float)ACCELERATION,0));
+        addVelocity(sf::Vector2f((float)ACCELERATION,0));
     }
     if(Input::checkKey(sf::Keyboard::Space)) {
-        teleport(getRotation());
+        teleport(angle);
     }
     if(Input::checkMouse(sf::Mouse::Left)){
         firePrimary();      
@@ -73,10 +76,16 @@ void PlayerShip::handleUserInput() {
 
 void PlayerShip::teleport(float angle) {
     if(canBlink) {
-        sf::Vector2f nextPosition;
-        nextPosition.x += BLINK_DISTANCE * cosf(degreesToRadians(angle - 90));
-        nextPosition.y += BLINK_DISTANCE * sinf(degreesToRadians(angle - 90));
-        move(nextPosition);
+        float blinkDistance = sqrtf(pow((Input::mousePosition.x + Resources::window->getView().getCenter().x - Resources::window->getSize().x / 2) - position.x, 2) + powf((Input::mousePosition.y + Resources::window->getView().getCenter().y - Resources::window->getSize().y / 2) - position.y, 2));
+        if(blinkDistance < BLINK_DISTANCE){
+            // uses mouse position
+            nextPosition.x += blinkDistance * cosf(degreesToRadians(angle - 90));
+            nextPosition.y += blinkDistance * sinf(degreesToRadians(angle - 90));
+        } else {
+            // max distance 
+            nextPosition.x += BLINK_DISTANCE * cosf(degreesToRadians(angle - 90));
+            nextPosition.y += BLINK_DISTANCE * sinf(degreesToRadians(angle - 90));
+        }
         canBlink = false;
         teleportTimer.restart();
     }
@@ -85,18 +94,24 @@ void PlayerShip::teleport(float angle) {
 
 void PlayerShip::firePrimary() {
     if(shootTimer.getElapsedTime().asMilliseconds() > (int)SHOOT_DELAY){
-        sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
-        gun.shoot(mousePosition);
+        gun.shoot();
         shootTimer.restart();
     }
 }
 
 void PlayerShip::fireSpecial() {
     if(specialShootTimer.getElapsedTime().asMilliseconds() > (int)SPECIAL_SHOOT_DELAY) {
-        sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
-        specialGun.shoot(mousePosition);
+        specialGun.shoot();
         specialShootTimer.restart();
     }
+}
+
+void PlayerShip::damage(unsigned int amount) {
+
+}
+
+void PlayerShip::repair(unsigned int amount) {
+
 }
 
 void PlayerShip::giveSpecialAmmo(unsigned int amount) {
@@ -106,6 +121,13 @@ void PlayerShip::giveSpecialAmmo(unsigned int amount) {
 void PlayerShip::giveSpecialWeapon() {
 
 }
+
+void PlayerShip::draw(sf::RenderWindow* window){
+    Entity::draw(window);
+    gun.draw(window);
+    specialGun.draw(window);
+}
+
 
 Gun* PlayerShip::getPrimaryWeapon(){
     return &this->gun;
