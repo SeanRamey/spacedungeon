@@ -1,48 +1,40 @@
 #include "alien-ship.hpp"
 #include "random-numbers.hpp"
-#include "resources.hpp"
-#include <iostream>
 #include <iostream>
 #include <algorithm>
 
+AlienShip::AlienShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level)
+: Entity(position, size, texture, level) {
+    type = Entity::Type::ALIEN_SHIP;
+}
+
 AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level)
-: Entity(x,y,w,h,level)
-{
+: Entity(x, y, w, h, texture, level) {
+    type = Entity::Type::ALIEN_SHIP;
 }
 
-AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, Level* level)
-: Entity(x,y,w,h,level)
-{
-    type = Entity::types::ALIEN_SHIP;
-}
-
-AlienShip::~AlienShip()
-{
+AlienShip::~AlienShip() {
 
 }
 
-void AlienShip::checkCollision(Entity* entity){
-    if(entity != this){
-        if(collisionBox.intersects(&entity->collisionBox)){
-            if(entity->type == Entity::PLAYER_SHIP){
-                // entity->damage(damage);
-            }
-        }
-    }
-}
+// void AlienShip::checkCollision(Entity* entity) {
+//     if(entity != this) {
+//         if(collisionBox.intersects(&entity->collisionBox)) {
+//             if(entity->type == Entity::PLAYER_SHIP) {
+//                 // entity->damage(damage);
+//             }
+//         }
+//     }
+// }
 
-void AlienShip::update(sf::Time frameTime, sf::RenderWindow* window)
-{
+void AlienShip::update(sf::Time frameTime) {
     updateAI();
-    applyMovement(frameTime);
-    collisionBox.update(position.x, position.y);
+    Entity::update(frameTime);
 }
 
-void AlienShip::updateAI()
-{
+void AlienShip::updateAI() {
     
-    switch(state)
-    {
+    switch(state) {
         case MOVING:
         movingState();
         break;
@@ -56,12 +48,9 @@ void AlienShip::updateAI()
     }
 }
 
-void AlienShip::movingState()
-{
-    if(changeMovementTimer.getElapsedTime() >= CHANGE_MOVEMENT_DELAY)
-    {
-        switch(Util::GetRandomNumber(0,3))
-        {
+void AlienShip::movingState() {
+    if(changeMovementTimer.getElapsedTime() >= CHANGE_MOVEMENT_DELAY) {
+        switch(Util::GetRandomNumber(0,3)) {
             case 0:
             // up
             setVelocity(sf::Vector2f(0,-30));
@@ -91,19 +80,11 @@ void AlienShip::movingState()
     }
 }
 
-void AlienShip::firingState()
-{
+void AlienShip::firingState() {
     fire();
     state = MOVING;
 }
 
-// void AlienShip::applyMovement(sf::Time& frameTime)
-// {
-//     position.x += std::min((float)MAX_SPEED, velocity.x * frameTime.asSeconds());
-//     position.y += std::min((float)MAX_SPEED, velocity.y * frameTime.asSeconds());
-// }
-
-void AlienShip::fire()
-{
+void AlienShip::fire() {
 
 }

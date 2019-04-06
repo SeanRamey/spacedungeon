@@ -1,9 +1,9 @@
 #ifndef PLAYER_SHIP_HPP
 #define PLAYER_SHIP_HPP
 
+//#include "sfmlpch.hpp"
 #include "input.hpp"
 #include "othermath.h"
-#include "collision-box.hpp"
 #include "gun.hpp"
 #include "entity.hpp"
 #include <stdlib.h>
@@ -17,22 +17,16 @@
 class PlayerShip : public Entity {
     public:
         PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level);
-        PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* level);
+        PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level);
         ~PlayerShip();
 
-        void update(sf::Time frameTime, sf::RenderWindow* window);
+        void update(sf::Time frameTime);
         void handleUserInput();
         void teleport(float angle);
         void firePrimary();
         void fireSpecial();
-
-        void damage(unsigned int amount);
-        void repair(unsigned int amount);
         void giveSpecialAmmo(unsigned int amount);
         void giveSpecialWeapon();
-        void draw(sf::RenderWindow* window);
-
-        void checkCollision(Entity* entity);
 
         Gun* getPrimaryWeapon();
         Gun* getSecondaryWeapon();

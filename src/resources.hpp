@@ -1,11 +1,13 @@
 #ifndef RESOURCES_HPP
 #define RESOURCES_HPP
 
+#include <SFML/Graphics.hpp>
+
 namespace Resources {
     extern sf::RenderWindow* window;
     enum ID : int {
-        PLAYERSHIP,
-        ALIENSHIP,
+        PLAYER_SHIP,
+        ALIEN_SHIP,
         BULLET,
         SPECIALBULLET,
         SHRAPNEL,
