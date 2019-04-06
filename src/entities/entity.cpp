@@ -59,7 +59,6 @@ void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     //if(windowContains(target.getView(), sprite)) {
         target.draw(sprite, states);
     //}
-
 }
 
 void Entity::face(sf::Vector2f position){
@@ -146,26 +145,6 @@ unsigned int Entity::getHitpoints() {
 
 void Entity::setTexture(sf::Texture* texture) {
     sprite.setTexture(*texture);
-}
-
-void Entity::repair(unsigned int hitPoints) {
-    if(this->hitPoints - hitPoints >= 0) {
-        this->hitPoints -= hitPoints;
-    }
-}
-
-void Entity::damage(unsigned int hitPoints) {
-    if(this->hitPoints - hitPoints <= 0) {
-        this->hitPoints = 0;
-        destroy();
-    }
-    else if(this->hitPoints - hitPoints > 0) {
-        this->hitPoints -= hitPoints;
-    }
-}
-
-void Entity::setHitpoints(unsigned int hitPoints) {
-    this->hitPoints = hitPoints;
 }
 
 void Entity::destroy() {

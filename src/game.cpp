@@ -23,12 +23,14 @@ void Game::run()
     sf::Clock loopTimer;
     sf::Time secondsTime = sf::Time::Zero;
     sf::Time unprocessedTime = sf::Time::Zero;
+
     const sf::Time FRAME_TIME = sf::microseconds(16666);// 60 FPS
     unsigned int framesPerSecond = 0;
     unsigned int updatesPerSecond = 0;
 
     window.setVerticalSyncEnabled(true);
     Level level = Level("data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat");
+
     while (window.isOpen())
     {
         unprocessedTime = loopTimer.getElapsedTime() + unprocessedTime;
@@ -60,7 +62,7 @@ void Game::run()
         // Check if 1 second has passed
         if( secondsTime.asSeconds() >= 1)
         {
-            //printf("FPS: %u, UpdatesPerSecond: %u\n", framesPerSecond, updatesPerSecond);
+            printf("FPS: %u, UpdatesPerSecond: %u\n", framesPerSecond, updatesPerSecond);
             secondsTime = sf::Time::Zero;
             updatesPerSecond = 0;
             framesPerSecond = 0;

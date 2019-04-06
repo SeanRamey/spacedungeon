@@ -23,6 +23,7 @@ PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* te
   gun(this, Gun::Type::BASIC_GUN),
   specialGun(this, Gun::Type::BIG_GUN) {
       type = Entity::Type::PLAYER_SHIP;
+
 }
 
 PlayerShip::~PlayerShip() {

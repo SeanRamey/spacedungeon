@@ -13,7 +13,7 @@ SRC := src
 # make sure to use the $(SLASH) variable for the directory seperator if
 # a subdirectory is included
 # example: dir$(SLASH)nextdir
-cppdirs = entities util entities$(SLASH)weapons
+cppdirs = entities util entities$(SLASH)weapons UI
 
 # output directory
 BUILD := build
@@ -161,7 +161,7 @@ endif
 
 uninstall:
 ifeq ($(OSTARGET), WINDOWS) 
-	$(RMDIR) $(DESTDIR)$(PREFIX)/bin
+	$(RMDIR) $(DESTDIR)$(PREFIX)bin
 else 
 	$(RMDIR) $(DESTDIR)$(PREFIX)$(SLASH)bin$(SLASH)$(program)
 endif

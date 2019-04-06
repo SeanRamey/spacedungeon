@@ -13,13 +13,13 @@
 
 Level::Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize) :
 playerShip(nullptr),
-tileSize(tileSize) {
+tileSize(tileSize) ,
+healthBar(sf::Vector2i(100, 100), "data/graphics/arial.ttf", ""){
     loadMap(levelMapFilename, tileImagesFilename);
     Resources::load();
     loadEntites(levelDataFilename);
     playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this);
     entities.push_back(playerShip);
-
 }
 
 Level::~Level(){
@@ -60,6 +60,7 @@ void Level::draw(sf::RenderWindow& window){
 }
 
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
+  
     view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
     if(!playerIsDead) {
          view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
@@ -121,6 +122,7 @@ void Level::processCollisions() {
     for(int i = 0; i < entities.size(); i++){
         for(int j = i; j < entities.size(); j++){
             Entity* entity1 = entities.at(i);
+          
             Entity* entity2 = entities.at(j);
             if(entity1 != entity2 && entity1->getCollisionRect().intersects(entity2->getCollisionRect())){
                 collisions.push_back(CollisionPair{entity1, entity2});
@@ -141,6 +143,12 @@ void Level::processCollisions() {
             pair.entity2->destroy();
         }
     }
+    
+
+    /* TODO: make sure to add player health as opposed to entities.size()
+    for after merge with collisions where health was added */
+    healthBar.setPosition(sf::Vector2i(floor(view.getCenter().x - view.getSize().x / 2), floor(view.getCenter().y - view.getSize().y / 2)));
+    healthBar.setText(std::to_string(entities.size()));
 }
 
 void Level::removeDestroyedEntities() {
@@ -222,7 +230,7 @@ void Level::loadMap(std::string map, std::string images) {
     // Load the tileset source image
     sf::Image tilesetImage;
     if(!tilesetImage.loadFromFile(images)){
-       Log::error("big boy error, couldn't load tile map");
+       Log::error("failed to load tile map image: " + images);
     }
 
     // Store how many tiles are in the tileset
