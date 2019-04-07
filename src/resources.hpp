@@ -11,6 +11,7 @@ namespace Resources {
         BULLET,
         SPECIALBULLET,
         SHRAPNEL,
+        HEALTH_BAR,
         NUM_RESOURCES
     };
 

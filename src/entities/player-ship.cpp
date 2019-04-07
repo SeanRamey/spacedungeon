@@ -11,15 +11,15 @@
 
 using namespace std;
 
-PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level) 
-: Entity(x, y, w, h, texture, level, 25),
+PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints) 
+: Entity(x, y, w, h, texture, level, hitPoints),
   gun(this, Gun::Type::BASIC_GUN),
   specialGun(this, Gun::Type::BIG_GUN) {
     type = Entity::Type::PLAYER_SHIP;
 }
 
-PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level) 
-: Entity(position, size, texture, level, 25),
+PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints) 
+: Entity(position, size, texture, level, hitPoints),
   gun(this, Gun::Type::BASIC_GUN),
   specialGun(this, Gun::Type::BIG_GUN) {
       type = Entity::Type::PLAYER_SHIP;

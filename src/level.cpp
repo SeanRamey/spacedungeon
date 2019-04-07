@@ -13,11 +13,14 @@
 
 Level::Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize) :
 playerShip(nullptr),
-tileSize(tileSize) {
+tileSize(tileSize),
+healthText(sf::Vector2i(0, 0), "data/graphics/Void_2058.ttf", ""),
+healthBar(sf::Vector2i(0, 0), nullptr) {
     loadMap(levelMapFilename, tileImagesFilename);
     Resources::load();
     loadEntites(levelDataFilename);
     playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this);
+    healthBar.setTexture(Resources::get(Resources::ID::HEALTH_BAR));
     entities.push_back(playerShip);
 
 }
@@ -55,16 +58,30 @@ void Level::draw(sf::RenderWindow& window){
     for(unsigned int i = 0; i < entities.size(); ++i) {
         window.draw(*entities.at(i));
     }
-
+    if(playerShip != nullptr){
+        window.draw(healthBar);
+        window.draw(healthText);
+    }
 
 }
 
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
     if(!playerIsDead) {
-         view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
+         view.setCenter(floor(playerShip->getPosition().x), floor(playerShip->getPosition().y));
     }
     window.setView(view);
+
+    if(playerShip != nullptr){
+        healthText.setPosition(sf::Vector2i(floor(view.getCenter().x - view.getSize().x / 2) + 25, floor(view.getCenter().y - view.getSize().y / 2) - 10));
+        healthText.setText(std::to_string(playerShip->getHitpoints()));
+        healthText.update();
+        healthBar.setPosition(sf::Vector2i(floor(view.getCenter().x - view.getSize().x / 2) + 5, floor(view.getCenter().y - view.getSize().y / 2) - 10));
+        float xscale = 5.0 * playerShip->getHitpoints() / 100.;
+        healthBar.updateScale(sf::Vector2f(xscale, 1.3));
+        healthBar.update();
+    }
+
 
     removeDestroyedEntities();
 
@@ -75,8 +92,6 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
         entities.at(i)->update(frameTime);
     }
     processCollisions();
-
-    //std::cout << entities.size() << std::endl;
 }
 
 bool typeMatches(CollisionPair& pair, Entity::Type type1, Entity::Type type2) {
@@ -95,28 +110,6 @@ bool typeMatches(CollisionPair& pair, Entity::Type type1, Entity::Type type2) {
 }
 
 void Level::processCollisions() {
-
-    // std::vector<CollisionPair> collisions;
-    // for(Entity* entity1 : entities) {
-    //     for(Entity* entity2 : entities) {
-    //         if(entity1 != entity2 && entity1->getCollisionRect().intersects(entity2->getCollisionRect())) {
-    //             std::cout << "Collision found!\n";
-    //             if(collisions.empty()) {
-    //                 CollisionPair collisionPair = {entity1, entity2};
-    //                 collisions.push_back(collisionPair);
-    //                 std::cout << "first collision added\n";
-    //             }
-    //             for(CollisionPair pair : collisions) {
-    //                 if((pair.entity1 == entity1 && pair.entity2 == entity2) || (pair.entity1 == entity2 && pair.entity2 == entity1)) {
-    //                     CollisionPair collisionPair = {entity1, entity2};
-    //                     collisions.push_back(collisionPair);
-    //                     std::cout << "collision added\n";
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
     std::vector<CollisionPair> collisions;
     for(int i = 0; i < entities.size(); i++){
         for(int j = i; j < entities.size(); j++){
@@ -281,7 +274,7 @@ void Level::loadEntites(std::string path){
             number.clear();
             entityPosition.x = std::stoi(buffer[0]);
             entityPosition.y = std::stoi(buffer[1]);
-            switch(std::stoi(buffer[2])) {
+            switch(std::stoi(buffer[2])) { // third element is type of entiy
                 case 1:
                 entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, Resources::get(Resources::ID::ALIEN_SHIP), this);
             }

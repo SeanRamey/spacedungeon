@@ -16,8 +16,8 @@
 
 class PlayerShip : public Entity {
     public:
-        PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level);
-        PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level);
+        PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = 50);
+        PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = 50);
         ~PlayerShip();
 
         void update(sf::Time frameTime);

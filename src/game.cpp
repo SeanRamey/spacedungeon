@@ -28,7 +28,7 @@ void Game::run()
     unsigned int updatesPerSecond = 0;
 
     window.setVerticalSyncEnabled(true);
-    Level level = Level("data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat");
+    Level level = Level("data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32);
     while (window.isOpen())
     {
         unprocessedTime = loopTimer.getElapsedTime() + unprocessedTime;

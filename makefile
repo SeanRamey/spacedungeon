@@ -13,7 +13,7 @@ SRC := src
 # make sure to use the $(SLASH) variable for the directory seperator if
 # a subdirectory is included
 # example: dir$(SLASH)nextdir
-cppdirs = entities util entities$(SLASH)weapons
+cppdirs = entities util entities$(SLASH)weapons UI
 
 # output directory
 BUILD := build

@@ -6,6 +6,8 @@
 #include "entity.hpp"
 #include "player-ship.hpp"
 #include "tile.hpp"
+#include "UI-text-element.hpp"
+#include "UI-image-element.hpp"
 #include "alien-ship.hpp"
 
 struct CollisionPair {
@@ -33,6 +35,9 @@ class Level {
 
         bool hasWon;
         bool playerIsDead;
+        
+        UITextElement healthText;
+        UIImageElement healthBar;
 
     public:
         void processCollisions();
