@@ -14,8 +14,9 @@
 Level::Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize) :
 playerShip(nullptr),
 tileSize(tileSize),
-healthText(sf::Vector2i(0, 0), "data/graphics/Void_2058.ttf", ""),
-healthBar(sf::Vector2i(0, 0), nullptr) {
+healthText(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", ""),
+healthBar(sf::Vector2f(0, 0), nullptr),
+gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over") {
     loadMap(levelMapFilename, tileImagesFilename);
     Resources::load();
     loadEntites(levelDataFilename);
@@ -61,6 +62,8 @@ void Level::draw(sf::RenderWindow& window){
     if(playerShip != nullptr){
         window.draw(healthBar);
         window.draw(healthText);
+    } else {
+        window.draw(gameOver);
     }
 
 }
@@ -73,13 +76,15 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     window.setView(view);
 
     if(playerShip != nullptr){
-        healthText.setPosition(sf::Vector2i(floor(view.getCenter().x - view.getSize().x / 2) + 25, floor(view.getCenter().y - view.getSize().y / 2) - 10));
+        float xscale = 10.0 * playerShip->getHitpoints() / 100.0;
+        healthText.setPosition(sf::Vector2f(floor(view.getCenter().x), floor(view.getCenter().y - view.getSize().y / 2) + healthBar.getSize().y / 2));
         healthText.setText(std::to_string(playerShip->getHitpoints()));
         healthText.update();
-        healthBar.setPosition(sf::Vector2i(floor(view.getCenter().x - view.getSize().x / 2) + 5, floor(view.getCenter().y - view.getSize().y / 2) - 10));
-        float xscale = 5.0 * playerShip->getHitpoints() / 100.;
-        healthBar.updateScale(sf::Vector2f(xscale, 1.3));
+        healthBar.setPosition(sf::Vector2f(floor(view.getCenter().x), floor(view.getCenter().y - view.getSize().y / 2) + 16 * 1.2));
+        healthBar.updateScale(sf::Vector2f(xscale, 1.2));
         healthBar.update();
+    } else {
+        gameOver.setPosition(view.getCenter());
     }
 
 
@@ -162,10 +167,11 @@ void Level::addEntity(Entity* entity) {
 }
 
 void Level::deleteEntity(Entity* entity) {
-    if(entity == playerShip) {
+    if(entity == playerShip) { // player dies
         playerIsDead = true;
         playerShip = nullptr;
     }
+
     if(entity != nullptr) {
         delete entity; // delete the entity before removal
     }

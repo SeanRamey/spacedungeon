@@ -8,10 +8,12 @@ class UIImageElement : public UIElement {
         sf::Image image;
         sf::Texture* texture;
         sf::Sprite sprite;
+        sf::Vector2f scale;
 
     public:
-        UIImageElement(sf::Vector2i position, sf::Texture* texture);
+        UIImageElement(sf::Vector2f position, sf::Texture* texture);
         ~UIImageElement();
+        sf::Vector2u getSize();
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         void load();
         void update();

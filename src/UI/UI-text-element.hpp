@@ -13,7 +13,8 @@ class UITextElement : public UIElement {
         void update();
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         void setText(std::string text);
-        UITextElement(sf::Vector2i position, std::string fontPath, std::string text);
+        void setPosition(sf::Vector2f position);
+        UITextElement(sf::Vector2f position, std::string fontPath, std::string text);
         ~UITextElement();
 };
 #endif

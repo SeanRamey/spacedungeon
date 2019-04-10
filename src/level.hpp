@@ -39,6 +39,8 @@ class Level {
         UITextElement healthText;
         UIImageElement healthBar;
 
+        UITextElement gameOver;
+
     public:
         void processCollisions();
         bool checkWon();
