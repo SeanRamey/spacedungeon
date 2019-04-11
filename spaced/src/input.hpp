@@ -9,6 +9,7 @@
 namespace Input
 {
     extern sf::Vector2i mousePosition;
+    extern float mouseWheelScrollDelta;
     void handleEvent(const sf::Event* const event);
     bool checkKey(sf::Keyboard::Key key);
     bool checkMouse(sf::Mouse::Button mouseKey);

@@ -9,13 +9,17 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
+#include <cmath>
 #include <stdlib.h>
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
 
 Level::Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize) :
 view(),
-tileSize(tileSize) {
+tileSize(tileSize),
+zoomLevel(1.0),
+prevZoomLevel(1.0),
+lastMousePosition(Input::mousePosition) {
     loadMap(levelMapFilename, tileImagesFilename);
 }
 
@@ -28,7 +32,6 @@ Level::~Level(){
 
 void Level::draw(sf::RenderWindow& window){
     for(Tile* tile : tiles) {
-        window.draw(tile->getSprite());
         tile->draw(window);
     }
 }
@@ -38,7 +41,10 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     std::vector<sf::Event> events = Input::getEventList();
     for(sf::Event event : events) {
         if(event.type == sf::Event::Resized) {
-            view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
+            //view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
+
+            sf::FloatRect visibleArea(0.f, 0.f, event.size.width, event.size.height);
+            window.setView(sf::View(visibleArea));
         }
     }
     
@@ -55,16 +61,38 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
         view.move(16,0);
     }
     if(Input::checkKey(sf::Keyboard::PageUp)) {
-        view.zoom(1.05);
+        zoomLevel += 0.05;
     }
     if(Input::checkKey(sf::Keyboard::PageDown)) {
-        view.zoom(0.95);
+        zoomLevel -= 0.05;
     }
+
+    if(Input::checkMouse(sf::Mouse::Button::Middle)) {
+        view.move((lastMousePosition.x - Input::mousePosition.x) * zoomLevel * 2, (lastMousePosition.y - Input::mousePosition.y) * zoomLevel * 2);
+        lastMousePosition = Input::mousePosition;
+    } else {
+        lastMousePosition = Input::mousePosition;
+    }
+
+    zoomLevel += -(Input::mouseWheelScrollDelta * 0.05f);
+
+    if(zoomLevel < 0.05) {
+        zoomLevel = 0.05;
+    } else if(zoomLevel > 5) {
+        zoomLevel = 5;
+    }
+
+    view.zoom(zoomLevel - prevZoomLevel + 1);
+    prevZoomLevel = zoomLevel;
+    
 
     window.setView(view);
 
 
+}
 
+void Level::changeTile(Tile& oldTile, Tile& newTile) {
+    tiles.
 }
 
 void Level::loadMap(std::string map, std::string images) {

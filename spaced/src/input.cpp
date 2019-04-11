@@ -9,6 +9,7 @@ namespace Input
     unsigned char mouseList[sf::Mouse::ButtonCount];
     std::vector<sf::Event> eventList;
     sf::Vector2i mousePosition;
+    float mouseWheelScrollDelta;
 
     void updateMousePosition(sf::RenderWindow* window)
     {
@@ -46,6 +47,9 @@ namespace Input
             }
             mouseList[event->mouseButton.button] = 0;
             break;
+
+        case sf::Event::MouseWheelScrolled:
+            mouseWheelScrollDelta += event->mouseWheelScroll.delta;
             
         default:
             break;
@@ -79,6 +83,7 @@ namespace Input
     }
     
     void clearEventList() {
+        mouseWheelScrollDelta = 0.0;
         eventList.clear();
     }
 

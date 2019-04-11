@@ -93,7 +93,7 @@ void beClever(std::vector<std::string>& progArguments) {
 
 void editMap(std::vector<std::string>& progArguments) {
     sf::RenderWindow window;
-    window.create(sf::VideoMode(640,480), "spaced: " + progArguments.at(1));
+    window.create(sf::VideoMode(1024,768), "spaced: " + progArguments.at(1));
     Level level(progArguments.at(1), "tileset.png", "");
     runeditor(level, window);
 }
