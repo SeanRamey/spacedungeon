@@ -4,7 +4,6 @@
 //#include "sfmlpch.hpp"
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "entity.hpp"
 
 class Tile {
     public:

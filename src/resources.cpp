@@ -7,9 +7,9 @@
 #include "log.hpp"
 #include "resources.hpp"
 
-#define PLAYER_SHIP_FILE "data/graphics/player-ship.png"
+#define PLAYER_SHIP_FILE "data/graphics/new-playership-idle.png"
 #define ALIEN_SHIP_FILE "data/graphics/alien-ship.png"
-#define BULLET_FILE "data/graphics/bullet_test.png"
+#define BULLET_FILE "data/graphics/new-bullet.png"
 #define BIG_BULLET_FILE "data/graphics/big-bullet_test.png"
 #define SHRAPNEL_FILE "data/graphics/shrapnel.png"
 

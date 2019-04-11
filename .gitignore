@@ -7,5 +7,5 @@ include/
 lib/
 *.o
 *.d
-game-alpha.code-workspace
+*.code-workspace
 .vscode/

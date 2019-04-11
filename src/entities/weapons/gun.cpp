@@ -22,7 +22,7 @@ void Gun::shoot(sf::Vector2f targetPosition){
         case BASIC_GUN:
             {
                 BasicBullet* bullet = new BasicBullet(owner->getPosition(), targetPosition, owner, owner->getLevel());
-                Animation basicBulletAnimation = Animation(Resources::get(Resources::ID::BULLET), 30, sf::Vector2u(8,16));
+                Animation basicBulletAnimation = Animation(Resources::get(Resources::ID::BULLET), 10, sf::Vector2u(12,16));
                 bullet->setAnimation(basicBulletAnimation);
                 owner->getLevel()->addEntity(bullet);
                 break;
