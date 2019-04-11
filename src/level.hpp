@@ -20,13 +20,21 @@ class Level {
     private:
 
         std::vector<Entity*> entities;
-        std::vector<Tile*> tiles;
+
+        std::vector<Tile*> middleTiles;
+        std::vector<Tile*> foreGroundTiles;
         
         PlayerShip* playerShip;
         std::vector<sf::Texture*> tileImages;
 
         sf::Sprite backGroundSprite;
         sf::Texture backGroundTexture;
+
+        sf::Sprite middleGroundSprite;
+        sf::Texture middleGroundTexture;
+
+        sf::Sprite foreGroundSprite;
+        sf::Texture foreGroundTexture;
 
         sf::Vector2u mapSize;
         unsigned int tileSize;

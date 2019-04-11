@@ -17,10 +17,11 @@ tileSize(tileSize),
 healthText(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", ""),
 healthBar(sf::Vector2f(0, 0), nullptr),
 gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over") {
-    loadMap(levelMapFilename, tileImagesFilename);
+    //loadMap(levelMapFilename, tileImagesFilename);
+    loadMap("data/levels/test-map2.map", tileImagesFilename);
     Resources::load();
     loadEntites(levelDataFilename);
-    playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this);
+    playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
     healthBar.setTexture(Resources::get(Resources::ID::HEALTH_BAR));
     entities.push_back(playerShip);
 
@@ -30,7 +31,10 @@ Level::~Level(){
     for(Entity* entity : entities) {
         delete entity;
     }
-    for(Tile* tile : tiles) {
+    for(Tile* tile : middleTiles) {
+        delete tile;
+    }
+    for(Tile* tile : foreGroundTiles) {
         delete tile;
     }
     for(sf::Texture* texture : tileImages) {
@@ -48,17 +52,11 @@ PlayerShip* Level::getPlayer(){
 
 void Level::draw(sf::RenderWindow& window){
     window.draw(backGroundSprite);
-
-    //window.draw(playerShip);
-    // for(Tile* tile : tiles){
-    //     window.draw(*tile);
-    // }
-    // for(Entity* entity : entities){
-    //     window.draw(*entity);
-    // }
+    window.draw(middleGroundSprite);
     for(unsigned int i = 0; i < entities.size(); ++i) {
         window.draw(*entities.at(i));
     }
+    window.draw(foreGroundSprite);
     if(playerShip != nullptr){
         window.draw(healthBar);
         window.draw(healthText);
@@ -71,18 +69,18 @@ void Level::draw(sf::RenderWindow& window){
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
     if(!playerIsDead) {
-         view.setCenter(floor(playerShip->getPosition().x), floor(playerShip->getPosition().y));
+         view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
     }
     window.setView(view);
 
     if(playerShip != nullptr){
-        float xscale = 10.0 * playerShip->getHitpoints() / 100.0;
-        healthText.setPosition(sf::Vector2f(floor(view.getCenter().x), floor(view.getCenter().y - view.getSize().y / 2) + healthBar.getSize().y / 2));
+        float xscale = playerShip->getHitpoints() / 100.0; // percent of total
+        healthBar.setPosition(sf::Vector2f(view.getCenter().x, view.getCenter().y - view.getSize().y / 2 + 16 * 1.2));
+        healthBar.updateSize(sf::Vector2f(xscale, 1));
+        healthBar.update();
+        healthText.setPosition(healthBar.getPosition()); // sets position of text to center of health bar
         healthText.setText(std::to_string(playerShip->getHitpoints()));
         healthText.update();
-        healthBar.setPosition(sf::Vector2f(floor(view.getCenter().x), floor(view.getCenter().y - view.getSize().y / 2) + 16 * 1.2));
-        healthBar.updateScale(sf::Vector2f(xscale, 1.2));
-        healthBar.update();
     } else {
         gameOver.setPosition(view.getCenter());
     }
@@ -90,7 +88,10 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
 
     removeDestroyedEntities();
 
-    for(Tile* tile : tiles){
+    for(Tile* tile : middleTiles){
+        tile->update(frameTime);
+    }
+    for(Tile* tile : foreGroundTiles){
         tile->update(frameTime);
     }
     for(unsigned int i = 0; i < entities.size(); ++i) {
@@ -169,7 +170,7 @@ void Level::addEntity(Entity* entity) {
 void Level::deleteEntity(Entity* entity) {
     if(entity == playerShip) { // player dies
         playerIsDead = true;
-        playerShip = nullptr;
+        playerShip = nullptr; // set to nullptr for later prevention of nullptr errs 
     }
 
     if(entity != nullptr) {
@@ -179,55 +180,71 @@ void Level::deleteEntity(Entity* entity) {
     entities.shrink_to_fit();
 }
 
-void Level::loadMap(std::string map, std::string images) {
+struct tileLayers {
+    // a temporary struct to store the data of the layers of a tile map
+    // used in file parsing
+    unsigned char backGround, middleGround, foreGround;
+    tileLayers(unsigned char bg, unsigned char mg, unsigned char fg){
+        this->backGround = bg;
+        this->middleGround = mg;
+        this->foreGround = fg;
+    }
+};
 
-    // Open the tile map data file for the level
-    std::ifstream file(map); 
+void Level::loadMap(std::string map, std::string images){
+    std::ifstream file(map);
 
-    if(!file.is_open()) {
+    if(!file.is_open()){
         Log::error("Failed to open file: " + map);
         exit(-1);
     }
+    file >> mapSize.x >> mapSize.y;  
 
-    // Get the first two numbers from the file
-    // (seperated by whitespace) and use them
-    // for the dimensions of the map
-    file >> mapSize.x >> mapSize.y;
-
-    // Load the rest of the file, and store each byte in fileData
     std::vector<char> fileData;
     fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     file.close();
 
-    // Parse the fileData into an array of bytes, seperated by spaces and newlines
-    // for loop starts at 1 to skip the first newline character in the fileData
-    std::string buffer;
-    std::vector<unsigned char> mapData;
+    std::vector<std::string> buffer;
+    std::vector<struct tileLayers> mapData;
     for(int i = 1; i < fileData.size(); i++) {
-        switch(fileData[i]) {
-            case ' ':
-                mapData.push_back((unsigned char)std::stoul(buffer)); // add the current buffer to mapData as an unsigned char
-                buffer.clear();
-                break;
-            case '\n':
-                mapData.push_back((unsigned char)std::stoul(buffer));
-                buffer.clear();
-                break;
-            default:
-                buffer += fileData[i];
+            switch(fileData[i]) {
+                case '\n':
+                case ' ':
+                    mapData.push_back(tileLayers((unsigned char)std::stoul(buffer[0]), (unsigned char)std::stoul(buffer[1]), (unsigned char)std::stoul(buffer[2]))); // add the current buffer to mapData as an unsigned char
+                    buffer.clear();
+                    break;
+                default:
+                    int j = 0;
+                    buffer.push_back(std::string());
+                    while(true){
+ 
+                        if(fileData[i] == ',' || fileData[i] == ' ' || fileData[i] == '\n') {
+                            j++;
+                            if(j == 3)  {
+                                i--; 
+                                break;
+                            }
+                            if(fileData[i] == ','){
+                                i++;
+                                buffer.push_back(std::string());
+                            }
+                        }
+                        buffer[j] += fileData[i];
+                        i++;
+                    }
         }
     }
 
     // Load the tileset source image
     sf::Image tilesetImage;
     if(!tilesetImage.loadFromFile(images)){
-       Log::error("big boy error, couldn't load tile map");
+       Log::error("failed load tile map");
     }
 
     // Store how many tiles are in the tileset
     sf::Vector2u tileCount;
     tileCount.x = tilesetImage.getSize().x / tileSize; 
-    tileCount.y = tilesetImage.getSize().y / tileSize; 
+    tileCount.y = tilesetImage.getSize().y / tileSize;
 
     // Store each tile graphic as a sf::Texture in an array
     for(unsigned int y = 0; y < tileCount.y; y++) {
@@ -237,27 +254,70 @@ void Level::loadMap(std::string map, std::string images) {
         }
     }
 
-    // Create Tiles in the map
+    std::vector<Tile*> backGroundTiles;
+    // Create background tiles in the map
     for(unsigned int y = 0; y < mapSize.y; y++) {
         for(unsigned int x = 0; x < mapSize.x; x++) {
-            if(mapData.at(x + y * mapSize.x) != 0) {
+            if(mapData.at(x + y * mapSize.x).backGround != 0) {
                 Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
-                tiles.push_back(tile);
-                tiles[tiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x] - 1]);
+                backGroundTiles.push_back(tile);
+                backGroundTiles[backGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].backGround - 1]);
+            }
+        }
+    }
+
+    // Create middle tiles in the map
+    for(unsigned int y = 0; y < mapSize.y; y++) {
+        for(unsigned int x = 0; x < mapSize.x; x++) {
+            if(mapData.at(x + y * mapSize.x).middleGround != 0) {
+                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
+                middleTiles.push_back(tile);
+                middleTiles[middleTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].middleGround - 1]);
+            }
+        }
+    }
+
+    // Create foreground tiles in the map
+    for(unsigned int y = 0; y < mapSize.y; y++) {
+        for(unsigned int x = 0; x < mapSize.x; x++) {
+            if(mapData.at(x + y * mapSize.x).foreGround != 0) {
+                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
+                foreGroundTiles.push_back(tile);
+                foreGroundTiles[foreGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].foreGround - 1]);
             }
         }
     }
 
     // Create an image of the entire map so that only 1 draw call is needed for the whole map
     sf::Image backGroundImage;
-    backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Black);
+    backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
 
-    for(Tile* tile : tiles) {
+    for(Tile* tile : backGroundTiles) {
         backGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
     }
 
     backGroundTexture.loadFromImage(backGroundImage); 
     backGroundSprite.setTexture(backGroundTexture);
+
+    sf::Image middleGroundImage;
+    middleGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
+
+    for(Tile* tile : middleTiles) {
+        middleGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
+    }
+
+    middleGroundTexture.loadFromImage(middleGroundImage); 
+    middleGroundSprite.setTexture(middleGroundTexture);
+
+    sf::Image foreGroundImage;
+    foreGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
+
+    for(Tile* tile : foreGroundTiles) {
+        foreGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
+    }
+
+    foreGroundTexture.loadFromImage(foreGroundImage); 
+    foreGroundSprite.setTexture(foreGroundTexture);
 }
 
 void Level::loadEntites(std::string path){
