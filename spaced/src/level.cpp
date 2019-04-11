@@ -14,72 +14,23 @@
 #include "SFML/System.hpp"
 
 Level::Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize) :
-//playerShip(nullptr),
 view(),
 tileSize(tileSize) {
     loadMap(levelMapFilename, tileImagesFilename);
-    //Resources::load();
-    //loadEntites(levelDataFilename);
-    //playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this);
-    //entities.push_back(playerShip);
-
 }
 
 Level::~Level(){
-    // for(Entity* entity : entities) {
-    //     delete entity;
-    // }
     for(Tile* tile : tiles) {
         delete tile;
     }
-    // for(sf::Texture* texture : tileImages) {
-    //     delete texture;
-    // }
 }
 
-// bool Level::checkWon(){
-//     return false;
-// }
-
-// PlayerShip* Level::getPlayer(){
-//     return this->playerShip;
-// }
 
 void Level::draw(sf::RenderWindow& window){
-    //window.draw(backGroundSprite);
-
-    //window.draw(playerShip);
-    // for(Tile* tile : tiles){
-    //     //window.draw(*tile);
-    //     tile->draw(window);
-    // }
-
-    // Create an image of the entire map so that only 1 draw call is needed for the whole map
-    sf::Image backGroundImage;
-    backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Black);
-
     for(Tile* tile : tiles) {
-        backGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
+        window.draw(tile->getSprite());
+        tile->draw(window);
     }
-
-    backGroundTexture.loadFromImage(backGroundImage); 
-    backGroundSprite.setTexture(backGroundTexture);
-    window.draw(backGroundSprite);
-
-    // for(unsigned int i = 0; i < tiles.size(); ++i) {
-    //     //tiles.at(i)->draw(window);
-    //     sf::Sprite tileSprite = sf::Sprite(*tiles.at(i)->getTexture());
-    //     std::cout << (void*)tiles.at(i)->getTexture() << "\n";
-    //     window.draw(tileSprite);
-    // }
-    // for(Entity* entity : entities){
-    //     window.draw(*entity);
-    // }
-    // for(unsigned int i = 0; i < entities.size(); ++i) {
-    //     window.draw(*entities.at(i));
-    // }
-
-
 }
 
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
@@ -114,37 +65,7 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
 
 
 
-    //removeDestroyedEntities();
-
-    // for(Tile* tile : tiles){
-    //     tile->update(frameTime);
-    // }
-    // for(unsigned int i = 0; i < entities.size(); ++i) {
-    //     entities.at(i)->update(frameTime);
-    // }
-    //processCollisions();
-
-    //std::cout << entities.size() << std::endl;
 }
-
-// void Level::addEntity(Entity* entity) {
-//     if(entity == nullptr) {
-//         return; // not valid pointer
-//     }
-//     entities.push_back(entity);
-// }
-
-// void Level::deleteEntity(Entity* entity) {
-//     if(entity == playerShip) {
-//         playerIsDead = true;
-//         playerShip = nullptr;
-//     }
-//     if(entity != nullptr) {
-//         delete entity; // delete the entity before removal
-//     }
-//     entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
-//     entities.shrink_to_fit();
-// }
 
 void Level::loadMap(std::string map, std::string images) {
 
@@ -214,50 +135,4 @@ void Level::loadMap(std::string map, std::string images) {
             }
         }
     }
-
-    // // Create an image of the entire map so that only 1 draw call is needed for the whole map
-    // sf::Image backGroundImage;
-    // backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Black);
-
-    // for(Tile* tile : tiles) {
-    //     backGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
-    // }
-
-    // backGroundTexture.loadFromImage(backGroundImage); 
-    // backGroundSprite.setTexture(backGroundTexture);
 }
-
-// void Level::loadEntites(std::string path){
-//     std::vector<char> fileData;
-//     std::ifstream file;
-//     file.open(path);
-//     fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-//     file.close();
-
-
-//     std::vector<std::string> buffer;
-//     std::string number;
-//     Entity* entity;
-//     for(int i = 0; i < fileData.size(); i++) {
-//         sf::Vector2u entityPosition;
-//         if(std::isdigit(fileData[i])) {
-//             number += fileData[i];
-//         } else if(fileData[i] == '\n'){
-//             buffer.push_back(number);
-//             number.clear();
-//             entityPosition.x = std::stoi(buffer[0]);
-//             entityPosition.y = std::stoi(buffer[1]);
-//             switch(std::stoi(buffer[2])) {
-//                 case 1:
-//                 entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, Resources::get(Resources::ID::ALIEN_SHIP), this);
-//             }
-
-//             entities.push_back(entity);
-//             buffer.clear();
-//         } else {
-//             // comma
-//             buffer.push_back(number);
-//             number.clear();
-//         }
-//     }
-// }

@@ -161,7 +161,7 @@ endif
 
 uninstall:
 ifeq ($(OSTARGET), WINDOWS) 
-	$(RMDIR) $(DESTDIR)$(PREFIX)/bin
+	$(RMDIR) $(DESTDIR)$(PREFIX)bin
 else 
 	$(RMDIR) $(DESTDIR)$(PREFIX)$(SLASH)bin$(SLASH)$(program)
 endif

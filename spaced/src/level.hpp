@@ -3,26 +3,17 @@
 
 #include <vector>
 #include <string>
-//#include "entity.hpp"
-//#include "player-ship.hpp"
 #include "tile.hpp"
 #include "input.hpp"
-//#include "alien-ship.hpp"
 #include "SFML/Graphics.hpp"
 
-// struct CollisionPair {
-//     Entity *entity1;
-//     Entity *entity2;
-// };
 
 
 class Level {
     private:
 
-        //std::vector<Entity*> entities;
         std::vector<Tile*> tiles;
         
-        //PlayerShip* playerShip;
         std::vector<sf::Texture*> tileImages;
 
         sf::Sprite backGroundSprite;
@@ -33,18 +24,8 @@ class Level {
 
         sf::View view;
 
-        //bool hasWon;
-        //bool playerIsDead;
-
     public:
-        //void processCollisions();
-        //bool checkWon();
-        //void loadEntites(std::string);
-        //void removeDestroyedEntities();
-        //PlayerShip* getPlayer();
         void loadMap(std::string map, std::string images);
-        //void addEntity(Entity* entity);
-        //void deleteEntity(Entity* entity);
         void update(sf::Time frameTime, sf::RenderWindow& window);
         void draw(sf::RenderWindow& window);
         sf::View getView() {return view;};

@@ -11,6 +11,7 @@ class Tile{
         void update(sf::Time frameTime);
         void draw(sf::RenderWindow& window);
         const sf::Texture* getTexture();
+        sf::Sprite getSprite();
 
         Tile(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
         Tile(sf::Vector2f position, sf::Vector2u size);

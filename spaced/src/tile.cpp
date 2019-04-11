@@ -4,14 +4,18 @@
 
 Tile::Tile(unsigned int x, unsigned int y, unsigned int w, unsigned int h) :
 position(x,y),
-size(w,h)
+size(w,h),
+sprite()
 {
+    sprite.setPosition(sf::Vector2f(position));
 }
 
 Tile::Tile(sf::Vector2f position, sf::Vector2u size) :
 position(position),
-size(size)
+size(size),
+sprite()
 {
+    sprite.setPosition(sf::Vector2f(position));
 }
 
 Tile::~Tile() {
@@ -32,4 +36,8 @@ const sf::Texture* Tile::getTexture() {
 
 void Tile::setTexture(sf::Texture *texture){
     sprite.setTexture(*texture);
+}
+
+sf::Sprite Tile::getSprite(){
+    return sprite;
 }
