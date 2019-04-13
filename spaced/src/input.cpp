@@ -9,11 +9,14 @@ namespace Input
     unsigned char mouseList[sf::Mouse::ButtonCount];
     std::vector<sf::Event> eventList;
     sf::Vector2i mousePosition;
+    sf::Vector2f mouseWorldPosition;
     float mouseWheelScrollDelta;
 
     void updateMousePosition(sf::RenderWindow* window)
     {
         mousePosition = sf::Mouse::getPosition(*window);
+        // convert it to world coordinates
+        mouseWorldPosition = window->mapPixelToCoords(mousePosition);
     }
 
     void handleEvent(const sf::Event* const event)

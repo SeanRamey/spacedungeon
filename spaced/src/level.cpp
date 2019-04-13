@@ -19,24 +19,53 @@ view(),
 tileSize(tileSize),
 zoomLevel(1.0),
 prevZoomLevel(1.0),
-lastMousePosition(Input::mousePosition) {
+lastMousePosition(Input::mousePosition),
+selectedTileType(1),
+brushSize(1),
+saving(false) {
     loadMap(levelMapFilename, tileImagesFilename);
 }
 
 Level::~Level(){
-    for(Tile* tile : tiles) {
+    for(Tile* tile : backGroundTiles) {
+        delete tile;
+    }
+    for(Tile* tile : middleTiles) {
+        delete tile;
+    }
+    for(Tile* tile : foreGroundTiles) {
         delete tile;
     }
 }
 
 
 void Level::draw(sf::RenderWindow& window){
-    for(Tile* tile : tiles) {
+    for(Tile* tile : backGroundTiles) {
         tile->draw(window);
     }
+    for(Tile* tile : middleTiles) {
+        tile->draw(window);
+    }
+    for(Tile* tile : foreGroundTiles) {
+        tile->draw(window);
+    }
+
+    sf::Vector2f originalPos = currentTileVisual.getPosition();
+
+    for(unsigned int y = 0; y < brushSize; y++) {
+        for(unsigned int x = 0; x < brushSize; x++) {
+            currentTileVisual.setPosition(x * tileSize + Input::mouseWorldPosition.x, y * tileSize + Input::mouseWorldPosition.y);
+            window.draw(currentTileVisual);
+        }
+    }
+    currentTileVisual.setPosition(originalPos);
 }
 
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
+
+    currentTileVisual.setPosition(sf::Vector2f(Input::mouseWorldPosition));
+    currentTileVisual.setTexture(*tileImages.at(selectedTileType));
+    currentTileVisual.setOrigin(currentTileVisual.getTextureRect().width / 2, currentTileVisual.getTextureRect().height / 2);
 
     std::vector<sf::Event> events = Input::getEventList();
     for(sf::Event event : events) {
@@ -66,6 +95,40 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     if(Input::checkKey(sf::Keyboard::PageDown)) {
         zoomLevel -= 0.05;
     }
+    if((Input::checkKey(sf::Keyboard::LControl) || Input::checkKey(sf::Keyboard::RControl)) && Input::checkKey(sf::Keyboard::S)) {
+        saveMap("TestSave.map");
+    }
+    if(keyTimer.getElapsedTime().asMilliseconds() > keyDelay) {
+        keyTimer.restart();
+        if(Input::checkKey(sf::Keyboard::Equal)) {
+            brushSize++;
+        }
+        if(Input::checkKey(sf::Keyboard::Hyphen)) {
+            brushSize--;
+        }
+        if(Input::checkKey(sf::Keyboard::LBracket)) {
+            selectedTileType--;
+            if(selectedTileType < 0) {
+                selectedTileType = 0;
+            }
+            if(selectedTileType > tileImages.size()) {
+                selectedTileType = 0;
+            }
+        }
+        if(Input::checkKey(sf::Keyboard::RBracket)) {
+            selectedTileType++;
+            if(selectedTileType > tileImages.size()) {
+                selectedTileType = tileImages.size();
+            }
+        }
+    }
+    if(Input::checkMouse(sf::Mouse::Button::Left)) {
+        for(unsigned int y = 0; y < brushSize; y++) {
+            for(unsigned int x = 0; x < brushSize; x++) {
+                changeTile((sf::Vector2i)Input::mouseWorldPosition + sf::Vector2i(y * tileSize, x * tileSize), selectedTileType);
+            }
+        }
+    }
 
     if(Input::checkMouse(sf::Mouse::Button::Middle)) {
         view.move((lastMousePosition.x - Input::mousePosition.x) * zoomLevel * 2, (lastMousePosition.y - Input::mousePosition.y) * zoomLevel * 2);
@@ -91,59 +154,95 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
 
 }
 
-void Level::changeTile(Tile& oldTile, Tile& newTile) {
-    tiles.
+void Level::changeTile(sf::Vector2i pos, unsigned int tileTypeIndex) {
+    if(pos.x < 0 || pos.y < 0) {
+        return;
+    }
+    if(tileTypeIndex > tileImages.size()) {
+        tileTypeIndex = tileImages.size();
+    }
+    if(tileTypeIndex < 0) {
+        tileTypeIndex = 0;
+    }
+    if(pos.x > 0 && pos.y > 0) {
+        pos.x = std::trunc(pos.x / tileSize) * tileSize;
+        pos.y = std::trunc(pos.y / tileSize) * tileSize;
+    }
+    for(Tile* tile : backGroundTiles) {
+        if(tile->position == (sf::Vector2u)pos) {
+            //*tile = Tile(pos, sf::Vector2u(tileSize, tileSize));
+            tile->setTexture(tileImages.at(tileTypeIndex), tileTypeIndex);
+            return;
+        }
+    }
+
+    // if there wasn't a tile at the selected position, create a new one
+    Tile* otherNewTile = new Tile((sf::Vector2u)pos, sf::Vector2u(tileSize, tileSize));
+    otherNewTile->setTexture(tileImages.at(tileTypeIndex), tileTypeIndex);
+    backGroundTiles.push_back(otherNewTile);
+
+    if(mapSize.x < (pos.x / tileSize) || mapSize.y < (pos.y / tileSize)) {
+        mapSize.x < (pos.x / tileSize) ? mapSize.x = (pos.x / tileSize) : mapSize.y = (pos.y / tileSize);
+    }
+
+    std::cout << mapSize.x << ", " << mapSize.y << "\n";
 }
 
 void Level::loadMap(std::string map, std::string images) {
+   std::ifstream file(map);
 
-    // Open the tile map data file for the level
-    std::ifstream file(map); 
-
-    if(!file.is_open()) {
+    if(!file.is_open()){
         //Log::error("Failed to open file: " + map);
         exit(-1);
     }
+    file >> mapSize.x >> mapSize.y;  
 
-    // Get the first two numbers from the file
-    // (seperated by whitespace) and use them
-    // for the dimensions of the map
-    file >> mapSize.x >> mapSize.y;
-
-    // Load the rest of the file, and store each byte in fileData
     std::vector<char> fileData;
     fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     file.close();
 
-    // Parse the fileData into an array of bytes, seperated by spaces and newlines
-    // for loop starts at 1 to skip the first newline character in the fileData
-    std::string buffer;
-    std::vector<unsigned char> mapData;
+    std::vector<std::string> buffer;
+    std::vector<struct tileLayers> mapData;
+    std::cout << fileData.size();
     for(int i = 1; i < fileData.size(); i++) {
         switch(fileData[i]) {
-            case ' ':
-                mapData.push_back((unsigned char)std::stoul(buffer)); // add the current buffer to mapData as an unsigned char
-                buffer.clear();
-                break;
             case '\n':
-                mapData.push_back((unsigned char)std::stoul(buffer));
+            case ' ':
+                mapData.push_back(tileLayers((unsigned char)std::stoul(buffer[0]), (unsigned char)std::stoul(buffer[1]), (unsigned char)std::stoul(buffer[2]))); // add the current buffer to mapData as an unsigned char
                 buffer.clear();
                 break;
             default:
-                buffer += fileData[i];
+                int j = 0;
+                buffer.push_back(std::string());
+                while(true){
+
+                    if(fileData[i] == ',' || fileData[i] == ' ' || fileData[i] == '\n') {
+                        j++;
+                        if(j == 3)  {
+                            i--; 
+                            break;
+                        }
+                        if(fileData[i] == ','){
+                            i++;
+                            buffer.push_back(std::string());
+                        }
+                    }
+                    buffer[j] += fileData[i];
+                    i++;
+                }
         }
     }
 
     // Load the tileset source image
     sf::Image tilesetImage;
     if(!tilesetImage.loadFromFile(images)){
-       //Log::error("big boy error, couldn't load tile map");
+       //Log::error("failed load tile map");
     }
 
     // Store how many tiles are in the tileset
     sf::Vector2u tileCount;
     tileCount.x = tilesetImage.getSize().x / tileSize; 
-    tileCount.y = tilesetImage.getSize().y / tileSize; 
+    tileCount.y = tilesetImage.getSize().y / tileSize;
 
     // Store each tile graphic as a sf::Texture in an array
     for(unsigned int y = 0; y < tileCount.y; y++) {
@@ -153,14 +252,76 @@ void Level::loadMap(std::string map, std::string images) {
         }
     }
 
-    // Create Tiles in the map
+    // Create background tiles in the map
     for(unsigned int y = 0; y < mapSize.y; y++) {
         for(unsigned int x = 0; x < mapSize.x; x++) {
-            if(mapData.at(x + y * mapSize.x) != 0) {
+            if(mapData.at(x + y * mapSize.x).backGround != 0) {
                 Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
-                tiles.push_back(tile);
-                tiles[tiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x] - 1]);
+                backGroundTiles.push_back(tile);
+                backGroundTiles[backGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].backGround - 1], mapData[x + y * mapSize.x].backGround - 1);
             }
         }
     }
+
+    // Create middle tiles in the map
+    for(unsigned int y = 0; y < mapSize.y; y++) {
+        for(unsigned int x = 0; x < mapSize.x; x++) {
+            if(mapData.at(x + y * mapSize.x).middleGround != 0) {
+                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
+                middleTiles.push_back(tile);
+                middleTiles[middleTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].middleGround - 1], mapData[x + y * mapSize.x].middleGround - 1);
+            }
+        }
+    }
+
+    // Create foreground tiles in the map
+    for(unsigned int y = 0; y < mapSize.y; y++) {
+        for(unsigned int x = 0; x < mapSize.x; x++) {
+            if(mapData.at(x + y * mapSize.x).foreGround != 0) {
+                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
+                foreGroundTiles.push_back(tile);
+                foreGroundTiles[foreGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].foreGround - 1], mapData[x + y * mapSize.x].foreGround - 1);
+            }
+        }
+    }
+}
+
+
+void Level::saveMap(std::string map) {
+    std::ofstream file(map, std::ios::binary);
+
+    if(!file.is_open()){
+        //Log::error("Failed to open file: " + map);
+        exit(-1);
+    }
+
+    file << mapSize.x << "\n" << mapSize.y << "\n";
+
+    // each position in the map has 3 bytes, 1 byte per layer.
+    // each byte is a reference to the tile graphic that represents
+    // the tile at that position of that layer.
+    std::vector<unsigned char> fileData(mapSize.x * mapSize.y * 3, (unsigned char)0);
+    std::vector<unsigned char> backgroundMapData(mapSize.x * mapSize.y, (unsigned char)0);
+    std::vector<unsigned char> middlegroundMapData(mapSize.x * mapSize.y, (unsigned char)0);
+    std::vector<unsigned char> foregroundMapData(mapSize.x * mapSize.y, (unsigned char)0);
+
+    for(Tile* tile : backGroundTiles) {
+        backgroundMapData.at((tile->position.y / 32) * mapSize.x + tile->position.x / 32) = tile->index;
+    }
+    for(Tile* tile : middleTiles) {
+        middlegroundMapData.at((tile->position.y / 32) * mapSize.x + tile->position.x / 32) = tile->index;
+    }
+    for(Tile* tile : foreGroundTiles) {
+        foregroundMapData.at((tile->position.y / 32) * mapSize.x + tile->position.x / 32) = tile->index;
+    }
+
+
+    for(unsigned int i = 0; i < mapSize.x * mapSize.y; i++) {
+        fileData.at(i*3) = backgroundMapData.at(i);
+        fileData.at(i*3+1) = middlegroundMapData.at(i);
+        fileData.at(i*3+2) = foregroundMapData.at(i);
+    }
+
+    file.write(reinterpret_cast<char*>(fileData.data()), fileData.size());
+
 }
