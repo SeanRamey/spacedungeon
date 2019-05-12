@@ -1,6 +1,7 @@
 #include "level.hpp"
 #include "resources.hpp"
 #include "log.hpp"
+#include "game.hpp"
 #include <string>
 #include <sstream>
 #include <vector>
@@ -11,19 +12,21 @@
 #include <cstdio>
 #include <stdlib.h>
 
-Level::Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize) :
-playerShip(nullptr),
+Level::Level(Game* game, std::string levelMapFileName, std::string tileImagesFileName, std::string levelDataFileName, unsigned int tileSize) :
+GameState(game),
 tileSize(tileSize),
 healthText(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", ""),
 healthBar(sf::Vector2f(0, 0), nullptr),
-gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over") {
-    //loadMap(levelMapFilename, tileImagesFilename);
-    loadMap("data/levels/test-map2.map", tileImagesFilename);
+gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over"),
+levelMapFileName(levelMapFileName),
+tileImagesFileName(tileImagesFileName),
+levelDataFileName(levelDataFileName) {
+    
     Resources::load();
-    loadEntites(levelDataFilename);
-    playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
+    this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
+    entities.push_back(this->playerShip);
     healthBar.setTexture(Resources::get(Resources::ID::HEALTH_BAR));
-    entities.push_back(playerShip);
+    playerIsDead = false;
 
 }
 
@@ -44,6 +47,10 @@ Level::~Level(){
 
 bool Level::checkWon(){
     return false;
+}
+
+bool Level::checkLose(){
+    return playerIsDead;
 }
 
 PlayerShip* Level::getPlayer(){
@@ -68,7 +75,7 @@ void Level::draw(sf::RenderWindow& window){
 
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
-    if(!playerIsDead) {
+    if(playerShip != nullptr){
          view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
     }
     window.setView(view);
@@ -94,6 +101,7 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     for(Tile* tile : foreGroundTiles){
         tile->update(frameTime);
     }
+
     for(unsigned int i = 0; i < entities.size(); ++i) {
         entities.at(i)->update(frameTime);
     }
@@ -170,7 +178,7 @@ void Level::addEntity(Entity* entity) {
 void Level::deleteEntity(Entity* entity) {
     if(entity == playerShip) { // player dies
         playerIsDead = true;
-        playerShip = nullptr; // set to nullptr for later prevention of nullptr errs 
+        return;
     }
 
     if(entity != nullptr) {
@@ -294,6 +302,7 @@ void Level::loadMap(std::string map, std::string images){
 
     for(Tile* tile : backGroundTiles) {
         backGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
+        delete tile;
     }
 
     backGroundTexture.loadFromImage(backGroundImage); 
@@ -353,4 +362,38 @@ void Level::loadEntites(std::string path){
             number.clear();
         }
     }
+}
+
+void Level::init() {
+    loadMap(levelMapFileName, tileImagesFileName);
+    loadEntites(levelDataFileName);    
+}
+
+void Level::clear(){
+    for(Entity* entity : entities){
+        if(entity != playerShip){
+            delete entity;
+        }
+    }
+    entities.clear();
+    for(Tile* tile : foreGroundTiles){
+        delete tile;
+    }
+    foreGroundTiles.clear();
+    for(Tile* tile : middleTiles){
+        delete tile;
+    }
+    middleTiles.clear();
+    for(sf::Texture* tileImage : tileImages){
+        delete tileImage;
+    }
+    tileImages.clear();
+}
+
+void Level::setPlayer(PlayerShip* playerShip){
+    entities.erase(std::remove(entities.begin(), entities.end(), this->playerShip), entities.end());
+    entities.shrink_to_fit();
+    this->playerShip = playerShip;
+    playerIsDead = false;
+    entities.push_back(this->playerShip);
 }

@@ -39,6 +39,7 @@ Entity::Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* te
 }
 
 Entity::~Entity() {
+
 }
 
 void Entity::update(sf::Time frameTime) {
@@ -175,4 +176,12 @@ void Entity::destroy() {
 
 bool Entity::isDestroyed() {
     return isDead;
+}
+
+void Entity::revive(){
+    this->isDead = false;
+}
+
+void Entity::setLevel(Level* level){
+    this->level = level;
 }

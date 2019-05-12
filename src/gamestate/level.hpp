@@ -9,6 +9,7 @@
 #include "UI-text-element.hpp"
 #include "UI-image-element.hpp"
 #include "alien-ship.hpp"
+#include "game-state.hpp"
 
 struct CollisionPair {
     Entity *entity1;
@@ -16,7 +17,7 @@ struct CollisionPair {
 };
 
 
-class Level {
+class Level : public GameState {
     private:
 
         std::vector<Entity*> entities;
@@ -39,8 +40,6 @@ class Level {
         sf::Vector2u mapSize;
         unsigned int tileSize;
 
-        sf::View view;
-
         bool hasWon;
         bool playerIsDead;
         
@@ -49,19 +48,28 @@ class Level {
 
         UITextElement gameOver;
 
+        std::string levelMapFileName;
+        std::string tileImagesFileName;
+        std::string levelDataFileName;
+
     public:
         void processCollisions();
         bool checkWon();
+        bool checkLose();
         void loadEntites(std::string);
         void removeDestroyedEntities();
         PlayerShip* getPlayer();
+        void setPlayer(PlayerShip* playerShip);
         void loadMap(std::string map, std::string images);
         void addEntity(Entity* entity);
         void deleteEntity(Entity* entity);
+
+        void init();
+        void clear();
         void update(sf::Time frameTime, sf::RenderWindow& window);
         void draw(sf::RenderWindow& window);
-        sf::View getView() {return view;};
-        Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize = 32);
+
+        Level(Game* game, std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize = 32);
         ~Level();
 };
 #endif

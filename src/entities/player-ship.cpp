@@ -37,6 +37,7 @@ void PlayerShip::update(sf::Time frameTime) {
     handleUserInput();
     sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
     face(mousePosition);
+    //std::cout << mousePosition.x << " " << mousePosition.y << std::endl;
     // slow down ship
     if(!up && !down && !left && !right) {
         velocity *= FRICTION;
@@ -60,7 +61,7 @@ void PlayerShip::handleUserInput() {
         accelerate(sf::Vector2f((float)ACCELERATION,0));
     }
     if(Input::checkKey(sf::Keyboard::Space)) {
-        teleport(getRotation());
+       teleport(getRotation());
     }
     if(Input::checkMouse(sf::Mouse::Left)){
         firePrimary();      
