@@ -61,7 +61,9 @@ void Level::draw(sf::RenderWindow& window){
     window.draw(backGroundSprite);
     window.draw(middleGroundSprite);
     for(unsigned int i = 0; i < entities.size(); ++i) {
-        window.draw(*entities.at(i));
+        if(!(entities.at(i) == playerShip && playerIsDead)){
+            window.draw(*entities.at(i));
+        }
     }
     window.draw(foreGroundSprite);
     if(!playerIsDead){
@@ -103,7 +105,9 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     }
 
     for(unsigned int i = 0; i < entities.size(); ++i) {
-        entities.at(i)->update(frameTime);
+        if(!(entities.at(i) == playerShip && playerIsDead)){
+            entities.at(i)->update(frameTime);
+        }
     }
     processCollisions();
 }
@@ -176,6 +180,8 @@ void Level::addEntity(Entity* entity) {
 }
 
 void Level::deleteEntity(Entity* entity) {
+    entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
+    entities.shrink_to_fit();
     if(entity == playerShip) { // player dies
         playerIsDead = true;
         return;
@@ -184,8 +190,6 @@ void Level::deleteEntity(Entity* entity) {
     if(entity != nullptr) {
         delete entity; // delete the entity before removal
     }
-    entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
-    entities.shrink_to_fit();
 }
 
 struct tileLayers {
