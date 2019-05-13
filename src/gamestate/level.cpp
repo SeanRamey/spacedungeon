@@ -64,7 +64,7 @@ void Level::draw(sf::RenderWindow& window){
         window.draw(*entities.at(i));
     }
     window.draw(foreGroundSprite);
-    if(playerShip != nullptr){
+    if(!playerIsDead){
         window.draw(healthBar);
         window.draw(healthText);
     } else {
@@ -75,12 +75,12 @@ void Level::draw(sf::RenderWindow& window){
 
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
-    if(playerShip != nullptr){
+    if(!playerIsDead){
          view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
     }
     window.setView(view);
 
-    if(playerShip != nullptr){
+    if(!playerIsDead){
         float xscale = playerShip->getHitpoints() / 100.0; // percent of total
         healthBar.setPosition(sf::Vector2f(view.getCenter().x, view.getCenter().y - view.getSize().y / 2 + 16 * 1.2));
         healthBar.updateSize(sf::Vector2f(xscale, 1));
@@ -262,18 +262,19 @@ void Level::loadMap(std::string map, std::string images){
         }
     }
 
-    std::vector<Tile*> backGroundTiles;
-    // Create background tiles in the map
+    // Create an image of the entire map so that only 1 draw call is needed for the whole map
+    sf::Image backGroundImage;
+    backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
+
+    // Create background image of the map
     for(unsigned int y = 0; y < mapSize.y; y++) {
         for(unsigned int x = 0; x < mapSize.x; x++) {
             if(mapData.at(x + y * mapSize.x).backGround != 0) {
-                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
-                backGroundTiles.push_back(tile);
-                backGroundTiles[backGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].backGround - 1]);
+                backGroundImage.copy(tileImages[mapData[x + y * mapSize.x].backGround - 1]->copyToImage(), x * tileSize, y * tileSize);
             }
         }
     }
-
+    
     // Create middle tiles in the map
     for(unsigned int y = 0; y < mapSize.y; y++) {
         for(unsigned int x = 0; x < mapSize.x; x++) {
@@ -294,15 +295,6 @@ void Level::loadMap(std::string map, std::string images){
                 foreGroundTiles[foreGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].foreGround - 1]);
             }
         }
-    }
-
-    // Create an image of the entire map so that only 1 draw call is needed for the whole map
-    sf::Image backGroundImage;
-    backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
-
-    for(Tile* tile : backGroundTiles) {
-        backGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
-        delete tile;
     }
 
     backGroundTexture.loadFromImage(backGroundImage); 
@@ -370,6 +362,7 @@ void Level::init() {
 }
 
 void Level::clear(){
+    // memory management
     for(Entity* entity : entities){
         if(entity != playerShip){
             delete entity;

@@ -97,7 +97,7 @@ void Game::update(sf::Time frametime, sf::RenderWindow& window){
     Level* level = static_cast<Level*>(gameStates[currentState]);
     if(level != nullptr){
         if(level->checkLose()){
-           updateState(-1, true);
+           //updateState(-1, true);
         }
     }
 }
