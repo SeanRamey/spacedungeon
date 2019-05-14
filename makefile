@@ -1,7 +1,7 @@
 
 
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -g -std=c++11
 CPPFLAGS = -DSFML
 LDFLAGS = -static-libstdc++
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
@@ -55,6 +55,7 @@ ifeq ($(OSTARGET),LINUX)
 
 	# compiler/linker programs
 	CC := gcc
+	CXX := g++
 	CPP := g++
 	LD := g++
 
@@ -77,6 +78,7 @@ ifeq ($(OSTARGET),MACOSX)
 
 	# compiler/linker programs
 	CC := gcc
+	CXX := g++
 	CPP := g++
 	LD := g++
 
@@ -99,6 +101,7 @@ ifeq ($(OSTARGET),WINDOWS)
 
 	# compiler/linker programs
 	CC := gcc
+	CXX := g++
 	CPP := g++
 	LD := g++
 
@@ -125,7 +128,7 @@ $(BUILD)/$(program): $(objects)
 
 $(BUILD)/%.o: %.cpp
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
-	@echo compiling $< to $@
+	@echo compiling $< to $@ with $(CXX)
 
 $(objects) $(depends): | $(BUILD)
 
