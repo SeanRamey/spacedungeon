@@ -9,4 +9,5 @@ lib/
 *.d
 *.code-workspace
 .vscode/
-*.gch
+*.hpp.gch
+src/sfmlpch.hpp.gch
