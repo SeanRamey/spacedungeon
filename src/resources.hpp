@@ -1,7 +1,8 @@
 #ifndef RESOURCES_HPP
 #define RESOURCES_HPP
 
-#include <SFML/Graphics.hpp>
+#include "sfmlpch.hpp"
+// #include <SFML/Graphics.hpp>
 
 namespace Resources {
     extern sf::RenderWindow* window;

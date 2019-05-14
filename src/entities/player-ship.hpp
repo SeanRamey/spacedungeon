@@ -1,7 +1,7 @@
 #ifndef PLAYER_SHIP_HPP
 #define PLAYER_SHIP_HPP
 
-//#include "sfmlpch.hpp"
+#include "sfmlpch.hpp"
 #include "input.hpp"
 #include "othermath.h"
 #include "gun.hpp"
@@ -10,9 +10,9 @@
 #include <stdio.h>
 #include <cmath>
 #include <chrono>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
+// #include <SFML/System.hpp>
+// #include <SFML/Window.hpp>
+// #include <SFML/Graphics.hpp>
 
 class PlayerShip : public Entity {
     public:

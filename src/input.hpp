@@ -1,10 +1,10 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-//#include "sfmlpch.hpp"
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
+#include "sfmlpch.hpp"
+// #include <SFML/System.hpp>
+// #include <SFML/Window.hpp>
+// #include <SFML/Graphics.hpp>
 
 namespace Input
 {

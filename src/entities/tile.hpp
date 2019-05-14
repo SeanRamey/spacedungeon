@@ -1,8 +1,8 @@
 #ifndef TILE_HPP
 #define TILE_HPP
 
-//#include "sfmlpch.hpp"
-#include <SFML/Graphics.hpp>
+#include "sfmlpch.hpp"
+//#include <SFML/Graphics.hpp>
 #include <vector>
 
 class Tile {

@@ -1,6 +1,6 @@
 #include "input.hpp"
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
+// #include <SFML/Graphics.hpp>
+// #include <SFML/System.hpp>
 
 namespace Input
 {

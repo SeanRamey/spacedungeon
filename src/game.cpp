@@ -14,7 +14,6 @@ Game::Game(sf::VideoMode videoMode)
 
 Game::~Game()
 {
-
 }
 
 void Game::run()

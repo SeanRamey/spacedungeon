@@ -1,9 +1,9 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
-//#include "sfmlpch.hpp"
-#include <SFML/System.hpp>
-#include <SFML/Graphics.hpp>
+#include "sfmlpch.hpp"
+// #include <SFML/System.hpp>
+// #include <SFML/Graphics.hpp>
 #include <vector>
 #include "animation.hpp"
 

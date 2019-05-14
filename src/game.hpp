@@ -1,10 +1,10 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-//#include "sfmlpch.hpp"
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
+#include "sfmlpch.hpp"
+// #include <SFML/Audio.hpp>
+// #include <SFML/Graphics.hpp>
+// #include <SFML/System.hpp>
 
 #include "player-ship.hpp"
 #include "alien-ship.hpp"
