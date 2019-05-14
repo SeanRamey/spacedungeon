@@ -15,6 +15,9 @@ SRC := src
 # example: dir$(SLASH)nextdir
 cppdirs = entities util entities$(SLASH)weapons
 
+# a list of headers to pre-compile
+pchfiles = sfmlpch.hpp
+
 # output directory
 BUILD := build
 
@@ -114,6 +117,7 @@ VPATH = $(INCDIRS)
 cppsrc = $(wildcard $(SRC)/*.cpp $(addsuffix /*.cpp,$(INCDIRS)))
 objects = $(patsubst $(SRC)/%.o,$(BUILD)/%.o,$(cppsrc:.cpp=.o))
 depends = $(objects:.o=.d)
+gchfiles = $(addsuffix .gch,$(pchfiles))
 DESTDIR =
 
 all: $(BUILD)/$(program)
@@ -126,11 +130,17 @@ $(BUILD)/$(program): $(objects)
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 	@echo linking $^ into $@ using these libraries $(LDLIBS)
 
+$(objects): $(gchfiles)
+
 $(BUILD)/%.o: %.cpp
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 	@echo compiling $< to $@ with $(CXX)
 
-$(objects) $(depends): | $(BUILD)
+$(gchfiles): $(pchfiles)
+	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) $<
+	@echo precompiling header $< to $@ with $(CXX)
+
+$(objects) $(depends) $(gchfiles): | $(BUILD)
 
 $(BUILD):
 	@$(MKDIR) $(BUILD) $(addprefix $(BUILD)$(SLASH),$(cppdirs))

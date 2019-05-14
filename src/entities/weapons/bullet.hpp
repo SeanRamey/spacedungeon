@@ -1,9 +1,9 @@
 #ifndef BULLET_HPP
 #define BULLET_HPP
-//#include "sfmlpch.hpp"
+#include "sfmlpch.hpp"
 #include "entity.hpp"
-#include "SFML/Graphics.hpp"
-#include "SFML/System.hpp"
+//#include "SFML/Graphics.hpp"
+//#include "SFML/System.hpp"
 
 class Bullet : public Entity {
     public:
