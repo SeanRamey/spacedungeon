@@ -5,10 +5,11 @@
 //#include <SFML/Graphics.hpp>
 //#include <vector>
 
-class Tile {
+class Tile : public sf::Drawable{
     public:
         void setTexture(sf::Texture* image);
         void update(sf::Time frameTime);
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         const sf::Texture* getTexture();
 
         Tile(unsigned int x, unsigned int y, unsigned int w, unsigned int h);
