@@ -1,8 +1,10 @@
+#include "stdpch.hpp"
+
 #include "special-bullet-split.hpp"
 #include "othermath.h"
 #include "entity.hpp"
 #include "player-ship.hpp"
-#include <cmath>
+//#include <cmath>
 
 SpecialBulletSplit::SpecialBulletSplit(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, Level* level) :
 Bullet(position, targetPosition, owner, sf::Vector2u(10,10), 500, 1, level, sf::milliseconds(100)){

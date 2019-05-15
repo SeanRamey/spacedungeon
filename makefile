@@ -16,7 +16,7 @@ SRC := src
 cppdirs = entities util entities$(SLASH)weapons
 
 # a list of headers to pre-compile
-pchfiles = sfmlpch.hpp
+pchfiles = sfmlpch.hpp stdpch.hpp allpch.hpp
 
 # output directory
 BUILD := build
@@ -117,7 +117,7 @@ VPATH = $(INCDIRS)
 cppsrc = $(wildcard $(SRC)/*.cpp $(addsuffix /*.cpp,$(INCDIRS)))
 objects = $(patsubst $(SRC)/%.o,$(BUILD)/%.o,$(cppsrc:.cpp=.o))
 depends = $(objects:.o=.d)
-gchfiles = $(addsuffix .gch,$(pchfiles))
+gchfiles = $(addsuffix .gch, $(pchfiles))
 DESTDIR =
 
 all: $(BUILD)/$(program)
@@ -128,19 +128,19 @@ single: $(BUILD)/$(in).o
 
 $(BUILD)/$(program): $(objects)
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
-	@echo linking $^ into $@ using these libraries $(LDLIBS)
+	@echo linking "$^" into "$@" using these libraries: "$(LDLIBS)"
 
 $(objects): $(gchfiles)
 
 $(BUILD)/%.o: %.cpp
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
-	@echo compiling $< to $@ with $(CXX)
+	@echo compiling "$<" to "$@" with $(CXX)
 
-$(gchfiles): $(pchfiles)
+%.hpp.gch: %.hpp
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) $<
-	@echo precompiling header $< to $@ with $(CXX)
+	@echo precompiling header "$<" to "$@" with $(CXX)
 
-$(objects) $(depends) $(gchfiles): | $(BUILD)
+$(objects) $(depends): | $(BUILD)
 
 $(BUILD):
 	@$(MKDIR) $(BUILD) $(addprefix $(BUILD)$(SLASH),$(cppdirs))
@@ -149,7 +149,7 @@ $(BUILD):
 # rule to generate a dependency file
 $(BUILD)/%.d: %.cpp
 	@$(CPP) $(CXXFLAGS) $< -MM -MT $(@:.d=.o) >$@
-	@echo generating dependencies for $<
+	@echo generating dependencies for "$<"
 
 # include all dependency files in the makefile
 -include $(depends)
@@ -159,6 +159,7 @@ clean:
 #	$(RM) $(subst /,$(SLASH),$(objects)) $(subst /,$(SLASH),$(depends)) $(subst /,$(SLASH),$(BUILD)/$(program))
 	@echo cleaning...
 	@$(RMDIR) $(BUILD)
+	@$(RM) $(SRC)$(SLASH)*.gch
 	@echo done.
 
 install: $(BUILD)/$(program)

@@ -1,9 +1,11 @@
 #ifndef GUN_HPP
 #define GUN_HPP
+#include "stdpch.hpp"
+
 #include "bullet.hpp"
 #include "basic-bullet.hpp"
 #include "special-bullet.hpp"
-#include <vector>
+//#include <vector>
 
 class Gun {
 

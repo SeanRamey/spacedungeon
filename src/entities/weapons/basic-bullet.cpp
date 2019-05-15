@@ -1,8 +1,9 @@
+#include "stdpch.hpp"
 #include "basic-bullet.hpp"
-#include <iostream>
+//#include <iostream>
 #include "input.hpp"
 #include "othermath.h"
-#include <cmath>
+//#include <cmath>
 #include "player-ship.hpp"
 #include "random-numbers.hpp"
 #include "resources.hpp"

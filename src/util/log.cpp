@@ -1,6 +1,9 @@
+#include "stdpch.hpp"
+
 #include "log.hpp"
-#include <iostream>
-#include <fstream>
+//#include <iostream>
+//#include <fstream>
+
 using namespace std;
 
 namespace Log {

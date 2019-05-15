@@ -1,13 +1,15 @@
+#include "stdpch.hpp"
+
 #include "player-ship.hpp"
 #include "input.hpp"
 #include "othermath.h"
 #include "resources.hpp"
 #include "log.hpp"
 #include "level.hpp"
-#include <cstdlib>
-#include <iostream>
-#include <chrono>
-#include <algorithm>
+//#include <cstdlib>
+//#include <iostream>
+//#include <chrono>
+//#include <algorithm>
 
 using namespace std;
 

@@ -1,6 +1,8 @@
+#include "stdpch.hpp"
+
 #include "level.hpp"
 #include "gun.hpp"
-#include <iostream>
+//#include <iostream>
 
 #include "resources.hpp"
 #include "log.hpp"

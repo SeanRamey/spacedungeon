@@ -1,14 +1,16 @@
+#include "stdpch.hpp"
+
 #include "level.hpp"
 #include "resources.hpp"
 #include "log.hpp"
-#include <string>
-#include <sstream>
-#include <vector>
-#include <set>
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <cstdio>
+// #include <string>
+// #include <sstream>
+// #include <vector>
+// #include <set>
+// #include <algorithm>
+// #include <iostream>
+// #include <fstream>
+// #include <cstdio>
 #include <stdlib.h>
 
 Level::Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize) :
@@ -32,6 +34,7 @@ Level::~Level(){
     for(sf::Texture* texture : tileImages) {
         delete texture;
     }
+    
 }
 
 bool Level::checkWon(){

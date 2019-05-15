@@ -1,6 +1,8 @@
+#include "stdpch.hpp"
+
 #include "animation.hpp"
 #include "math.h"
-#include <iostream>
+//#include <iostream>
 
 
 

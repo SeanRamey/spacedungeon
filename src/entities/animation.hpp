@@ -1,9 +1,9 @@
 #ifndef ANIMATION_HPP
 #define ANIMATION_HPP
-#include "sfmlpch.hpp"
+#include "allpch.hpp"
 // #include <SFML/Graphics.hpp>
 // #include <SFML/System.hpp>
-#include <vector>
+//#include <vector>
 
 class Animation {
     private:
