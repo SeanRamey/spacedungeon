@@ -1,0 +1,11 @@
+*.dll
+build/*.d
+build/*.o
+build/*.exe
+bin/
+include/
+lib/
+*.o
+*.d
+*.code-workspace
+.vscode/

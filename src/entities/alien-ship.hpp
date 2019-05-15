@@ -1,9 +1,9 @@
 #ifndef ALIEN_SHIP_HPP
 #define ALIEN_SHIP_HPP
 
-//#include "sfmlpch.hpp"
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
+#include "sfmlpch.hpp"
+//#include <SFML/Graphics.hpp>
+//#include <SFML/System.hpp>
 #include "entity.hpp"
 
 class AlienShip : public Entity

@@ -1,7 +1,9 @@
+#include "stdpch.hpp"
+
 #include "alien-ship.hpp"
 #include "random-numbers.hpp"
-#include <iostream>
-#include <algorithm>
+//#include <iostream>
+//#include <algorithm>
 
 AlienShip::AlienShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level)
 : Entity(position, size, texture, level) {

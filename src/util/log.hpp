@@ -1,7 +1,9 @@
 #ifndef LOG_HPP
 #define LOG_HPP
 
-#include <string>
+#include "stdpch.hpp"
+
+//#include <string>
 
 namespace Log {
 

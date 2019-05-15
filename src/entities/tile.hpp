@@ -1,10 +1,9 @@
 #ifndef TILE_HPP
 #define TILE_HPP
 
-//#include "sfmlpch.hpp"
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include "entity.hpp"
+#include "allpch.hpp"
+//#include <SFML/Graphics.hpp>
+//#include <vector>
 
 class Tile {
     public:

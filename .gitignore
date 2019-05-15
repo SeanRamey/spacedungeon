@@ -8,5 +8,7 @@ lib/
 *.o
 *.d
 log.txt
-game-alpha.code-workspace
+*.code-workspace
 .vscode/
+*.hpp.gch
+src/sfmlpch.hpp.gch
