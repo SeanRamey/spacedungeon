@@ -30,6 +30,8 @@ void Game::run()
 
     window.setVerticalSyncEnabled(true);
 
+    // creation of all levels 
+    // they lay in a dorment state while game is being played out until loaded (very little memory wasted)
     Level* level = new Level(this, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
     Level* level2 = new Level(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
     gameStates.push_back(level);
@@ -97,7 +99,8 @@ void Game::update(sf::Time frametime, sf::RenderWindow& window){
     Level* level = static_cast<Level*>(gameStates[currentState]);
     if(level != nullptr){
         if(level->checkLose()){
-           //updateState(-1, true);
+            // TODO handle player losing sequence
+            //updateState(-1, true);
         }
     }
 }
@@ -106,10 +109,11 @@ void Game::draw(sf::RenderWindow& window) {
     gameStates[currentState]->draw(window);
 }
 
-void Game::updateState(int newState, bool carryPlayer){
+void Game::updateState(int newState, bool carryPlayer) {
     int prevState = currentState;
     gameStates[currentState]->clear();
     if(newState == -1) {
+        // looping value to end if we hit the end
         currentState++;
         if(currentState > STATECOUNT - 1) currentState = 0;
         if(currentState < 0)              currentState = STATECOUNT - 1;
@@ -118,17 +122,23 @@ void Game::updateState(int newState, bool carryPlayer){
     }
     gameStates[currentState]->init();
 
+    // values are casted to check if either are levels
     Level* prevLevel = static_cast<Level*>(gameStates[prevState]);
     Level* currLevel = static_cast<Level*>(gameStates[currentState]);
-    if(currLevel != nullptr && carryPlayer && prevLevel != nullptr){
-        PlayerShip* ps = prevLevel->getPlayer();
-        if(ps != nullptr){
-            ps->setHitpoints(100);
-            ps->setPosition(0, 0);
-            ps->revive();
-            currLevel->setPlayer(ps);
-            ps->setLevel(currLevel);
+    if(prevLevel != nullptr && carryPlayer){
+        // storing previous player for later usage
+        previousPlayer = prevLevel->getPlayer();
+    }
+    if(currLevel != nullptr && carryPlayer && previousPlayer != nullptr){
+        // used as a reset sequence, moves player
+        if(prevLevel != nullptr){
+            // in case last level was a main menu or save state (could be exploited)
+            previousPlayer->setHitpoints(100);
+            previousPlayer->revive();
+            previousPlayer->setPosition(0, 0);
         }
+        currLevel->setPlayer(previousPlayer);
+        previousPlayer->setLevel(currLevel);
     }
 }
 

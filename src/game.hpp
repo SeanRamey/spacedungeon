@@ -20,6 +20,8 @@ class Game
         const unsigned int STATECOUNT = 2;
         int currentState = 0;
 
+        PlayerShip* previousPlayer;
+
     public:
 
         void update(sf::Time frameTime, sf::RenderWindow& window);
