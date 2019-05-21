@@ -1,6 +1,6 @@
 #ifndef UI_IMAGE_ELEMENT_HPP
 #define UI_IMAGE_ELEMENT_HPP
-#include "UI-element.hpp"
+#include "ui-element.hpp"
 
 class UIImageElement : public UIElement {
 

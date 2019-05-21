@@ -1,6 +1,6 @@
 #ifndef UI_BUTTON_HPP
 #define UI_BUTTON_HPP
-#include "UI-element.hpp"
+#include "ui-element.hpp"
 
 class UIButton : public UIElement {
     private:

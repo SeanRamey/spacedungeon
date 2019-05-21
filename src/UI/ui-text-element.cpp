@@ -1,4 +1,4 @@
-#include "UI-text-element.hpp"
+#include "ui-text-element.hpp"
 #include "log.hpp"
 
 void UITextElement::setText(std::string text){

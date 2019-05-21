@@ -1,4 +1,4 @@
-#include "UI-element.hpp"
+#include "ui-element.hpp"
 #include <iostream>
 
 void UIElement::setTexture(sf::Texture* texture){

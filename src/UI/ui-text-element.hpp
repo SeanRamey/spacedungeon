@@ -1,7 +1,7 @@
 #ifndef UI_TEXT_ELEMENT_HPP
 #define UI_TEXT_ELEMENT_HPP
 
-#include "UI-element.hpp"
+#include "ui-element.hpp"
 
 class UITextElement : public UIElement {
     private:

@@ -8,8 +8,8 @@
 #include "entity.hpp"
 #include "player-ship.hpp"
 #include "tile.hpp"
-#include "UI-text-element.hpp"
-#include "UI-image-element.hpp"
+#include "ui-text-element.hpp"
+#include "ui-image-element.hpp"
 #include "alien-ship.hpp"
 
 struct CollisionPair {
