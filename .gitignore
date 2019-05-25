@@ -1,12 +1,11 @@
 *.dll
-build/*.d
-build/*.o
-build/*.exe
+build/
 bin/
 include/
 lib/
 *.o
 *.d
+*.exe
 log.txt
 *.code-workspace
 .vscode/
