@@ -34,7 +34,9 @@ class Entity : public sf::Transformable, public sf::Drawable {
         void setHitpoints(unsigned int hitPoints);
         virtual void destroy();
         bool isDestroyed();
+        void revive();
         bool windowContains(sf::View view, sf::Sprite sprite) const;
+        void setLevel(Level* level);
 
         enum Type{
             ALIEN_SHIP,

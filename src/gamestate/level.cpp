@@ -13,19 +13,21 @@
 // #include <cstdio>
 #include <stdlib.h>
 
-Level::Level(std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize) :
-playerShip(nullptr),
+Level::Level(Game* game, std::string levelMapFileName, std::string tileImagesFileName, std::string levelDataFileName, unsigned int tileSize) :
+GameState(game),
 tileSize(tileSize),
 healthText(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", ""),
 healthBar(sf::Vector2f(0, 0), nullptr),
-gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over") {
-    //loadMap(levelMapFilename, tileImagesFilename);
-    loadMap("data/levels/test-map2.map", tileImagesFilename);
+gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over"),
+levelMapFileName(levelMapFileName),
+tileImagesFileName(tileImagesFileName),
+levelDataFileName(levelDataFileName) {
+    
     Resources::load();
-    loadEntites(levelDataFilename);
-    playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
+    this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
+    entities.push_back(this->playerShip);
     healthBar.setTexture(Resources::get(Resources::ID::HEALTH_BAR));
-    entities.push_back(playerShip);
+    playerIsDead = false;
 
 }
 
@@ -49,6 +51,10 @@ bool Level::checkWon(){
     return false;
 }
 
+bool Level::checkLose(){
+    return playerIsDead;
+}
+
 PlayerShip* Level::getPlayer(){
     return this->playerShip;
 }
@@ -57,10 +63,12 @@ void Level::draw(sf::RenderWindow& window){
     window.draw(backGroundSprite);
     window.draw(middleGroundSprite);
     for(unsigned int i = 0; i < entities.size(); ++i) {
-        window.draw(*entities.at(i));
+        if(!(entities.at(i) == playerShip && playerIsDead)){
+            window.draw(*entities.at(i));
+        }
     }
     window.draw(foreGroundSprite);
-    if(playerShip != nullptr){
+    if(!playerIsDead){
         window.draw(healthBar);
         window.draw(healthText);
     } else {
@@ -71,12 +79,12 @@ void Level::draw(sf::RenderWindow& window){
 
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
-    if(!playerIsDead) {
+    if(!playerIsDead){
          view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
     }
     window.setView(view);
 
-    if(playerShip != nullptr){
+    if(!playerIsDead){
         float xscale = playerShip->getHitpoints() / 100.0; // percent of total
         healthBar.setPosition(sf::Vector2f(view.getCenter().x, view.getCenter().y - view.getSize().y / 2 + 16 * 1.2));
         healthBar.updateSize(sf::Vector2f(xscale, 1));
@@ -97,8 +105,11 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     for(Tile* tile : foreGroundTiles){
         tile->update(frameTime);
     }
+
     for(unsigned int i = 0; i < entities.size(); ++i) {
-        entities.at(i)->update(frameTime);
+        if(!(entities.at(i) == playerShip && playerIsDead)){
+            entities.at(i)->update(frameTime);
+        }
     }
     processCollisions();
 }
@@ -171,16 +182,16 @@ void Level::addEntity(Entity* entity) {
 }
 
 void Level::deleteEntity(Entity* entity) {
+    entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
+    entities.shrink_to_fit();
     if(entity == playerShip) { // player dies
         playerIsDead = true;
-        playerShip = nullptr; // set to nullptr for later prevention of nullptr errs 
+        return;
     }
 
     if(entity != nullptr) {
         delete entity; // delete the entity before removal
     }
-    entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
-    entities.shrink_to_fit();
 }
 
 struct tileLayers {
@@ -257,18 +268,19 @@ void Level::loadMap(std::string map, std::string images){
         }
     }
 
-    std::vector<Tile*> backGroundTiles;
-    // Create background tiles in the map
+    // Create an image of the entire map so that only 1 draw call is needed for the whole map
+    sf::Image backGroundImage;
+    backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
+
+    // Create background image of the map
     for(unsigned int y = 0; y < mapSize.y; y++) {
         for(unsigned int x = 0; x < mapSize.x; x++) {
             if(mapData.at(x + y * mapSize.x).backGround != 0) {
-                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
-                backGroundTiles.push_back(tile);
-                backGroundTiles[backGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].backGround - 1]);
+                backGroundImage.copy(tileImages[mapData[x + y * mapSize.x].backGround - 1]->copyToImage(), x * tileSize, y * tileSize);
             }
         }
     }
-
+    
     // Create middle tiles in the map
     for(unsigned int y = 0; y < mapSize.y; y++) {
         for(unsigned int x = 0; x < mapSize.x; x++) {
@@ -289,14 +301,6 @@ void Level::loadMap(std::string map, std::string images){
                 foreGroundTiles[foreGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].foreGround - 1]);
             }
         }
-    }
-
-    // Create an image of the entire map so that only 1 draw call is needed for the whole map
-    sf::Image backGroundImage;
-    backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
-
-    for(Tile* tile : backGroundTiles) {
-        backGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
     }
 
     backGroundTexture.loadFromImage(backGroundImage); 
@@ -356,4 +360,39 @@ void Level::loadEntites(std::string path){
             number.clear();
         }
     }
+}
+
+void Level::init() {
+    loadMap(levelMapFileName, tileImagesFileName);
+    loadEntites(levelDataFileName);    
+}
+
+void Level::clear(){
+    // memory management
+    for(Entity* entity : entities){
+        if(entity != playerShip){
+            delete entity;
+        }
+    }
+    entities.clear();
+    for(Tile* tile : foreGroundTiles){
+        delete tile;
+    }
+    foreGroundTiles.clear();
+    for(Tile* tile : middleTiles){
+        delete tile;
+    }
+    middleTiles.clear();
+    for(sf::Texture* tileImage : tileImages){
+        delete tileImage;
+    }
+    tileImages.clear();
+}
+
+void Level::setPlayer(PlayerShip* playerShip){
+    entities.erase(std::remove(entities.begin(), entities.end(), this->playerShip), entities.end());
+    entities.shrink_to_fit();
+    this->playerShip = playerShip;
+    playerIsDead = false;
+    entities.push_back(this->playerShip);
 }

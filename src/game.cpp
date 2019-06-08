@@ -1,3 +1,4 @@
+#include <iostream>
 #include "game.hpp"
 #include "random-numbers.hpp"
 #include "level.hpp"
@@ -27,9 +28,16 @@ void Game::run()
     unsigned int updatesPerSecond = 0;
 
     window.setVerticalSyncEnabled(true);
-    Level level = Level("data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32);
-    while (window.isOpen())
-    {
+
+    // creation of all levels 
+    // they lay in a dorment state while game is being played out until loaded (very little memory wasted)
+    Level* level = new Level(this, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
+    Level* level2 = new Level(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
+    gameStates.push_back(level);
+    gameStates.push_back(level2);
+    level->init();
+
+    while (window.isOpen()){
         unprocessedTime = loopTimer.getElapsedTime() + unprocessedTime;
         secondsTime = secondsTime + loopTimer.getElapsedTime();
         loopTimer.restart();
@@ -41,7 +49,7 @@ void Game::run()
             processEvents();
 
             // Update game objects
-            level.update(FRAME_TIME, window);
+            update(FRAME_TIME, window);
             ++updatesPerSecond;
         }
 
@@ -49,7 +57,7 @@ void Game::run()
         window.clear(sf::Color::Black);
 
         // Draw graphics to buffer
-        level.draw(window);
+        draw(window);
 
         // Display buffer
         window.display();
@@ -83,4 +91,56 @@ void Game::processEvents()
 
         Input::handleEvent(&event);
     }
+}
+
+void Game::update(sf::Time frametime, sf::RenderWindow& window){
+    gameStates[currentState]->update(frametime, window);
+    Level* level = static_cast<Level*>(gameStates[currentState]);
+    if(level != nullptr){
+        if(level->checkLose()){
+            // TODO handle player losing sequence
+            //updateState(-1, true);
+        }
+    }
+}
+
+void Game::draw(sf::RenderWindow& window) {
+    gameStates[currentState]->draw(window);
+}
+
+void Game::updateState(int newState, bool carryPlayer) {
+    int prevState = currentState;
+    gameStates[currentState]->clear();
+    if(newState == -1) {
+        // looping value to end if we hit the end
+        currentState++;
+        if(currentState > STATECOUNT - 1) currentState = 0;
+        if(currentState < 0)              currentState = STATECOUNT - 1;
+    } else {
+        this->currentState = newState;
+    }
+    gameStates[currentState]->init();
+
+    // values are casted to check if either are levels
+    Level* prevLevel = static_cast<Level*>(gameStates[prevState]);
+    Level* currLevel = static_cast<Level*>(gameStates[currentState]);
+    if(prevLevel != nullptr && carryPlayer){
+        // storing previous player for later usage
+        previousPlayer = prevLevel->getPlayer();
+    }
+    if(currLevel != nullptr && carryPlayer && previousPlayer != nullptr){
+        // used as a reset sequence, moves player
+        if(prevLevel != nullptr){
+            // in case last level was a main menu or save state (could be exploited)
+            previousPlayer->setHitpoints(100);
+            previousPlayer->revive();
+            previousPlayer->setPosition(0, 0);
+        }
+        currLevel->setPlayer(previousPlayer);
+        previousPlayer->setLevel(currLevel);
+    }
+}
+
+GameState* Game::getGameState(){
+    return gameStates[currentState];
 }

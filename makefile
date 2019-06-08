@@ -1,7 +1,7 @@
 
 
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -g -std=c++11
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -O2
 CPPFLAGS = -DSFML
 LDFLAGS = -static-libstdc++
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
@@ -13,7 +13,7 @@ SRC := src
 # make sure to use the $(SLASH) variable for the directory seperator if
 # a subdirectory is included
 # example: dir$(SLASH)nextdir
-cppdirs = entities util entities$(SLASH)weapons UI
+cppdirs = entities util entities$(SLASH)weapons UI manager gamestate
 
 # a list of headers to pre-compile
 pchfiles = sfmlpch.hpp stdpch.hpp allpch.hpp
