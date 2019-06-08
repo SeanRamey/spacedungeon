@@ -1,4 +1,4 @@
-#include "ui-button.hpp"
+#include "UI-button.hpp"
 
 UIButton::UIButton(sf::Vector2f position, sf::Texture* texture) :
 UIElement(position){
