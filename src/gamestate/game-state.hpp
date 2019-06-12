@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
-#include "UI-element.hpp"
+#include "ui-element.hpp"
 class Game;
 class GameState{
     public:
