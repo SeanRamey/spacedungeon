@@ -127,7 +127,27 @@ bool typeMatches(CollisionPair& pair, Entity::Type type1, Entity::Type type2) {
     }
 }
 
+Entity* getMatchingEntity(CollisionPair pair, Entity::Type type)
+{
+    if(pair.entity1->type == type)
+    {
+        return pair.entity1;
+    }
+    else
+    if(pair.entity2->type == type)
+    {
+        return pair.entity2;
+    }
+    else
+    {
+        return nullptr;
+    }
+    
+}
+
 void Level::processCollisions() {
+
+    // Iterate over all entities and create pairs of Entities that are colliding.
     std::vector<CollisionPair> collisions;
     for(int i = 0; i < entities.size(); i++){
         for(int j = i; j < entities.size(); j++){
@@ -139,17 +159,19 @@ void Level::processCollisions() {
         }
     }
 
+    // Iterate over all colliding Entities and handle each appropriately.
     for(CollisionPair pair : collisions) {
+        
         if(typeMatches(pair, Entity::Type::PLAYER_SHIP, Entity::Type::ALIEN_SHIP)) {
-            pair.entity1->damage(1); // damage player ship
-            pair.entity2->destroy(); // destroy alien ship
+            ((PlayerShip*)getMatchingEntity(pair, Entity::Type::PLAYER_SHIP))->damage(1);
+            ((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
         }
 
         if(typeMatches(pair, Entity::Type::ALIEN_SHIP, Entity::Type::BULLET)) {
-            if(!pair.entity2->isDestroyed()) {
-                pair.entity1->destroy();
+            if(!((Bullet*)getMatchingEntity(pair, Entity::Type::BULLET))->isDestroyed()) {
+                ((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
+                ((Bullet*)getMatchingEntity(pair, Entity::Type::BULLET))->destroy();
             }
-            pair.entity2->destroy();
         }
     }
 }
