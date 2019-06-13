@@ -1,6 +1,6 @@
-
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
+#include "sfmlpch.hpp"
+// #include <SFML/Graphics.hpp>
+// #include <SFML/System.hpp>
 
 #include "input.hpp"
 #include "game.hpp"

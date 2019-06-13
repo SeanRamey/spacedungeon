@@ -1,6 +1,8 @@
-#include <iostream>
-#include <vector>
+#include "stdpch.hpp"
+//#include <iostream>
+//#include <vector>
 #include "tile.hpp"
+
 
 Tile::Tile(unsigned int x, unsigned int y, unsigned int w, unsigned int h) :
 position(x,y),

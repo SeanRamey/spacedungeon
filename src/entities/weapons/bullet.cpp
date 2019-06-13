@@ -1,10 +1,12 @@
+#include "allpch.hpp"
+
 #include "bullet.hpp"
 #include "input.hpp"
 #include "random-numbers.hpp"
-#include "SFML/System.hpp"
+//#include "SFML/System.hpp"
 #include "resources.hpp"
-#include <iostream>
-#include <cmath>
+//#include <iostream>
+//#include <cmath>
 #include "othermath.h"
 
 Bullet::Bullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, sf::Vector2u size, unsigned int initialSpeed, unsigned int damage, Level* level, sf::Time maxTimeAlive) :

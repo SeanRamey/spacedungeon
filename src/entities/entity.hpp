@@ -1,10 +1,10 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
-//#include "sfmlpch.hpp"
-#include <SFML/System.hpp>
-#include <SFML/Graphics.hpp>
-#include <vector>
+#include "allpch.hpp"
+// #include <SFML/System.hpp>
+// #include <SFML/Graphics.hpp>
+#//include <vector>
 #include "animation.hpp"
 
 class Level; // forward declare to avoid circular dependency

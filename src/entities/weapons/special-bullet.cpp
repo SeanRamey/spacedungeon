@@ -1,15 +1,16 @@
+#include "stdpch.hpp"
+
 #include "special-bullet.hpp"
 #include "resources.hpp"
 #include "player-ship.hpp"
 #include "othermath.h"
-#include <iostream>
+//#include <iostream>
 #include "level.hpp"
 #include "random-numbers.hpp"
 
 SpecialBullet::SpecialBullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, Level* level) :
 Bullet(position, targetPosition, owner, sf::Vector2u(32,32), 200, 2, level, sf::seconds(1)){
     numSplits = 16;
-    accelerate(sf::Vector2f(this->initialSpeed * cosf(degreesToRadians(getRotation() - 90)), this->initialSpeed * sinf(degreesToRadians(getRotation() - 90))));
 }
 
 SpecialBullet::~SpecialBullet(){

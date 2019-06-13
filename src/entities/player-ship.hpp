@@ -1,18 +1,18 @@
 #ifndef PLAYER_SHIP_HPP
 #define PLAYER_SHIP_HPP
 
-//#include "sfmlpch.hpp"
+#include "allpch.hpp"
 #include "input.hpp"
 #include "othermath.h"
 #include "gun.hpp"
 #include "entity.hpp"
-#include <stdlib.h>
-#include <stdio.h>
-#include <cmath>
-#include <chrono>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
+//#include <stdlib.h>
+//#include <stdio.h>
+//#include <cmath>
+//#include <chrono>
+// #include <SFML/System.hpp>
+// #include <SFML/Window.hpp>
+// #include <SFML/Graphics.hpp>
 
 class PlayerShip : public Entity {
     public:

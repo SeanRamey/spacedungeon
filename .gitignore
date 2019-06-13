@@ -1,12 +1,13 @@
 *.dll
-build/*.d
-build/*.o
-build/*.exe
+build/
 bin/
 include/
 lib/
 *.o
 *.d
+*.exe
 log.txt
-game-alpha.code-workspace
+*.code-workspace
 .vscode/
+*.hpp.gch
+src/sfmlpch.hpp.gch
