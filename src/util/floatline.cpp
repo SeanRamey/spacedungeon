@@ -98,16 +98,16 @@ bool FloatLine::intersects(const FloatLine& otherLine) {
     //return LineA1 + ua * (LineA2 – LineA1) // returns point of collision
 }
 
-float length() {
+float FloatLine::length() {
     return sqrtf(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
 FloatLine FloatLine::operator+(const FloatLine& line) {
-    if(line.length() > this->length()) {
-        return  line.length() - this->length();
-    } else {
-        return this->length() - line.length();
-    }
+    // if(line.length() > this->length()) {
+    //     return  line.length() - this->length();
+    // } else {
+    //     return this->length() - line.length();
+    // }
 }
 
 FloatLine FloatLine::operator-(const FloatLine& line) {
