@@ -174,6 +174,18 @@ void Level::processCollisions() {
             }
         }
     }
+
+    // Implement line collisions
+    // Need to iterate through all objects creating a line from their previous position
+    // to their current one, then compare each line to all other objects' lines.
+    // Find all the collisions and put them in a container.
+    //
+    // Iterate over all the collisions and get the time of collision and position of collision.
+    // Handle each collision at the position of collision one at a time starting with the first chonological collision.
+    // Each time a collision is handled, the remainder of frame time must be calculated from the amount of time
+    // it took to reach each collision subtracted from the full frame time.
+    // Then all the other colliding object must be updated again with the remaining frame time.
+    // Keep doing this until the full frame time and collisions are accounted for.
 }
 
 void Level::removeDestroyedEntities() {
