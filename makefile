@@ -1,7 +1,7 @@
 
 
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -O2
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -O3
 CPPFLAGS = -DSFML
 LDFLAGS = -static-libstdc++
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
@@ -57,10 +57,17 @@ ifeq ($(OSTARGET),LINUX)
 	PREFIX ?= /usr/local
 
 	# compiler/linker programs
+	ifeq ($(USE_CLANG), yes)
+	CC := clang
+	CXX := clang
+	CPP := clang
+	LD := clang
+else
 	CC := gcc
 	CXX := g++
-	CPP := g++
+	CPP := cpp
 	LD := g++
+endif
 
 	# extension of output program
 	#program +=
@@ -82,7 +89,7 @@ ifeq ($(OSTARGET),MACOSX)
 	# compiler/linker programs
 	CC := gcc
 	CXX := g++
-	CPP := g++
+	CPP := cpp
 	LD := g++
 
 	# extension of output program
@@ -105,7 +112,7 @@ ifeq ($(OSTARGET),WINDOWS)
 	# compiler/linker programs
 	CC := gcc
 	CXX := g++
-	CPP := g++
+	CPP := cpp
 	LD := g++
 
 	# extension of output program
@@ -148,18 +155,23 @@ $(BUILD):
 
 # rule to generate a dependency file
 $(BUILD)/%.d: %.cpp
-	@$(CPP) $(CXXFLAGS) $< -MM -MT $(@:.d=.o) >$@
+	@$(CXX) $(CXXFLAGS) $< -MM -MT $(@:.d=.o) >$@
 	@echo generating dependencies for "$<"
 
 # include all dependency files in the makefile
 -include $(depends)
 
-.PHONY: clean install uninstall
+.PHONY: clean cleandep install uninstall
 clean:
 #	$(RM) $(subst /,$(SLASH),$(objects)) $(subst /,$(SLASH),$(depends)) $(subst /,$(SLASH),$(BUILD)/$(program))
 	@echo cleaning...
 	@$(RMDIR) $(BUILD)
 	@$(RM) $(SRC)$(SLASH)*.gch
+	@echo done.
+
+cleandep:
+	@echo cleaning dependencies...
+	@$(RM) $(subst /,$(SLASH),$(depends))
 	@echo done.
 
 install: $(BUILD)/$(program)
@@ -187,3 +199,4 @@ help:
 	@echo make install ------------------------------ builds the program just like make all and installs the final files to a directory
 	@echo make uninstall ---------------------------- will remove all the files from the install directory
 	@echo make clean -------------------------------- will remove the build directory
+	@echo make cleandep ----------------------------- will remove all dependency files from the build directory
