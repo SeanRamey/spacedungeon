@@ -54,9 +54,17 @@ ifeq ($(OSTARGET),LINUX)
 	PREFIX ?= /usr/local
 
 	# compiler/linker programs
+ifeq ($(USE_CLANG), yes)
+	CC := clang
+	CXX := clang
+	CPP := clang
+	LD := clang
+else
 	CC := gcc
-	CPP := g++
+	CXX := g++
+	CPP := cpp
 	LD := g++
+endif
 
 	# extension of output program
 	#program +=
@@ -77,7 +85,8 @@ ifeq ($(OSTARGET),MACOSX)
 
 	# compiler/linker programs
 	CC := gcc
-	CPP := g++
+	CXX := g++
+	CPP := cpp
 	LD := g++
 
 	# extension of output program
@@ -99,7 +108,8 @@ ifeq ($(OSTARGET),WINDOWS)
 
 	# compiler/linker programs
 	CC := gcc
-	CPP := g++
+	CXX := g++
+	CPP := cpp
 	LD := g++
 
 	# extension of output program
@@ -135,17 +145,22 @@ $(BUILD):
 
 # rule to generate a dependency file
 $(BUILD)/%.d: %.cpp
-	@$(CPP) $(CXXFLAGS) $< -MM -MT $(@:.d=.o) >$@
-	@echo generating dependencies for $<
+	@$(CXX) $(CXXFLAGS) $< -MM -MT $(@:.d=.o) >$@
+	@echo generating dependencies for $< 
 
 # include all dependency files in the makefile
 -include $(depends)
 
-.PHONY: clean install uninstall help
+.PHONY: clean cleandep install uninstall help
 clean:
 #	$(RM) $(subst /,$(SLASH),$(objects)) $(subst /,$(SLASH),$(depends)) $(subst /,$(SLASH),$(BUILD)/$(program))
 	@echo cleaning...
 	@$(RMDIR) $(BUILD)
+	@echo done.
+
+cleandep:
+	@echo cleaning dependencies...
+	@$(RM) $(subst /,$(SLASH),$(depends))
 	@echo done.
 
 install: $(BUILD)/$(program)
@@ -173,3 +188,4 @@ help:
 	@echo make install ------------------------------ builds the program just like make all and installs the final files to a directory
 	@echo make uninstall ---------------------------- will remove all the files from the install directory
 	@echo make clean -------------------------------- will remove the build directory
+	@echo make cleandep ----------------------------- will remove all dependency files from the build directory
