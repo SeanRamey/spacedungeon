@@ -1,7 +1,13 @@
 #include "ui-button.hpp"
+#include "resources.hpp"
+#include "input.hpp"
+#include "main-menu.hpp"
+#include <iostream>
 
-UIButton::UIButton(sf::Vector2f position, sf::Texture* texture) :
+UIButton::UIButton(sf::Vector2f position, sf::Texture* texture, void* parent, void (*callback)(MainMenu*)) :
 UIElement(position){
+	this->parent = parent;	
+	this->callback = callback;
     if(texture != nullptr){
         setTexture(texture);
     }
@@ -24,9 +30,15 @@ void UIButton::setProperties(unsigned int fontSize, sf::Color color, sf::Font* f
 
 void UIButton::update(){
     sprite.setPosition(position);
-    sprite.setOrigin(sf::Vector2f(position.x + size.x, position.y + size.y));
-    text.setPosition(sprite.getOrigin());
-    text.setOrigin(sprite.getOrigin());
+    sprite.setOrigin(sf::Vector2f(position.x + size.x / 2, position.y + size.y / 2));
+	sf::FloatRect rect = sf::FloatRect(position.x - size.x / 2, position.y - size.y / 2, size.x, size.y);
+	sf::Vector2f mousePosition = Resources::window->mapPixelToCoords(Input::mousePosition);
+
+	if(rect.contains(mousePosition) && Input::checkMouse(sf::Mouse::Left)){
+		callback((MainMenu*)parent);
+	}
+    //text.setPosition(sprite.getOrigin());
+    //text.setOrigin(sprite.getOrigin());
 }
 
 void UIButton::setSize(sf::Vector2u size){

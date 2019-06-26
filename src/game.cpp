@@ -3,6 +3,7 @@
 #include "random-numbers.hpp"
 #include "level.hpp"
 #include "resources.hpp"
+#include "main-menu.hpp"
 using namespace Input;
 
 Game::Game(sf::VideoMode videoMode)
@@ -34,8 +35,10 @@ void Game::run()
     // they lay in a dorment state while game is being played out until loaded (very little memory wasted)
     Level* level = new Level(this, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
     Level* level2 = new Level(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
+	MainMenu* menu = new MainMenu(this);	
     gameStates.push_back(level);
     gameStates.push_back(level2);
+	gameStates.push_back(menu);
     level->init();
 
     while (window.isOpen()){
@@ -100,7 +103,7 @@ void Game::update(sf::Time frametime, sf::RenderWindow& window){
     if(level != nullptr){
         if(level->checkLose()){
             // TODO handle player losing sequence
-            //updateState(-1, true);
+            updateState(2, true);
         }
     }
 }
