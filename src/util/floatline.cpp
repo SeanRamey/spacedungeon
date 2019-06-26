@@ -19,83 +19,112 @@ FloatLine::FloatLine(sf::Vector2f point1, sf::Vector2f point2)
 
 FloatLine::FloatLine(const FloatLine& line)
 : x1(line.x1)
-, x2(line.x2)
 , y1(line.y1)
+, x2(line.x2)
 , y2(line.y2)
 {
 }
 
-bool FloatLine::intersects(float x1, float y1, float x2, float y2) {
-	// FloatLine v(y)  [ d[0]-c[0], d[1]-c[1] ];
-	// float u = [ b[0]-a[0], b[1]-a[1] ];
+bool FloatLine::intersects(float x1, float y1, float x2, float y2, sf::Vector2f* pointOfCollision) {
 
-	// float d = u[0]*v[1] - u[1]*v[0];
-	// float r = ((a[1]-c[1])*v[0] - (a[0]-c[0])*v[1]) / d;
-	// float s = ((a[1]-c[1])*u[0] - (a[0]-c[0])*u[1]) / d;
+    // return no point of collision by default
+    pointOfCollision->x = 0;
+    pointOfCollision->y = 0;
 
-	// return (0<=r && r<=1 && 0<=s && s<=1);
-
-////////////////////
-
-    //Cross Product (hope I got it right here)
-    // float fC= (B.x*C.y) - (B.y*C.x); //<0 == to the left, >0 == to the right
-    // float fD= (B.x*D.y) - (B.y*D.x);
-
-    // if( (fc<0) && (fd<0)) //both to the left  -> No Cross!
-    // if( (fc>0) && (fd>0)) //both to the right -> No Cross!
-
-
-//////////////////////
-
-    // denom = ((LineB2.Y – LineB1.Y) * (LineA2.X – LineA1.X)) – ((LineB2.X – LineB1.X) * (LineA2.Y - LineA1.Y))
-	// if (denom == 0)
-	// 	return null
-	// else
-	// 	ua = (((LineB2.X – LineB1.X) * (LineA1.Y – LineB1.Y)) –
-	// 		((LineB2.Y – LineB1.Y) * (LineA1.X – LineB1.X))) / denom
-	// 	/* The following 3 lines are only necessary if we are checking line
-	// 		segments instead of infinite-length lines */
-	// 	ub = (((LineA2.X – LineA1.X) * (LineA1.Y – LineB1.Y)) –
-	// 		((LineA2.Y – LineA1.Y) * (LineA1.X – LineB1.X))) / denom
-	// 	if (ua < 0) || (ua > 1) || (ub < 0) || (ub > 1)
-	// 		return null
-
-	// 	return LineA1 + ua * (LineA2 – LineA1)
-
-    float denominator = ((y2 - y1) * (this->x2 - this->x1)) - ((x2 - x1) * (this->y2 - this->y1));
+    float A1 = y2- y1;
+    float B1 = x1 - x2;
+    float C1 = A1 * x1 + B1 * y1;
+    float A2 = this->y2 - this->y1;
+    float B2 = this->x1 - this->x2;
+    float C2 = A2 * this->x1 + B2 * this->y1;
+    float denominator = A1 * B2 - A2 * B1;
 
     if(denominator == 0) {
         return false;
     }
 
-    float ua = (((x2 - x1) * (this->y1 - y1)) - ((y2 - y1) * (this->x1 - x1))) / denominator;
-    float ub = (((this->x2 - this->x1) * (this->y1 - y1)) - ((this->y2 - this->y1) * (this->x1 - x1))) / denominator;
+    float intersectX = (B2 * C1 - B1 * C2) / denominator;
+    float intersectY = (A1 * C2 - A2 * C1) / denominator;
+    float rx0 = (intersectX - x1) / (x2 - x1);
+    float ry0 = (intersectY - y1) / (y2 - y1);
+    float rx1 = (intersectX - this->x1) / (this->x2 - this->x1);
+    float ry1 = (intersectY - this->y1) / (this->y2 - this->y1);
 
-    if(ua < 0 || ua > 1 || ub < 0 || ub > 1) {
+    if(((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <= 1)) && ((rx1 >= 0 && rx1 <= 1) || (ry1 >= 0 && ry1 <= 1))) {
+        pointOfCollision->x = intersectX;
+        pointOfCollision->y = intersectY;
+        return true;
+	} else {
         return false;
     }
-
-    return true;
-    //return LineA1 + ua * (LineA2 – LineA1) // returns point of collision
 }
 
-bool FloatLine::intersects(const FloatLine& otherLine) {
+bool FloatLine::intersects(const sf::Vector2f& p1, const sf::Vector2f& p2, sf::Vector2f* pointOfCollision) {
 
-    float denominator = ((otherLine.y2 - otherLine.y1) * (this->x2 - this->x1)) - ((otherLine.x2 - otherLine.x1) * (this->y2 - this->y1));
+    // return no point of collision by default
+    pointOfCollision->x = 0;
+    pointOfCollision->y = 0;
+
+    float A1 = p2.y - p1.y;
+    float B1 = p1.x - p2.x;
+    float C1 = A1 * p1.x + B1 * p1.y;
+    float A2 = y2 - y1;
+    float B2 = x1 - x2;
+    float C2 = A2 * x1 + B2 * y1;
+    float denominator = A1 * B2 - A2 * B1;
 
     if(denominator == 0) {
         return false;
     }
 
-    float ua = (((otherLine.x2 - otherLine.x1) * (this->y1 - otherLine.y1)) - ((otherLine.y2 - otherLine.y1) * (this->x1 - otherLine.x1))) / denominator;
-    float ub = (((this->x2 - this->x1) * (this->y1 - otherLine.y1)) - ((this->y2 - this->y1) * (this->x1 - otherLine.x1))) / denominator;
+    float intersectX = (B2 * C1 - B1 * C2) / denominator;
+    float intersectY = (A1 * C2 - A2 * C1) / denominator;
+    float rx0 = (intersectX - p1.x) / (p2.x - p1.x);
+    float ry0 = (intersectY - p1.y) / (p2.y - p1.y);
+    float rx1 = (intersectX - x1) / (x2 - x1);
+    float ry1 = (intersectY - y1) / (y2 - y1);
 
-    if(ua < 0 || ua > 1 || ub < 0 || ub > 1) {
+    if(((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <= 1)) && ((rx1 >= 0 && rx1 <= 1) || (ry1 >= 0 && ry1 <= 1))) {
+        pointOfCollision->x = intersectX;
+        pointOfCollision->y = intersectY;
+        return true;
+	} else {
+        return false;
+    }
+}
+
+bool FloatLine::intersects(const FloatLine& otherLine, sf::Vector2f* pointOfCollision) {
+
+    // return no point of collision by default
+    pointOfCollision->x = 0;
+    pointOfCollision->y = 0;
+
+    float A1 = otherLine.y2 - otherLine.y1;
+    float B1 = otherLine.x1 - otherLine.x2;
+    float C1 = A1 * otherLine.x1 + B1 * otherLine.y1;
+    float A2 = y2 - y1;
+    float B2 = x1 - x2;
+    float C2 = A2 * x1 + B2 * y1;
+    float denominator = A1 * B2 - A2 * B1;
+
+    if(denominator == 0) {
         return false;
     }
 
-    return true;
-    //return LineA1 + ua * (LineA2 – LineA1) // returns point of collision
+    float intersectX = (B2 * C1 - B1 * C2) / denominator;
+    float intersectY = (A1 * C2 - A2 * C1) / denominator;
+    float rx0 = (intersectX - otherLine.x1) / (otherLine.x2 - otherLine.x1);
+    float ry0 = (intersectY - otherLine.y1) / (otherLine.y2 - otherLine.y1);
+    float rx1 = (intersectX - x1) / (x2 - x1);
+    float ry1 = (intersectY - y1) / (y2 - y1);
+
+    if(((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <= 1)) && ((rx1 >= 0 && rx1 <= 1) || (ry1 >= 0 && ry1 <= 1))) {
+        pointOfCollision->x = intersectX;
+        pointOfCollision->y = intersectY;
+        return true;
+	} else {
+        return false;
+    }
 }
 
 float FloatLine::length() {
@@ -103,13 +132,9 @@ float FloatLine::length() {
 }
 
 FloatLine FloatLine::operator+(const FloatLine& line) {
-    // if(line.length() > this->length()) {
-    //     return  line.length() - this->length();
-    // } else {
-    //     return this->length() - line.length();
-    // }
+    
 }
 
 FloatLine FloatLine::operator-(const FloatLine& line) {
-
+    
 }

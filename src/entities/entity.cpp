@@ -15,6 +15,7 @@ bool windowContains(sf::View view, sf::Sprite sprite);
 Entity::Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints)
 : velocity(0,0)
 , collisionRect(position.x, position.y, size.x, size.y)
+, prevPosition(position)
 , sprite()
 , isDead(false)
 , hitPoints(hitPoints)
@@ -29,6 +30,7 @@ Entity::Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, L
 Entity::Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints)
 : velocity(0,0)
 , collisionRect(x,y,w,h)
+, prevPosition(x,y)
 , sprite()
 , isDead(false)
 , hitPoints(hitPoints)
@@ -45,6 +47,7 @@ Entity::~Entity() {
 }
 
 void Entity::update(sf::Time frameTime) {
+    prevPosition = getPosition();
     move(velocity * frameTime.asSeconds());
     collisionRect.left = getPosition().x;
     collisionRect.top = getPosition().y;
@@ -126,6 +129,10 @@ Level* Entity::getLevel() {
 
 sf::FloatRect Entity::getCollisionRect() {
     return collisionRect;
+}
+
+FloatLine Entity::getCollisionLine() {
+    return FloatLine(prevPosition, getPosition());
 }
 
 bool Entity::windowContains(sf::View view, sf::Sprite sprite) const {

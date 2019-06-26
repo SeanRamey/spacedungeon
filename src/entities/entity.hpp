@@ -6,6 +6,7 @@
 // #include <SFML/Graphics.hpp>
 #//include <vector>
 #include "animation.hpp"
+#include "floatline.hpp"
 
 class Level; // forward declare to avoid circular dependency
 
@@ -27,6 +28,7 @@ class Entity : public sf::Transformable, public sf::Drawable {
         float calculateAngleTo(sf::Vector2f position);
         void face(sf::Vector2f position);
         sf::FloatRect getCollisionRect();
+        FloatLine getCollisionLine();
         sf::Vector2u getSize();
         unsigned int getHitpoints();
         void repair(unsigned int hitPoints);
@@ -55,6 +57,7 @@ class Entity : public sf::Transformable, public sf::Drawable {
      protected:
         sf::Vector2f velocity;
         sf::FloatRect collisionRect;
+        sf::Vector2f prevPosition;
         sf::Sprite sprite;
         Animation animation;
         bool isDead;
