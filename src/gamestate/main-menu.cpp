@@ -20,7 +20,6 @@ void MainMenu::ButtonCallback2(MainMenu* mm){
 void MainMenu::init(){
 	menu.clear();
 	menu.addButton(new UIButton(sf::Vector2f(0, 0), Resources::get(Resources::BUTTON), this, &ButtonCallback));
-	//std::cout << "called" << std::endl;
 	view.setCenter(0, 0);
 }
 
