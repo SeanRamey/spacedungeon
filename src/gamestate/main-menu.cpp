@@ -1,5 +1,6 @@
 #include "main-menu.hpp"
 #include "resources.hpp"
+
 void MainMenu::update(sf::Time frameTime, sf::RenderWindow& window){
 	menu.update(frameTime, window);
 }
@@ -11,8 +12,9 @@ void MainMenu::draw(sf::RenderWindow& window){
 
 void MainMenu::ButtonCallback(MainMenu* mm){
 	std::cout << "callback1 called" << std::endl;
-	mm->game->updateState(1, false);
+	mm->game->changeState(1, false);
 }
+
 void MainMenu::ButtonCallback2(MainMenu* mm){
 	std::cout << "callback2 called" << std::endl;
 }
@@ -30,7 +32,8 @@ void MainMenu::clear(){
 }
 
 
-MainMenu::MainMenu(Game* game) : GameState(game),
-menu() {
+MainMenu::MainMenu(Game* game)
+: GameState(game)
+, menu() {
 
 }

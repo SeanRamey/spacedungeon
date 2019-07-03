@@ -103,7 +103,7 @@ void Game::update(sf::Time frametime, sf::RenderWindow& window){
     if(level != nullptr){
         if(level->checkLose()){
             // TODO handle player losing sequence
-            updateState(2, true);
+            changeState(2, true);
         }
     }
 }
@@ -112,14 +112,18 @@ void Game::draw(sf::RenderWindow& window) {
     gameStates[currentState]->draw(window);
 }
 
-void Game::updateState(int newState, bool carryPlayer) {
+void Game::changeState(int newState, bool carryPlayer) {
     int prevState = currentState;
     gameStates[currentState]->clear();
     if(newState == -1) {
         // looping value to end if we hit the end
         currentState++;
-        if(currentState > STATECOUNT - 1) currentState = 0;
-        if(currentState < 0)              currentState = STATECOUNT - 1;
+        if(currentState > STATECOUNT - 1) {
+            currentState = 0;
+        }
+        if(currentState < 0) {
+            currentState = STATECOUNT - 1;
+        }
     } else {
         this->currentState = newState;
     }
@@ -136,7 +140,6 @@ void Game::updateState(int newState, bool carryPlayer) {
         // used as a reset sequence, moves player
         if(prevLevel != nullptr){
             // in case last level was a main menu or save state (could be exploited)
-            previousPlayer->setHitpoints(100);
             previousPlayer->revive();
             previousPlayer->setPosition(0, 0);
         }

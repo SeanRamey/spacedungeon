@@ -4,7 +4,7 @@
 #include "main-menu.hpp"
 #include <iostream>
 
-UIButton::UIButton(sf::Vector2f position, sf::Texture* texture, void* parent, void (*callback)(MainMenu*)) :
+UIButton::UIButton(sf::Vector2f position, sf::Texture* texture, GameState* parent, void (*callback)(MainMenu*)) :
 UIElement(position){
 	this->parent = parent;	
 	this->callback = callback;
@@ -31,7 +31,7 @@ void UIButton::setProperties(unsigned int fontSize, sf::Color color, sf::Font* f
 void UIButton::update(){
     sprite.setPosition(position);
     sprite.setOrigin(sf::Vector2f(position.x + size.x / 2, position.y + size.y / 2));
-	sf::FloatRect rect = sf::FloatRect(position.x - size.x / 2, position.y - size.y / 2, size.x, size.y);
+	sf::FloatRect rect(position.x - size.x / 2, position.y - size.y / 2, size.x, size.y);
 	sf::Vector2f mousePosition = Resources::window->mapPixelToCoords(Input::mousePosition);
 
 	if(rect.contains(mousePosition) && Input::checkMouse(sf::Mouse::Left)){

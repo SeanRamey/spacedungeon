@@ -6,6 +6,7 @@
 #include "othermath.h"
 #include "log.hpp"
 #include "level.hpp"
+#include "entity-data.hpp"
 //#include <cmath>
 //#include <algorithm>
 //#include <iostream>
@@ -152,8 +153,8 @@ void Entity::setTexture(sf::Texture* texture) {
 }
 
 void Entity::repair(unsigned int hitPoints) {
-    if(this->hitPoints - hitPoints >= 0) {
-        this->hitPoints -= hitPoints;
+    if(this->hitPoints + hitPoints > 0) {
+        this->hitPoints += hitPoints;
     }
 }
 
@@ -182,6 +183,14 @@ bool Entity::isDestroyed() {
 
 void Entity::revive(){
     this->isDead = false;
+    
+    switch(type) {
+        case ALIEN_SHIP: setHitpoints(EntityData::AlienShip::hitpoints); break;
+        case PLAYER_SHIP: setHitpoints(EntityData::PlayerShip::hitpoints); break;
+        case BULLET: setHitpoints(EntityData::Bullet::hitpoints); break;
+        case TILE: setHitpoints(EntityData::DefaultEntity::hitpoints); break;
+        default: setHitpoints(EntityData::DefaultEntity::hitpoints); break;
+    }
 }
 
 void Entity::setLevel(Level* level){
