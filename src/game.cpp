@@ -40,7 +40,6 @@ void Game::run()
     gameStates.push_back(level2);
 	gameStates.push_back(menu);
     level->init();
-	previousLevel = level;
 
     while (window.isOpen()){
         unprocessedTime = loopTimer.getElapsedTime() + unprocessedTime;
@@ -130,7 +129,7 @@ void Game::updateState(int newState, bool carryPlayer) {
     Level* prevLevel = static_cast<Level*>(gameStates[prevState]);
     Level* currLevel = static_cast<Level*>(gameStates[currentState]);
     if(prevLevel != nullptr){
-        // storing previous player for later usage
+        // storing previous level to access previous player
         previousLevel = prevLevel;
     }
     if(currLevel != nullptr){
@@ -138,10 +137,12 @@ void Game::updateState(int newState, bool carryPlayer) {
 		if(carryPlayer){
         	currLevel->setPlayer(previousLevel->getPlayer());
         	currLevel->getPlayer()->setLevel(currLevel);
+			std::cout << "changed previous level" << std::endl;
 		}
+		std::cout << previousLevel->getPlayer() << std::endl;
+		std::cout << currLevel->getPlayer() << std::endl;
 		currLevel->getPlayer()->revive();
 		currLevel->getPlayer()->setHitpoints(100);
-		std::cout << "called here " << std::endl;
 		currLevel->getPlayer()->setPosition(0, 0);
     } else {
 		std::cout << "nullptr" << std::endl;

@@ -23,8 +23,8 @@ tileImagesFileName(tileImagesFileName),
 levelDataFileName(levelDataFileName) {
     
     Resources::load();
-    //this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
-    //entities.push_back(this->playerShip);
+    this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
+    entities.push_back(this->playerShip);
     healthBar.setTexture(Resources::get(Resources::ID::HEALTH_BAR));
     playerIsDead = false;
 
@@ -76,7 +76,6 @@ void Level::draw(sf::RenderWindow& window){
 }
 
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
-	//std::cout << playerShip->getHitpoints() << "  " << playerShip<< std::endl;
     view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
     if(!playerIsDead){
          view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
@@ -394,6 +393,7 @@ void Level::setPlayer(PlayerShip* playerShip){
     entities.erase(std::remove(entities.begin(), entities.end(), this->playerShip), entities.end());
     entities.shrink_to_fit();
     this->playerShip = playerShip;
+	std::cout << "set player to: " << playerShip << std::endl;
     playerIsDead = false;
-    entities.push_back(this->playerShip);
+    entities.push_back(playerShip);
 }
