@@ -361,6 +361,8 @@ void Level::loadEntites(std::string path){
 }
 
 void Level::init() {
+	std::cout << "level initialized: " << this << std::endl;
+    playerIsDead = false;
     loadMap(levelMapFileName, tileImagesFileName);
     loadEntites(levelDataFileName);    
 }
@@ -391,6 +393,7 @@ void Level::setPlayer(PlayerShip* playerShip){
     entities.erase(std::remove(entities.begin(), entities.end(), this->playerShip), entities.end());
     entities.shrink_to_fit();
     this->playerShip = playerShip;
+	std::cout << "set player to: " << playerShip << std::endl;
     playerIsDead = false;
-    entities.push_back(this->playerShip);
+    entities.push_back(playerShip);
 }

@@ -26,9 +26,7 @@ void Menu::update(sf::Time frameTime, sf::RenderWindow& window){
 }
 
 void Menu::draw(sf::RenderWindow& window){	
-	std::cout << "num of buttons = " << buttons.size() << std::endl;
 	for(UIButton* button : buttons){
-		//std::cout << button->getPosition().x << " " << button->getPosition().y << std::endl;
 		window.draw(*button);
 	}
 }

@@ -132,20 +132,25 @@ void Game::changeState(int newState, bool carryPlayer) {
     // values are casted to check if either are levels
     Level* prevLevel = static_cast<Level*>(gameStates[prevState]);
     Level* currLevel = static_cast<Level*>(gameStates[currentState]);
-    if(prevLevel != nullptr && carryPlayer){
-        // storing previous player for later usage
-        previousPlayer = prevLevel->getPlayer();
+    if(prevLevel != nullptr){
+        // storing previous level to access previous player
+        previousLevel = prevLevel;
     }
-    if(currLevel != nullptr && carryPlayer && previousPlayer != nullptr){
+    if(currLevel != nullptr){
         // used as a reset sequence, moves player
-        if(prevLevel != nullptr){
-            // in case last level was a main menu or save state (could be exploited)
-            previousPlayer->revive();
-            previousPlayer->setPosition(0, 0);
-        }
-        currLevel->setPlayer(previousPlayer);
-        previousPlayer->setLevel(currLevel);
-    }
+		if(carryPlayer){
+        	currLevel->setPlayer(previousLevel->getPlayer());
+        	currLevel->getPlayer()->setLevel(currLevel);
+			std::cout << "changed previous level" << std::endl;
+		}
+		std::cout << previousLevel->getPlayer() << std::endl;
+		std::cout << currLevel->getPlayer() << std::endl;
+		currLevel->getPlayer()->revive();
+		currLevel->getPlayer()->setHitpoints(100);
+		currLevel->getPlayer()->setPosition(0, 0);
+    } else {
+		std::cout << "nullptr" << std::endl;
+	}
 }
 
 GameState* Game::getGameState(){
