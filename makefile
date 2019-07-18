@@ -1,10 +1,34 @@
+# default to using clang as the c/c++ compiler
+#USE_CLANG ?= true
 
+#default to debug build
+BUILDTYPE ?= DEBUG
 
+# master output directory
+BUILD := build
+
+ifeq ($(BUILDTYPE),DEBUG)
+# standard compile and link flags and link libraries (DEBUG)
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -O3
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11
 CPPFLAGS = -DSFML
-LDFLAGS = -static-libstdc++
+LDFLAGS =
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
+
+# output subdirectory
+SUBBUILD := debug
+
+else ifeq ($(BUILDTYPE),RELEASE)
+# standard compile and link flags and link libraries (RELEASE)
+CFLAGS =
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -std=c++11 -O3 -flto
+CPPFLAGS = -DSFML
+LDFLAGS = -s -O3 -flto
+LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
+
+# output subdirectory
+SUBBUILD := release
+endif
 
 # source directory
 SRC := src
@@ -18,9 +42,6 @@ unit-test-cppdirs = unit-tests
 
 # a list of headers to pre-compile
 pchfiles = sfmlpch.hpp stdpch.hpp allpch.hpp doctestpch.hpp
-
-# output directory
-BUILD := build
 
 # main files
 program-main = main.cpp
@@ -64,17 +85,23 @@ ifeq ($(OSTARGET),LINUX)
 	PREFIX ?= /usr/local
 
 	# compiler/linker programs
-	ifeq ($(USE_CLANG), yes)
-	CC := clang
-	CXX := clang
-	CPP := clang
-	LD := clang
-else
-	CC := gcc
-	CXX := g++
-	CPP := cpp
-	LD := g++
-endif
+    ifeq ($(USE_CLANG), true)
+	    CC := clang
+	    CXX := clang++
+	    CPP := clang++
+	    LD := clang++
+
+        ifeq ($(USE_LIBC++), true)
+	        CXXFLAGS += -stdlib=libc++
+	        LDFLAGS += -L/home/sean/Coding/spacedungeon/lib
+	        LDFLAGS += -stdlib=libc++
+        endif
+    else
+	    CC := gcc
+	    CXX := g++
+	    CPP := cpp
+	    LD := g++
+    endif
 
 	# extension of output program
 	#program +=
@@ -131,33 +158,33 @@ INCDIRS = $(SRC) $(addprefix $(SRC)/,$(cppdirs)) $(addprefix $(SRC)/,$(unit-test
 VPATH = $(INCDIRS)
 cppsrc = $(wildcard $(SRC)/*.cpp $(addsuffix /*.cpp,$(addprefix $(SRC)/,$(cppdirs))))
 unit-test-cppsrc = $(wildcard $(addsuffix /*.cpp,$(addprefix $(SRC)/,$(unit-test-cppdirs))))
-objects = $(patsubst $(SRC)/%.o,$(BUILD)/%.o,$(cppsrc:.cpp=.o))
-unit-test-objects = $(patsubst $(SRC)/%.o,$(BUILD)/%.o,$(unit-test-cppsrc:.cpp=.o))
+objects = $(patsubst $(SRC)/%.o,$(BUILD)/$(SUBBUILD)/%.o,$(cppsrc:.cpp=.o))
+unit-test-objects = $(patsubst $(SRC)/%.o,$(BUILD)/$(SUBBUILD)/%.o,$(unit-test-cppsrc:.cpp=.o))
 depends = $(objects:.o=.d) $(unit-test-objects:.o=.d)
 gchfiles = $(addsuffix .gch, $(pchfiles))
 DESTDIR =
 
-all: $(BUILD)/$(program) $(BUILD)/$(testprogram)
+all: $(BUILD)/$(SUBBUILD)/$(program) $(BUILD)/$(SUBBUILD)/$(testprogram)
 	@echo running tests...
-	$(BUILD)/$(testprogram)
+	$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram)
 	@echo build complete!
 
-$(program): $(BUILD)/$(program)
+$(program): $(BUILD)/$(SUBBUILD)/$(program)
 	@echo done building $(program)!
 
-$(testprogram): $(BUILD)/$(testprogram)
+$(testprogram): $(BUILD)/$(SUBBUILD)/$(testprogram)
 	@echo done building $(testprogram)!
 	@echo running tests...
-	@$(BUILD)/$(testprogram)
+	@$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram)
 
 # build single file
-single: $(BUILD)/$(in).o
+single: $(BUILD)/$(SUBBUILD)/$(in).o
 
-$(BUILD)/$(program): $(objects)
+$(BUILD)/$(SUBBUILD)/$(program): $(objects)
 	@echo linking "$^" into "$@" using these libraries: "$(LDLIBS)"
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
-$(BUILD)/$(testprogram): $(unit-test-objects) $(filter-out $(BUILD)/$(program-main:.cpp=.o),$(objects))
+$(BUILD)/$(SUBBUILD)/$(testprogram): $(unit-test-objects) $(filter-out $(BUILD)/$(SUBBUILD)/$(program-main:.cpp=.o),$(objects))
 	@echo linking "$^" into "$@" using these libraries: "$(LDLIBS)"
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 
@@ -165,7 +192,7 @@ $(objects): $(gchfiles)
 
 $(unit-test-objects): $(gchfiles)
 
-$(BUILD)/%.o: %.cpp
+$(BUILD)/$(SUBBUILD)/%.o: %.cpp
 	@echo compiling "$<" to "$@" with $(CXX)
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
@@ -173,14 +200,14 @@ $(BUILD)/%.o: %.cpp
 	@echo precompiling header "$<" to "$@" with $(CXX)
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) $<
 
-$(objects) $(depends): | $(BUILD)
+$(objects) $(depends): | $(BUILD) $(BUILD)/$(SUBBUILD)
 
-$(BUILD):
+$(BUILD) $(BUILD)/$(SUBBUILD):
 	@echo creating directories
-	@$(MKDIR) $(BUILD) $(addprefix $(BUILD)$(SLASH),$(cppdirs)) $(addprefix $(BUILD)$(SLASH),$(unit-test-cppdirs))
+	@$(MKDIR) $(BUILD) $(addprefix $(BUILD)$(SLASH)$(SUBBUILD)$(SLASH),$(cppdirs)) $(addprefix $(BUILD)$(SLASH)$(SUBBUILD)$(SLASH),$(unit-test-cppdirs))
 
 # rule to generate a dependency file
-$(BUILD)/%.d: %.cpp
+$(BUILD)/$(SUBBUILD)/%.d: %.cpp
 	@echo generating dependencies for "$<"
 	@$(CXX) $(CXXFLAGS) $< -MM -MT $(@:.d=.o) >$@
 
@@ -200,7 +227,7 @@ cleandep:
 	@$(RM) $(subst /,$(SLASH),$(depends))
 	@echo done.
 
-install: $(BUILD)/$(program)
+install: $(BUILD)/$(SUBBUILD)/$(program)
 ifeq ($(OSTARGET),WINDOWS)
 	-$(CP) /S $(BUILD) $(DESTDIR)$(PREFIX)bin $(program)
 	-$(CP) /S data $(DESTDIR)$(PREFIX)bin$(SLASH)data
