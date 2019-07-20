@@ -31,7 +31,7 @@ bool FloatLine::intersects(float x1, float y1, float x2, float y2, sf::Vector2f*
     pointOfCollision->x = 0;
     pointOfCollision->y = 0;
 
-    float A1 = y2- y1;
+    float A1 = y2 - y1;
     float B1 = x1 - x2;
     float C1 = A1 * x1 + B1 * y1;
     float A2 = this->y2 - this->y1;
@@ -125,6 +125,30 @@ bool FloatLine::intersects(const FloatLine& otherLine, sf::Vector2f* pointOfColl
 	} else {
         return false;
     }
+
+}
+
+// Returns 1 if the lines intersect, otherwise 0. In addition, if the lines 
+// intersect the intersection point may be stored in the floats pointOfCollision.x and pointOfCollision.y.
+bool FloatLine::get_line_intersection(float x1, float y1, float x2, float y2, sf::Vector2f* pointOfCollision)
+{
+    float s1_x = this->x2 - this->x1;
+    float s1_y = this->y2 - this->y1;
+    float s2_x = x2 - x1;
+    float s2_y = y2 - y1;
+
+    float s = (-s1_y * (this->x1 - x1) + s1_x * (this->y1 - y1)) / (-s2_x * s1_y + s1_x * s2_y);
+    float t = ( s2_x * (this->y1 - y1) - s2_y * (this->x1 - x1)) / (-s2_x * s1_y + s1_x * s2_y);
+
+    if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+    {
+        // Collision detected
+        pointOfCollision->x = this->x1 + (t * s1_x);
+        pointOfCollision->y = this->y1 + (t * s1_y);
+        return true;
+    }
+
+    return false; // No collision
 }
 
 float FloatLine::length() {

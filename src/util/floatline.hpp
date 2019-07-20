@@ -13,6 +13,7 @@ public:
     bool intersects(float x1, float y1, float x2, float y2, sf::Vector2f* pointOfCollision);
     bool intersects(const sf::Vector2f& p1, const sf::Vector2f& p2, sf::Vector2f* pointOfCollision);
     bool intersects(const FloatLine& otherLine, sf::Vector2f* pointOfCollision);
+    bool get_line_intersection(float x1, float y1, float x2, float y2, sf::Vector2f* pointOfCollision);
     float length();
     FloatLine operator+(const FloatLine& line);
     FloatLine operator-(const FloatLine& line);
