@@ -10,9 +10,9 @@ BUILD := build
 ifeq ($(BUILDTYPE),DEBUG)
 # standard compile and link flags and link libraries (DEBUG)
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -fno-omit-frame-pointer
 CPPFLAGS = -DSFML
-LDFLAGS =
+LDFLAGS = -fno-omit-frame-pointer
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
 
 # output subdirectory
