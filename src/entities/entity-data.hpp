@@ -3,19 +3,19 @@
 
 namespace EntityData {
     namespace DefaultEntity {
-        const unsigned int hitpoints = 100;
+        constexpr unsigned int hitpoints = 100;
     }
 
     namespace PlayerShip {
-        const unsigned int hitpoints = 50;
+        constexpr unsigned int hitpoints = 50;
     }
 
     namespace AlienShip {
-        const unsigned int hitpoints = 10;
+        constexpr unsigned int hitpoints = 10;
     }
 
     namespace Bullet {
-        const unsigned int hitpoints = 1;
+        constexpr unsigned int hitpoints = 1;
     }
 }
 

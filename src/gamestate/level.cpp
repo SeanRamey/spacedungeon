@@ -94,7 +94,6 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
         gameOver.setPosition(view.getCenter());
     }
 
-
     removeDestroyedEntities();
 
     for(Tile* tile : middleTiles){
@@ -107,7 +106,7 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     for(unsigned int i = 0; i < entities.size(); ++i) {
         if(!(entities.at(i) == playerShip && playerIsDead)){
             entities.at(i)->update(frameTime);
-        }
+		}
     }
     processCollisions();
 }
@@ -131,8 +130,8 @@ void Level::processCollisions() {
     std::vector<CollisionPair> collisions;
     for(int i = 0; i < entities.size(); i++){
         for(int j = i; j < entities.size(); j++){
-            Entity* entity1 = entities.at(i);
-            Entity* entity2 = entities.at(j);
+			Entity* entity1 = entities.at(i);
+			Entity* entity2 = entities.at(j);
             if(entity1 != entity2 && entity1->getCollisionRect().intersects(entity2->getCollisionRect())){
                 collisions.push_back(CollisionPair{entity1, entity2});
             }
@@ -332,7 +331,6 @@ void Level::loadEntites(std::string path){
     fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     file.close();
 
-
     std::vector<std::string> buffer;
     std::string number;
     Entity* entity;
@@ -361,7 +359,6 @@ void Level::loadEntites(std::string path){
 }
 
 void Level::init() {
-	std::cout << "level initialized: " << this << std::endl;
     playerIsDead = false;
     loadMap(levelMapFileName, tileImagesFileName);
     loadEntites(levelDataFileName);    
@@ -393,7 +390,6 @@ void Level::setPlayer(PlayerShip* playerShip){
     entities.erase(std::remove(entities.begin(), entities.end(), this->playerShip), entities.end());
     entities.shrink_to_fit();
     this->playerShip = playerShip;
-	std::cout << "set player to: " << playerShip << std::endl;
     playerIsDead = false;
     entities.push_back(playerShip);
 }

@@ -20,7 +20,7 @@ class Game
         const unsigned int STATECOUNT = 2;
         int currentState = 0;
 
-		Level* previousLevel; // used to store the last level in sequence of gamestates
+		Level* previousLevel = nullptr; // used to store the last level in sequence of gamestates
 
     public:
 

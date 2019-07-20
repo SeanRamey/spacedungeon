@@ -12,6 +12,17 @@ void Menu::addText(UITextElement* text){
 	texts.push_back(text);
 }
 
+UIButton* Menu::getButton(int index){
+	return buttons.at(index);
+}
+
+UIImageElement* Menu::getImage(int index){
+	return images.at(index);
+}
+UITextElement* Menu::getText(int index){
+	return texts.at(index);
+}
+
 void Menu::clear(){
 	buttons.clear();
 	images.clear();

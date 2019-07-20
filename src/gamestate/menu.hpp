@@ -14,6 +14,9 @@ class Menu {
 		void addButton(UIButton* button);
 		void addImage(UIImageElement* images);
 		void addText(UITextElement* text);
+		UIButton* getButton(int index);
+		UIImageElement* getImage(int index);
+		UITextElement* getText(int index);
 		void clear();
 		
 		Menu();

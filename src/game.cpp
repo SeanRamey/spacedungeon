@@ -35,11 +35,11 @@ void Game::run()
     // they lay in a dorment state while game is being played out until loaded (very little memory wasted)
     Level* level = new Level(this, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
     Level* level2 = new Level(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
-	MainMenu* menu = new MainMenu(this);	
+	MainMenu* menu = new MainMenu(this);
+	gameStates.push_back(menu);
     gameStates.push_back(level);
     gameStates.push_back(level2);
-	gameStates.push_back(menu);
-    level->init();
+    menu->init();
 
     while (window.isOpen()){
         unprocessedTime = loopTimer.getElapsedTime() + unprocessedTime;
@@ -98,12 +98,14 @@ void Game::processEvents()
 }
 
 void Game::update(sf::Time frametime, sf::RenderWindow& window){
-    gameStates[currentState]->update(frametime, window);
     Level* level = static_cast<Level*>(gameStates[currentState]);
+    gameStates[currentState]->update(frametime, window);
+	//std::cout << level->getPlayer()->isDestroyed() << "   ";
+	//std::cout << level->getPlayer()->getHitpoints() << std::endl;
     if(level != nullptr){
         if(level->checkLose()){
             // TODO handle player losing sequence
-            changeState(2, true);
+            changeState(0, true);
         }
     }
 }
@@ -127,30 +129,26 @@ void Game::changeState(int newState, bool carryPlayer) {
     } else {
         this->currentState = newState;
     }
-    gameStates[currentState]->init();
 
     // values are casted to check if either are levels
-    Level* prevLevel = static_cast<Level*>(gameStates[prevState]);
-    Level* currLevel = static_cast<Level*>(gameStates[currentState]);
+    Level* prevLevel = dynamic_cast<Level*>(gameStates[prevState]);
+    Level* currLevel = dynamic_cast<Level*>(gameStates[currentState]);
     if(prevLevel != nullptr){
         // storing previous level to access previous player
         previousLevel = prevLevel;
     }
     if(currLevel != nullptr){
         // used as a reset sequence, moves player
-		if(carryPlayer){
+		if(carryPlayer && previousLevel != nullptr){
+			std::cout << "beginning previous level" << std::endl;
         	currLevel->setPlayer(previousLevel->getPlayer());
         	currLevel->getPlayer()->setLevel(currLevel);
 			std::cout << "changed previous level" << std::endl;
 		}
-		std::cout << previousLevel->getPlayer() << std::endl;
-		std::cout << currLevel->getPlayer() << std::endl;
 		currLevel->getPlayer()->revive();
-		currLevel->getPlayer()->setHitpoints(100);
-		currLevel->getPlayer()->setPosition(0, 0);
-    } else {
-		std::cout << "nullptr" << std::endl;
-	}
+		currLevel->getPlayer()->setPosition(20, -50);
+    } 
+    gameStates[currentState]->init();
 }
 
 GameState* Game::getGameState(){
