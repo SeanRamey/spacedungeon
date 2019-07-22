@@ -15,16 +15,11 @@ void MainMenu::ButtonCallback(MainMenu* mm){
 	mm->game->changeState(1, true);
 }
 
-void MainMenu::ButtonCallback2(MainMenu* mm){
-	std::cout << "callback2 called" << std::endl;
-}
-
 void MainMenu::init(){
 	menu.clear();
 	menu.addButton(new UIButton(sf::Vector2f(0, 0), Resources::get(Resources::BUTTON), this, &ButtonCallback));
-	menu.addButton(new UIButton(sf::Vector2f(200, 200), Resources::get(Resources::BUTTON), this, &ButtonCallback2));
-	menu.getButton(1)->setProperties(35, sf::Color::Blue, "data/graphics/Void_2058.ttf");
-	menu.getButton(1)->setText("fantastic");
+	menu.getButton(0)->setProperties(35, sf::Color::Blue, "data/graphics/Void_2058.ttf");
+	menu.getButton(0)->setText("Restart?");
 	view.setCenter(0, 0);
 }
 

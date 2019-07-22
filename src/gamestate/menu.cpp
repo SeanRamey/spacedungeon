@@ -27,18 +27,29 @@ void Menu::clear(){
 	buttons.clear();
 	images.clear();
 	texts.clear();
-	std::cout << "cleared buttons" << std::endl;
 }
 
 void Menu::update(sf::Time frameTime, sf::RenderWindow& window){
 	for(UIButton* button : buttons){
 		button->update();
 	}
+	for(UIImageElement* image : images){
+		image->update();
+	}
+	for(UITextElement* text : texts){
+		text->update();
+	}
 }
 
 void Menu::draw(sf::RenderWindow& window){	
 	for(UIButton* button : buttons){
 		window.draw(*button);
+	}
+	for(UIImageElement* image : images){
+		window.draw(*image);
+	}
+	for(UITextElement* text : texts){
+		window.draw(*text);
 	}
 }
 

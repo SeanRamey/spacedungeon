@@ -140,10 +140,9 @@ void Game::changeState(int newState, bool carryPlayer) {
     if(currLevel != nullptr){
         // used as a reset sequence, moves player
 		if(carryPlayer && previousLevel != nullptr){
-			std::cout << "beginning previous level" << std::endl;
         	currLevel->setPlayer(previousLevel->getPlayer());
         	currLevel->getPlayer()->setLevel(currLevel);
-			std::cout << "changed previous level" << std::endl;
+			currLevel->getPlayer()->setVelocity(sf::Vector2f(0, 0));
 		}
 		currLevel->getPlayer()->revive();
 		currLevel->getPlayer()->setPosition(20, -50);
