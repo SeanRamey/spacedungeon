@@ -1,6 +1,7 @@
 #include "allpch.hpp"
 
 #include "bullet.hpp"
+#include "entity-data.hpp"
 #include "input.hpp"
 #include "random-numbers.hpp"
 //#include "SFML/System.hpp"
@@ -10,7 +11,7 @@
 #include "othermath.h"
 
 Bullet::Bullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, sf::Vector2u size, unsigned int initialSpeed, unsigned int damage, Level* level, sf::Time maxTimeAlive) :
-Entity(position, size, nullptr, level){
+Entity(position, size, nullptr, level, EntityData::Bullet::hitpoints){
     this->type = Entity::Type::BULLET;
     this->initialSpeed = initialSpeed;
     this->maxTimeAlive = maxTimeAlive;

@@ -6,6 +6,7 @@
 #include "othermath.h"
 #include "gun.hpp"
 #include "entity.hpp"
+#include "entity-data.hpp"
 //#include <stdlib.h>
 //#include <stdio.h>
 //#include <cmath>
@@ -16,8 +17,8 @@
 
 class PlayerShip : public Entity {
     public:
-        PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = 50);
-        PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = 50);
+        PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::PlayerShip::hitpoints);
+        PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::PlayerShip::hitpoints);
         ~PlayerShip();
 
         void update(sf::Time frameTime);

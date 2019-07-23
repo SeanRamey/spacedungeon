@@ -193,10 +193,9 @@ else
 endif
 
 help:
-	@echo Commands:
-	@echo make all ---------------------------------- builds the program and puts all the output files in a directory called build
-	@echo make single in="<path-to-file/file>" ------ builds only a single file (omit the .cpp or .c extension and ignore the quotes as well)
-	@echo make install ------------------------------ builds the program just like make all and installs the final files to a directory
-	@echo make uninstall ---------------------------- will remove all the files from the install directory
-	@echo make clean -------------------------------- will remove the build directory
-	@echo make cleandep ----------------------------- will remove all dependency files from the build directory
+	#@echo Commands:
+	#@echo make all ---------------------------------- builds the program and puts all the output files in a directory called build
+	#@echo make single in=<path-to-file/file> -------- builds only a single file (omit the .cpp or .c extension and ignore the quotes as well)
+	#@echo make install ------------------------------ builds the program just like make all and installs the final files to a directory
+	#@echo make uninstall ---------------------------- will remove all the files from the install directory
+	#@echo make clean -------------------------------- will remove the build directory

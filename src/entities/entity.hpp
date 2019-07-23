@@ -6,14 +6,15 @@
 // #include <SFML/Graphics.hpp>
 #//include <vector>
 #include "animation.hpp"
+#include "entity-data.hpp"
 
 class Level; // forward declare to avoid circular dependency
 
 class Entity : public sf::Transformable, public sf::Drawable {
 
     public:
-        Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = 100);
-        Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = 100);
+        Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::DefaultEntity::hitpoints);
+        Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::DefaultEntity::hitpoints);
         virtual ~Entity();
 
         virtual void update(sf::Time frameTime);

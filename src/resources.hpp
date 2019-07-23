@@ -13,6 +13,7 @@ namespace Resources {
         SPECIALBULLET,
         SHRAPNEL,
         HEALTH_BAR,
+		BUTTON,
         NUM_RESOURCES
     };
 

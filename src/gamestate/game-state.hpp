@@ -1,8 +1,6 @@
 #ifndef GAME_STATE_HPP
 #define GAME_STATE_HPP
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/System.hpp>
+#include "sfmlpch.hpp"
 #include "ui-element.hpp"
 class Game;
 class GameState{
