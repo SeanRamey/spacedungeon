@@ -1,5 +1,6 @@
 #include "floatline.hpp"
 #include "stdpch.hpp"
+#include <cfloat>
 
 FloatLine::FloatLine(float x1, float y1, float x2, float y2)
 : x1(x1)
@@ -132,19 +133,37 @@ bool FloatLine::intersects(const FloatLine& otherLine, sf::Vector2f* pointOfColl
 // intersect the intersection point may be stored in the floats pointOfCollision.x and pointOfCollision.y.
 bool FloatLine::get_line_intersection(float x1, float y1, float x2, float y2, sf::Vector2f* pointOfCollision)
 {
-    float s1_x = this->x2 - this->x1;
-    float s1_y = this->y2 - this->y1;
-    float s2_x = x2 - x1;
-    float s2_y = y2 - y1;
+    float width_1 = this->x2 - this->x1; // WIDTH  OF LINE
+    float height_1 = this->y2 - this->y1; // HEIGHT OF LINE
+    float width_2 = x2 - x1;             // WIDTH  OF LINE2
+    float height_2 = y2 - y1;             // HEIGHT OF LINE2
 
-    float s = (-s1_y * (this->x1 - x1) + s1_x * (this->y1 - y1)) / (-s2_x * s1_y + s1_x * s2_y);
-    float t = ( s2_x * (this->y1 - y1) - s2_y * (this->x1 - x1)) / (-s2_x * s1_y + s1_x * s2_y);
+	if(width_1 == 0) width_1 = FLT_MIN;
+	if(height_1 == 0) height_1 = FLT_MIN;
+	if(width_2 == 0) width_2 = -FLT_MIN;
+	if(height_2 == 0) height_2 = -FLT_MIN;
+
+	double slope_1 = (this->y2 - this->y1) / (this->x2 - this->x1);
+	double slope_2 = (y2 - y1) / (x2 - x1);
+	double slope_1_1 = (y1 - this->y1) / (x1 - this->x1);
+
+	double len_1 = sqrtf(pow(width_1, 2) + pow(height_1, 2));
+	double len_2 = sqrtf(pow(width_2, 2) + pow(height_2, 2));
+	
+	if(slope_1 == slope_2){
+		if(slope_1_1 == slope_1){
+				
+		}
+	}
+
+    float s = (-height_1 * (this->x1 - x1) + width_1 * (this->y1 - y1)) / (-width_2 * height_1 + width_1 * height_2);
+    float t = ( width_2 * (this->y1 - y1) - height_2 * (this->x1 - x1)) / (-width_2 * height_1 + width_1 * height_2);
 
     if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
     {
         // Collision detected
-        pointOfCollision->x = this->x1 + (t * s1_x);
-        pointOfCollision->y = this->y1 + (t * s1_y);
+        pointOfCollision->x = this->x1 + (t * width_1);
+        pointOfCollision->y = this->y1 + (t * height_1);
         return true;
     }
 
