@@ -1,14 +1,14 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-//#include "sfmlpch.hpp"
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
+#include "sfmlpch.hpp"
 
 #include "player-ship.hpp"
 #include "alien-ship.hpp"
 #include "game-state.hpp"
+
+#include <stack>
+#include <vector>
 
 class Game
 {
@@ -20,13 +20,13 @@ class Game
         const unsigned int STATECOUNT = 2;
         int currentState = 0;
 
-        PlayerShip* previousPlayer;
+		Level* previousLevel = nullptr; // used to store the last level in sequence of gamestates
 
     public:
 
         void update(sf::Time frameTime, sf::RenderWindow& window);
         void draw(sf::RenderWindow& window);
-        void updateState(int newState=-1, bool carryPlayer = false);
+        void changeState(int newState=-1, bool carryPlayer = false);
         GameState* getGameState();
         
         Game(sf::VideoMode videoMode);

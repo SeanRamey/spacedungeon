@@ -14,6 +14,7 @@ class UIElement : public sf::Drawable {
         void setTexture(sf::Texture* texture);
         virtual void update() = 0;
         virtual void setPosition(sf::Vector2f position);
+		sf::Vector2f  getPosition();
         sf::Vector2u getSize();
     
         UIElement(sf::Vector2f position);

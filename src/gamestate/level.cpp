@@ -94,7 +94,6 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
         gameOver.setPosition(view.getCenter());
     }
 
-
     removeDestroyedEntities();
 
     for(Tile* tile : middleTiles){
@@ -107,7 +106,7 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     for(unsigned int i = 0; i < entities.size(); ++i) {
         if(!(entities.at(i) == playerShip && playerIsDead)){
             entities.at(i)->update(frameTime);
-        }
+		}
     }
     processCollisions();
 }
@@ -381,7 +380,6 @@ void Level::loadEntites(std::string path){
     fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     file.close();
 
-
     std::vector<std::string> buffer;
     std::string number;
     Entity* entity;
@@ -410,6 +408,7 @@ void Level::loadEntites(std::string path){
 }
 
 void Level::init() {
+    playerIsDead = false;
     loadMap(levelMapFileName, tileImagesFileName);
     loadEntites(levelDataFileName);    
 }
@@ -441,5 +440,5 @@ void Level::setPlayer(PlayerShip* playerShip){
     entities.shrink_to_fit();
     this->playerShip = playerShip;
     playerIsDead = false;
-    entities.push_back(this->playerShip);
+    entities.push_back(playerShip);
 }

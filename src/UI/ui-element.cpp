@@ -21,6 +21,14 @@ UIElement::UIElement(sf::Vector2f position){
     sprite.setPosition(sf::Vector2f(position));
 }
 
+sf::Vector2f UIElement::getPosition(){
+	return this->position;
+}
+
+sf::Vector2u UIElement::getSize(){
+	return this->size;
+}
+
 UIElement::~UIElement(){
 
 }
