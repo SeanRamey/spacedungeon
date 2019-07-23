@@ -143,19 +143,6 @@ bool FloatLine::get_line_intersection(float x1, float y1, float x2, float y2, sf
 	if(width_2 == 0) width_2 = -FLT_MIN;
 	if(height_2 == 0) height_2 = -FLT_MIN;
 
-	double slope_1 = (this->y2 - this->y1) / (this->x2 - this->x1);
-	double slope_2 = (y2 - y1) / (x2 - x1);
-	double slope_1_1 = (y1 - this->y1) / (x1 - this->x1);
-
-	double len_1 = sqrtf(pow(width_1, 2) + pow(height_1, 2));
-	double len_2 = sqrtf(pow(width_2, 2) + pow(height_2, 2));
-	
-	if(slope_1 == slope_2){
-		if(slope_1_1 == slope_1){
-				
-		}
-	}
-
     float s = (-height_1 * (this->x1 - x1) + width_1 * (this->y1 - y1)) / (-width_2 * height_1 + width_1 * height_2);
     float t = ( width_2 * (this->y1 - y1) - height_2 * (this->x1 - x1)) / (-width_2 * height_1 + width_1 * height_2);
 
@@ -166,6 +153,13 @@ bool FloatLine::get_line_intersection(float x1, float y1, float x2, float y2, sf
         pointOfCollision->y = this->y1 + (t * height_1);
         return true;
     }
+
+	// last point collision endcase
+	if(this->y2 == y2 && this->x2 == x2){
+		pointOfCollision->x = x2;
+		pointOfCollision->y = y2;
+		return true;
+	}
 
     return false; // No collision
 }

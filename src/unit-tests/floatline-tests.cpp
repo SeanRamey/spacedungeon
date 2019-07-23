@@ -45,9 +45,9 @@ TEST_CASE( "FloatLine parrallel intersection test") {
 
 	SUBCASE( "horizontal parrallel non-identical intersection") {
         FloatLine floatline1(sf::Vector2f(0,15), sf::Vector2f(20,15));
-        FloatLine floatline2(sf::Vector2f(10,15), sf::Vector2f(30,15));
+        FloatLine floatline2(sf::Vector2f(15,15), sf::Vector2f(20,15));
         CHECK(floatline1.get_line_intersection(floatline2.x1, floatline2.y1, floatline2.x2, floatline2.y2, &pointOfCollision) == true);
-        CHECK(pointOfCollision.x == 10);
+        CHECK(pointOfCollision.x == 20);
         CHECK(pointOfCollision.y == 15);
 	}
 
