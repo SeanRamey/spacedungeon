@@ -8,6 +8,7 @@
 #include <thread>
 #include <utility>
 #include <cmath>
+#include <cfloat>
 #include <cstdlib>
 #include <cstdio>
 #include <chrono>
