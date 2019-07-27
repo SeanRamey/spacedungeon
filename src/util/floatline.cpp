@@ -113,7 +113,7 @@ bool FloatLine::intersects(float x1, float y1, float x2, float y2, sf::Vector2f*
     float s = (-line1Height * (xDistance) + line1Width * (yDistance)) / denominator;
     float t = ( line2Width * (yDistance) - line2Height * (xDistance)) / denominator;
 
-    // for a line segment interection, s and t must be within 0.0 and 1.0.
+    // for a line segment intersection, s and t must be within 0.0 and 1.0.
     if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
         // Collision detected
         pointOfCollision->x = this->x1 + (t * line1Width);
