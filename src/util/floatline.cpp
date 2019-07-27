@@ -55,45 +55,46 @@ bool FloatLine::intersects(float x1, float y1, float x2, float y2, sf::Vector2f*
         return true;
     }
 
-    float width1 = this->x2 - this->x1; // width of line1
-    float height1 = this->y2 - this->y1; // height of line1
-    float width2 = x2 - x1;             // width of line2
-    float height2 = y2 - y1;             // height of line2
-    float width1_1 = this->x1 - x1;     // width between the first points of both lines
-    float height1_1 = this->y1 - y1;    // height between the first points of both lines
+    float line1Width = this->x2 - this->x1;  // width of line1
+    float line1Height = this->y2 - this->y1; // height of line1
+    float line2Width = x2 - x1;              // width of line2
+    float line2Height = y2 - y1;             // height of line2
+    float xDistance = this->x1 - x1;      // width between the first points of both lines
+    float yDistance = this->y1 - y1;     // height between the first points of both lines
 
-    float denominator = (-width2 * height1 + width1 * height2);
+    float denominator = (-line2Width * line1Height + line1Width * line2Height);
 
     // are lines parallel?
     if(denominator == 0) {
 
-        float slope1 = (width1) / (height1);
-        float slope2 = (width2) / (height2);
-        float slope1_1 = (x1 - this->x1) / (y1 - this->y1); // slope of the first point on the first line to the first point on the second line
+        float line1Slope = (line1Width) / (line1Height);
+        float line2Slope = (line2Width) / (line2Height);
+        float collinearSlope = (x1 - this->x1) / (y1 - this->y1); // slope of the first point on the first line to the first point on the second line
 
-        float length1 = this->length();
-        float length2 = sqrtf(pow(width2, 2) + pow(height2, 2));
+        float line1Length = this->length();
+        float line2Length = sqrtf(pow(line2Width, 2) + pow(line2Height, 2));
 
-        if(std::isinf(slope1_1) && std::isinf(slope1) && std::isinf(slope2)) {
-            slope2 = slope1 = slope1_1 = 0;
+        if(std::isinf(collinearSlope) && std::isinf(line1Slope) && std::isinf(line2Slope)) {
+            line2Slope = line1Slope = collinearSlope = 0;
         }
 
         // are lines are collinear?
-        if(slope1 == slope2 && slope1_1 == slope1) {
+        if(line1Slope == line2Slope && collinearSlope == line1Slope) {
             
-            // ensure length1 always bigger
-            if(length1 < length2) {
-                std::swap(length1, length2);
+            // ensure line1Length always bigger
+            if(line1Length < line2Length) {
+                std::swap(line1Length, line2Length);
             }
 
-            // find the point where collinear lines collide
+			// determine if one of the lines is going the opposite direction
             bool isBackwards = x1 > x2 || y1 > y2;
+            // find the point where collinear lines collide
             float diff = sqrtf(pow(std::fmax(x1, this->x1) - std::fmin(x1, this->x1), 2) + pow(std::fmax(y1, this->y1) - std::fmin(y1, this->y1), 2));
-            float time = (diff)/(length1 - (length2 * (isBackwards ? -1 : 1)));
+            float time = (diff)/(line1Length - (line2Length * (isBackwards ? -1 : 1)));
             if (time >= 0 && time <= 1){
                 // Collision detected
-                pointOfCollision->x = this->x1 + (time * width1);
-                pointOfCollision->y = this->y1 + (time * height1);
+                pointOfCollision->x = this->x1 + (time * line1Width);
+                pointOfCollision->y = this->y1 + (time * line1Height);
                 return true;
             } else {
                 // Lines are parallel and co-linear, but don't intersect
@@ -109,14 +110,14 @@ bool FloatLine::intersects(float x1, float y1, float x2, float y2, sf::Vector2f*
     // for example, a line1 that is 10 units long with s = 0.5 will instersect with
     // line2 at 5 units from the starting point. Same applies to line2 and t.
     // s and t can be thought of in terms of time, as percent of total frame time.
-    float s = (-height1 * (width1_1) + width1 * (height1_1)) / denominator;
-    float t = ( width2 * (height1_1) - height2 * (width1_1)) / denominator;
+    float s = (-line1Height * (xDistance) + line1Width * (yDistance)) / denominator;
+    float t = ( line2Width * (yDistance) - line2Height * (xDistance)) / denominator;
 
     // for a line segment interection, s and t must be within 0.0 and 1.0.
     if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
         // Collision detected
-        pointOfCollision->x = this->x1 + (t * width1);
-        pointOfCollision->y = this->y1 + (t * height1);
+        pointOfCollision->x = this->x1 + (t * line1Width);
+        pointOfCollision->y = this->y1 + (t * line1Height);
         return true;
     }
 
@@ -135,8 +136,8 @@ float FloatLine::length() {
 // float time = (difference in starting points)/(len_big - len_lil)
 // if (time > 0 || time < 1){
 //     // Collision detected
-//     pointOfCollision->x = this->x1 + (time * width1);
-//     pointOfCollision->y = this->y1 + (time * height1);
+//     pointOfCollision->x = this->x1 + (time * line1Width);
+//     pointOfCollision->y = this->y1 + (time * line1Height);
 //     return true;
 // } else {
 //     no collision
