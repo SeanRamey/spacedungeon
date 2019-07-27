@@ -14,6 +14,7 @@ CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations
 CPPFLAGS = -DSFML
 LDFLAGS = -fno-omit-frame-pointer
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
+TESTPROGFLAGS = -ne
 
 # output subdirectory
 SUBBUILD := debug
@@ -25,6 +26,7 @@ CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations
 CPPFLAGS = -DSFML
 LDFLAGS = -s -O3 -flto
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
+TESTPROGFLAGS = -ne
 
 # output subdirectory
 SUBBUILD := release
@@ -166,7 +168,7 @@ DESTDIR =
 
 all: $(BUILD)/$(SUBBUILD)/$(program) $(BUILD)/$(SUBBUILD)/$(testprogram)
 	@echo running tests...
-	$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram)
+	$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram) $(TESTPROGFLAGS)
 	@echo build complete!
 
 $(program): $(BUILD)/$(SUBBUILD)/$(program)
@@ -175,7 +177,7 @@ $(program): $(BUILD)/$(SUBBUILD)/$(program)
 $(testprogram): $(BUILD)/$(SUBBUILD)/$(testprogram)
 	@echo done building $(testprogram)!
 	@echo running tests...
-	@$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram)
+	@$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram) $(TESTPROGFLAGS)
 
 # build single file
 single: $(BUILD)/$(SUBBUILD)/$(in).o
