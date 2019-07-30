@@ -10,9 +10,9 @@ BUILD := build
 ifeq ($(BUILDTYPE),DEBUG)
 # standard compile and link flags and link libraries (DEBUG)
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -fno-omit-frame-pointer
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -Og -march=native -fno-omit-frame-pointer
 CPPFLAGS = -DSFML
-LDFLAGS = -fno-omit-frame-pointer
+LDFLAGS = -march=native -fno-omit-frame-pointer
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
 TESTPROGFLAGS = -ne
 
@@ -22,9 +22,9 @@ SUBBUILD := debug
 else ifeq ($(BUILDTYPE),RELEASE)
 # standard compile and link flags and link libraries (RELEASE)
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -std=c++11 -O3 -flto
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -std=c++11 -O3 -march=native -flto
 CPPFLAGS = -DSFML
-LDFLAGS = -s -O3 -flto
+LDFLAGS = -s -O3 -march=native -flto
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
 TESTPROGFLAGS = -ne
 
@@ -185,10 +185,14 @@ single: $(BUILD)/$(SUBBUILD)/$(in).o
 $(BUILD)/$(SUBBUILD)/$(program): $(objects)
 	@echo linking "$^" into "$@" using these libraries: "$(LDLIBS)"
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
+	@echo linking "$@" done!\n
+	@echo ""
 
 $(BUILD)/$(SUBBUILD)/$(testprogram): $(unit-test-objects) $(filter-out $(BUILD)/$(SUBBUILD)/$(program-main:.cpp=.o),$(objects))
 	@echo linking "$^" into "$@" using these libraries: "$(LDLIBS)"
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
+	@echo linking "$@" done!
+	@echo ""
 
 $(objects): $(gchfiles)
 
