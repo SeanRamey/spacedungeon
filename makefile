@@ -185,7 +185,7 @@ single: $(BUILD)/$(SUBBUILD)/$(in).o
 $(BUILD)/$(SUBBUILD)/$(program): $(objects)
 	@echo linking "$^" into "$@" using these libraries: "$(LDLIBS)"
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
-	@echo linking "$@" done!\n
+	@echo linking "$@" done!
 	@echo ""
 
 $(BUILD)/$(SUBBUILD)/$(testprogram): $(unit-test-objects) $(filter-out $(BUILD)/$(SUBBUILD)/$(program-main:.cpp=.o),$(objects))
