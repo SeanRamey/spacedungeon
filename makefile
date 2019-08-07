@@ -1,5 +1,5 @@
 # default to using clang as the c/c++ compiler
-#USE_CLANG ?= true
+USE_CLANG ?= true
 
 #default to debug build
 BUILDTYPE ?= DEBUG
@@ -11,7 +11,7 @@ ifeq ($(BUILDTYPE),DEBUG)
 # standard compile and link flags and link libraries (DEBUG)
 CFLAGS =
 CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -Og -march=native -fno-omit-frame-pointer
-CPPFLAGS = -DSFML
+CPPFLAGS = -DDEBUG -DSFML
 LDFLAGS = -march=native -fno-omit-frame-pointer
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
 TESTPROGFLAGS = -ne
@@ -23,7 +23,7 @@ else ifeq ($(BUILDTYPE),RELEASE)
 # standard compile and link flags and link libraries (RELEASE)
 CFLAGS =
 CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -std=c++11 -O3 -march=native -flto
-CPPFLAGS = -DSFML
+CPPFLAGS = -DRELEASE -DSFML
 LDFLAGS = -s -O3 -march=native -flto
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
 TESTPROGFLAGS = -ne
