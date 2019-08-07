@@ -43,6 +43,7 @@ Entity::~Entity() {
 }
 
 void Entity::update(sf::Time frameTime) {
+    lastFrameTime = frameTime;
     prevPosition = getPosition();
     move(velocity * frameTime.asSeconds());
     collisionRect.left = getPosition().x;
@@ -112,6 +113,10 @@ void Entity::limitVelocity(const unsigned int MAX_SPEED) {
 
 sf::Vector2f Entity::getVelocity() {
     return velocity;
+}
+
+sf::Vector2f Entity::getFrameVelocity() {
+    return velocity * lastFrameTime.asSeconds();
 }
 
 sf::Vector2u Entity::getSize() {

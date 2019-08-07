@@ -20,6 +20,7 @@ class Entity : public sf::Transformable, public sf::Drawable {
         void setAnimation(Animation newAnimation);
         void setTexture(sf::Texture* texture);
         sf::Vector2f getVelocity();
+        sf::Vector2f getFrameVelocity();
         void setVelocity(sf::Vector2f vector);
         void accelerate(sf::Vector2f velocity);
         void limitVelocity(const unsigned int MAX_SPEED);
@@ -57,6 +58,7 @@ class Entity : public sf::Transformable, public sf::Drawable {
         bool isDead;
         unsigned int hitPoints;
         Level* level;
+        sf::Time lastFrameTime;
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 };

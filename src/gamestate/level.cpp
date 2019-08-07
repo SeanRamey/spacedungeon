@@ -174,9 +174,9 @@ void Level::processCollisions() {
 
             CollisionPair collision = {entity1, entity2, sf::Vector2f(0,0), 0.0f};
             if(entity1 != entity2 &&
-                Collision::TestMovingAABB(entity1->getCollisionRect(), entity2->getCollisionRect(), entity1->getVelocity(), entity2->getVelocity(), &collision.time)
+                Collision::TestMovingAABB(entity1->getCollisionRect(), entity2->getCollisionRect(), entity1->getFrameVelocity(), entity2->getFrameVelocity(), &collision.time)
             ) {
-                collisions.push_back(collision);
+                //collisions.push_back(collision);
             }
         }
     }
