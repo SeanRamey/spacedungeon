@@ -23,7 +23,8 @@ class Game
 		Level* previousLevel = nullptr; // used to store the last level in sequence of gamestates
 
     public:
-
+        void init();
+        void run();
         void update(sf::Time frameTime, sf::RenderWindow& window);
         void draw(sf::RenderWindow& window);
         void changeState(int newState=-1, bool carryPlayer = false);
@@ -31,7 +32,6 @@ class Game
         
         Game(sf::VideoMode videoMode);
         ~Game();
-        void run();
     private:
         void processEvents();
 };

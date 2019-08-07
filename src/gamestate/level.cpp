@@ -1,16 +1,9 @@
+#include "stdpch.hpp"
 #include "level.hpp"
 #include "resources.hpp"
 #include "log.hpp"
 #include "game.hpp"
-#include <string>
-#include <sstream>
-#include <vector>
-#include <set>
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <stdlib.h>
+#include "collision-tests.hpp"
 
 Level::Level(Game* game, std::string levelMapFileName, std::string tileImagesFileName, std::string levelDataFileName, unsigned int tileSize) :
 GameState(game),
@@ -159,14 +152,30 @@ void Level::processCollisions() {
     // Keep doing this until the full frame time and collisions are accounted for.
 
     // Iterate over all entities and create pairs of Entities that are colliding.
+    //std::vector<CollisionPair> collisions;
+    //for(int i = 0; i < entities.size(); i++){
+    //    for(int j = i; j < entities.size(); j++){
+    //        Entity* entity1 = entities.at(i);
+    //        Entity* entity2 = entities.at(j);
+
+    //        CollisionPair collision = {entity1, entity2, sf::Vector2f(0,0)};
+    //        if(entity1 != entity2 && entity1->getCollisionLine().intersects(entity2->getCollisionLine(), &collision.pointOfCollision)) {
+    //            collisions.push_back(collision);
+    //        }
+    //    }
+   // }
+
+
     std::vector<CollisionPair> collisions;
     for(int i = 0; i < entities.size(); i++){
         for(int j = i; j < entities.size(); j++){
             Entity* entity1 = entities.at(i);
             Entity* entity2 = entities.at(j);
 
-            CollisionPair collision = {entity1, entity2, sf::Vector2f(0,0)};
-            if(entity1 != entity2 && entity1->getCollisionLine().intersects(entity2->getCollisionLine(), &collision.pointOfCollision)) {
+            CollisionPair collision = {entity1, entity2, sf::Vector2f(0,0), 0.0f};
+            if(entity1 != entity2 &&
+                Collision::TestMovingAABB(entity1->getCollisionRect(), entity2->getCollisionRect(), entity1->getVelocity(), entity2->getVelocity(), &collision.time)
+            ) {
                 collisions.push_back(collision);
             }
         }
@@ -191,6 +200,7 @@ void Level::processCollisions() {
         if(typeMatches(pair, Entity::Type::PLAYER_SHIP, Entity::Type::ALIEN_SHIP)) {
             ((PlayerShip*)getMatchingEntity(pair, Entity::Type::PLAYER_SHIP))->damage(1);
             ((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
+            std::cout << "ALIEN AND PLAYER COLLIDED!\n";
         }
 
         if(typeMatches(pair, Entity::Type::ALIEN_SHIP, Entity::Type::BULLET)) {

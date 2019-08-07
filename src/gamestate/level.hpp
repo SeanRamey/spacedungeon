@@ -15,6 +15,7 @@ struct CollisionPair {
     Entity *entity1;
     Entity *entity2;
     sf::Vector2f pointOfCollision;
+    float time;
 };
 
 

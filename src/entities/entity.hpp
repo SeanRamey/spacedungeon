@@ -2,9 +2,6 @@
 #define ENTITY_HPP
 
 #include "allpch.hpp"
-// #include <SFML/System.hpp>
-// #include <SFML/Graphics.hpp>
-#//include <vector>
 #include "animation.hpp"
 #include "floatline.hpp"
 #include "entity-data.hpp"
@@ -51,10 +48,6 @@ class Entity : public sf::Transformable, public sf::Drawable {
         Type type;
         
         
-        //const uint32_t MAX_SPEED; // MAX_SPEED MUST BE LARGER THAN ACCELERATION
-        //uint32_t ACCELERATION = 100;
-        //float FRICTION = 0.98;
-
      protected:
         sf::Vector2f velocity;
         sf::FloatRect collisionRect;

@@ -9,27 +9,21 @@ using namespace Input;
 Game::Game(sf::VideoMode videoMode)
 : videoMode(videoMode)
 {
-    window.create(videoMode, "game-alpha-prototype-1", sf::Style::Close);
-    Util::SeedRandomNumbers();
+    init();
+}
+
+Game::~Game() {
+
+}
+
+void Game::init() {
+
+    // set up window
+    window.create(videoMode, "spacedungeon", sf::Style::Close);
     Resources::window = &window;
-}
-
-Game::~Game()
-{
-
-}
-
-void Game::run()
-{
-    // Start the game loop
-    sf::Clock loopTimer;
-    sf::Time secondsTime = sf::Time::Zero;
-    sf::Time unprocessedTime = sf::Time::Zero;
-    const sf::Time FRAME_TIME = sf::microseconds(16666);// 60 FPS
-    unsigned int framesPerSecond = 0;
-    unsigned int updatesPerSecond = 0;
-
-    window.setVerticalSyncEnabled(true);
+    
+    // seed random number generator
+    Util::SeedRandomNumbers();
 
     // creation of all levels 
     // they lay in a dorment state while game is being played out until loaded (very little memory wasted)
@@ -40,15 +34,27 @@ void Game::run()
     gameStates.push_back(level);
     gameStates.push_back(level2);
     menu->init();
+}
 
-    while (window.isOpen()){
-        unprocessedTime = loopTimer.getElapsedTime() + unprocessedTime;
-        secondsTime = secondsTime + loopTimer.getElapsedTime();
+
+void Game::run() {
+    // Start the game loop
+    sf::Clock loopTimer;
+    sf::Time secondsTime = sf::Time::Zero;
+    sf::Time unprocessedTime = sf::Time::Zero;
+    const sf::Time FRAME_TIME = sf::seconds(1.0f/60.0f); // 60 FPS
+    unsigned int framesPerSecond = 0;
+    unsigned int updatesPerSecond = 0;
+
+    window.setVerticalSyncEnabled(true);
+
+    while (window.isOpen()) {
+        unprocessedTime += loopTimer.getElapsedTime();
+        secondsTime += loopTimer.getElapsedTime();
         loopTimer.restart();
 
-        while(unprocessedTime >= FRAME_TIME)
-        {
-            unprocessedTime = unprocessedTime - FRAME_TIME;
+        while(unprocessedTime >= FRAME_TIME) {
+            unprocessedTime -= FRAME_TIME;
 
             processEvents();
 
@@ -69,27 +75,24 @@ void Game::run()
         ++framesPerSecond;
 
         // Check if 1 second has passed
-        if( secondsTime.asSeconds() >= 1)
-        {
-            //printf("FPS: %u, UpdatesPerSecond: %u\n", framesPerSecond, updatesPerSecond);
-            secondsTime = sf::Time::Zero;
+        if( secondsTime.asSeconds() >= 1) {
+            #ifdef DEBUG
+            std::cout << "FPS: " << framesPerSecond << ", Updates Per Second: " << updatesPerSecond << "\n";
+	        #endif
+	        secondsTime = sf::Time::Zero;
             updatesPerSecond = 0;
             framesPerSecond = 0;
         }
     }
 }
 
-void Game::processEvents()
-{
+void Game::processEvents() {
     sf::Event event;
-    while (this->window.pollEvent(event))
-    {
-        if (event.type == sf::Event::EventType::Closed)
-        {
+    while (this->window.pollEvent(event)) {
+        if (event.type == sf::Event::EventType::Closed) {
             window.close();
         }
-        else if(event.type ==sf::Event::EventType::MouseMoved)
-        {
+        else if(event.type ==sf::Event::EventType::MouseMoved) {
             Input::updateMousePosition(&window);
         }
 
@@ -97,13 +100,13 @@ void Game::processEvents()
     }
 }
 
-void Game::update(sf::Time frametime, sf::RenderWindow& window){
+void Game::update(sf::Time frametime, sf::RenderWindow& window) {
     Level* level = static_cast<Level*>(gameStates[currentState]);
     gameStates[currentState]->update(frametime, window);
 	//std::cout << level->getPlayer()->isDestroyed() << "   ";
 	//std::cout << level->getPlayer()->getHitpoints() << std::endl;
-    if(level != nullptr){
-        if(level->checkLose()){
+    if(level != nullptr) {
+        if(level->checkLose()) {
             // TODO handle player losing sequence
             changeState(0, true);
         }
@@ -150,6 +153,6 @@ void Game::changeState(int newState, bool carryPlayer) {
     gameStates[currentState]->init();
 }
 
-GameState* Game::getGameState(){
+GameState* Game::getGameState() {
     return gameStates[currentState];
 }

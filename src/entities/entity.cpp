@@ -1,15 +1,10 @@
 #include "stdpch.hpp"
-
-#include <cfloat>
 #include "level.hpp"
 #include "entity.hpp"
 #include "othermath.h"
 #include "log.hpp"
 #include "level.hpp"
 #include "entity-data.hpp"
-//#include <cmath>
-//#include <algorithm>
-//#include <iostream>
 
 bool windowContains(sf::View view, sf::Sprite sprite);
 
