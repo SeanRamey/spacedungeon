@@ -101,10 +101,8 @@ void Game::processEvents() {
 }
 
 void Game::update(sf::Time frametime, sf::RenderWindow& window) {
-    Level* level = static_cast<Level*>(gameStates[currentState]);
+    Level* level = dynamic_cast<Level*>(gameStates[currentState]);
     gameStates[currentState]->update(frametime, window);
-	//std::cout << level->getPlayer()->isDestroyed() << "   ";
-	//std::cout << level->getPlayer()->getHitpoints() << std::endl;
     if(level != nullptr) {
         if(level->checkLose()) {
             // TODO handle player losing sequence
