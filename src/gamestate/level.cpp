@@ -173,26 +173,13 @@ void Level::processCollisions() {
             Entity* entity2 = entities.at(j);
 
             CollisionPair collision = {entity1, entity2, sf::Vector2f(0,0), 0.0f};
-            if(entity1 != entity2 &&
+            if(entity1 != entity2 && 
                 Collision::TestMovingAABB(entity1->getCollisionRect(), entity2->getCollisionRect(), entity1->getFrameVelocity(), entity2->getFrameVelocity(), &collision.time)
             ) {
-                //collisions.push_back(collision);
+                collisions.push_back(collision);
             }
         }
     }
-
-
-    // std::vector<CollisionPair> collisions;
-    // for(int i = 0; i < entities.size(); i++){
-    //     for(int j = i; j < entities.size(); j++){
-    //         Entity* entity1 = entities.at(i);
-    //         Entity* entity2 = entities.at(j);
-
-    //         if(entity1 != entity2 && entity1->getCollisionRect().intersects(entity2->getCollisionRect())){
-    //             collisions.push_back(CollisionPair{entity1, entity2});
-    //         }
-    //     }
-    // }
 
     // Iterate over all colliding Entities and handle each appropriately.
     for(CollisionPair pair : collisions) {
