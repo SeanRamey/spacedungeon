@@ -187,7 +187,6 @@ void Level::processCollisions() {
         if(typeMatches(pair, Entity::Type::PLAYER_SHIP, Entity::Type::ALIEN_SHIP)) {
             ((PlayerShip*)getMatchingEntity(pair, Entity::Type::PLAYER_SHIP))->damage(1);
             ((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
-            std::cout << "ALIEN AND PLAYER COLLIDED!\n";
         }
 
         if(typeMatches(pair, Entity::Type::ALIEN_SHIP, Entity::Type::BULLET)) {
