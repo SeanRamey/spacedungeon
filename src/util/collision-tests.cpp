@@ -17,9 +17,12 @@ namespace Collision {
         
         sf::Vector2f relativeVel = vel2 - vel1;
 
-        if(relativeVel.x == 0 || relativeVel.y == 0){
-            return false;
-        }
+        if(relativeVel.x == 0){
+			relativeVel.x = FLT_MIN;
+        } 
+		if(relativeVel.y == 0){
+			relativeVel.y = FLT_MIN;
+		}
 
         float firstTime = 0.0f;
         float lastTime = 1.0f;
