@@ -19,7 +19,6 @@ levelDataFileName(levelDataFileName) {
     this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
     entities.push_back(this->playerShip);
     healthBar.setTexture(Resources::get(Resources::ID::HEALTH_BAR));
-    playerIsDead = false;
 
 }
 
@@ -152,20 +151,6 @@ void Level::processCollisions() {
     // Keep doing this until the full frame time and collisions are accounted for.
 
     // Iterate over all entities and create pairs of Entities that are colliding.
-    //std::vector<CollisionPair> collisions;
-    //for(int i = 0; i < entities.size(); i++){
-    //    for(int j = i; j < entities.size(); j++){
-    //        Entity* entity1 = entities.at(i);
-    //        Entity* entity2 = entities.at(j);
-
-    //        CollisionPair collision = {entity1, entity2, sf::Vector2f(0,0)};
-    //        if(entity1 != entity2 && entity1->getCollisionLine().intersects(entity2->getCollisionLine(), &collision.pointOfCollision)) {
-    //            collisions.push_back(collision);
-    //        }
-    //    }
-   // }
-
-
     std::vector<CollisionPair> collisions;
     for(int i = 0; i < entities.size(); i++){
         for(int j = i; j < entities.size(); j++){

@@ -37,6 +37,7 @@ void UIButton::update(){
 
 	if(rect.contains(mousePosition) && Input::checkMouse(sf::Mouse::Left)){
 		callback((MainMenu*)parent);
+		return;
 	}
     text.setPosition(position);
 	sf::FloatRect textrect = text.getLocalBounds();

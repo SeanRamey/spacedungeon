@@ -11,7 +11,6 @@ void MainMenu::draw(sf::RenderWindow& window){
 }
 
 void MainMenu::ButtonCallback(MainMenu* mm){
-	std::cout << "callback1 called" << std::endl;
 	mm->game->changeState(1, true);
 }
 

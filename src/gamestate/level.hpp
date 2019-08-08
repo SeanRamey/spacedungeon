@@ -42,8 +42,8 @@ class Level : public GameState {
         sf::Vector2u mapSize;
         unsigned int tileSize;
 
-        bool hasWon;
-        bool playerIsDead;
+        bool hasWon = false;
+        bool playerIsDead = false;
         
         UITextElement healthText;
         UIImageElement healthBar;
