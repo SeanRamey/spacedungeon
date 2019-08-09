@@ -84,6 +84,8 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
         healthText.update();
     } else {
         gameOver.setPosition(view.getCenter());
+        //game->nextState();
+        game->changeState(0, false);
     }
 
     removeDestroyedEntities();
@@ -402,14 +404,17 @@ void Level::clear(){
         }
     }
     entities.clear();
+
     for(Tile* tile : foreGroundTiles){
         delete tile;
     }
     foreGroundTiles.clear();
+
     for(Tile* tile : middleTiles){
         delete tile;
     }
     middleTiles.clear();
+    
     for(sf::Texture* tileImage : tileImages){
         delete tileImage;
     }

@@ -17,17 +17,16 @@ class Game
         sf::RenderWindow window;
 
         std::vector<GameState*> gameStates;
-        const unsigned int STATECOUNT = 2;
         int currentState = 0;
-
-		Level* previousLevel = nullptr; // used to store the last level in sequence of gamestates
+        int prevState = 0;
 
     public:
         void init();
         void run();
         void update(sf::Time frameTime, sf::RenderWindow& window);
         void draw(sf::RenderWindow& window);
-        void changeState(int newState=-1, bool carryPlayer = false);
+        void changeState(int newState = -1, bool carryPlayer = false);
+        void nextState(bool carryPlayer = true);
         GameState* getGameState();
         
         Game(sf::VideoMode videoMode);

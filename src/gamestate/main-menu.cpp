@@ -11,7 +11,7 @@ void MainMenu::draw(sf::RenderWindow& window){
 }
 
 void MainMenu::ButtonCallback(MainMenu* mm){
-	mm->game->changeState(1, true);
+	mm->game->changeState(1, false);
 }
 
 void MainMenu::init(){

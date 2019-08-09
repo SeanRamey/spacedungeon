@@ -101,14 +101,7 @@ void Game::processEvents() {
 }
 
 void Game::update(sf::Time frametime, sf::RenderWindow& window) {
-    Level* level = dynamic_cast<Level*>(gameStates[currentState]);
     gameStates[currentState]->update(frametime, window);
-    if(level != nullptr) {
-        if(level->checkLose()) {
-            // TODO handle player losing sequence
-            changeState(0, true);
-        }
-    }
 }
 
 void Game::draw(sf::RenderWindow& window) {
@@ -116,39 +109,43 @@ void Game::draw(sf::RenderWindow& window) {
 }
 
 void Game::changeState(int newState, bool carryPlayer) {
-    int prevState = currentState;
-    gameStates[currentState]->clear();
-    if(newState == -1) {
-        // looping value to end if we hit the end
-        currentState++;
-        if(currentState > STATECOUNT - 1) {
-            currentState = 0;
-        }
-        if(currentState < 0) {
-            currentState = STATECOUNT - 1;
-        }
-    } else {
-        this->currentState = newState;
+
+    // check for valid input
+    if(newState < 0 || newState >= gameStates.size()) {
+        return;
     }
+
+    prevState = currentState;
 
     // values are casted to check if either are levels
     Level* prevLevel = dynamic_cast<Level*>(gameStates[prevState]);
-    Level* currLevel = dynamic_cast<Level*>(gameStates[currentState]);
-    if(prevLevel != nullptr){
-        // storing previous level to access previous player
-        previousLevel = prevLevel;
+    Level* nextLevel = dynamic_cast<Level*>(gameStates[newState]);
+
+    // carry player state over from previous level
+    if(carryPlayer && prevLevel != nullptr && nextLevel != nullptr){
+        nextLevel->setPlayer(prevLevel->getPlayer());
+        nextLevel->getPlayer()->setLevel(nextLevel);
+        nextLevel->getPlayer()->setVelocity(sf::Vector2f(0, 0));
+        nextLevel->getPlayer()->revive();
+        nextLevel->getPlayer()->setPosition(20, -50);
     }
-    if(currLevel != nullptr){
-        // used as a reset sequence, moves player
-		if(carryPlayer && previousLevel != nullptr){
-        	currLevel->setPlayer(previousLevel->getPlayer());
-        	currLevel->getPlayer()->setLevel(currLevel);
-			currLevel->getPlayer()->setVelocity(sf::Vector2f(0, 0));
-		}
-		currLevel->getPlayer()->revive();
-		currLevel->getPlayer()->setPosition(20, -50);
-    } 
-    gameStates[currentState]->init();
+    
+    gameStates.at(prevState)->clear();
+    gameStates.at(newState)->init();
+    currentState = newState;
+}
+
+
+void Game::nextState(bool carryPlayer) {
+    int nextState;
+    // loop current state when it reaches the end
+    if(gameStates.size() - 1 < currentState + 1) {
+        nextState = 0; // goto first state by default
+    } else {
+        nextState = currentState + 1;
+    }
+
+    changeState(nextState, carryPlayer);
 }
 
 GameState* Game::getGameState() {
