@@ -15,10 +15,14 @@ void MainMenu::ButtonCallback(MainMenu* mm){
 }
 
 void MainMenu::init(){
-	menu.clear();
-	menu.addButton(new UIButton(sf::Vector2f(0, 0), Resources::get(Resources::BUTTON), this, &ButtonCallback));
-	menu.getButton(0)->setProperties(35, sf::Color::Blue, "data/graphics/Void_2058.ttf");
-	menu.getButton(0)->setText("Restart?");
+	menu.addButton(new UIButton(sf::Vector2f(0, 100), Resources::get(Resources::BUTTON), this, &ButtonCallback));
+	menu.getButton(0)->getText().setProperties("data/graphics/Void_2058.ttf", 35, sf::Color::Green);
+	menu.getButton(0)->getText().getText().setString("Start?");
+	menu.getButton(0)->getText().getText().setOutlineColor(sf::Color::Blue);
+	menu.getButton(0)->getText().getText().setOutlineThickness(1.5f);
+	menu.addText(new UITextElement(sf::Vector2f(0, -200), "data/graphics/Void_2058.ttf", "Space Dungeon", 100, sf::Color::Green));
+	menu.getText(0)->getText().setOutlineColor(sf::Color::Blue);
+	menu.getText(0)->getText().setOutlineThickness(5);
 	view.setCenter(0, 0);
 }
 

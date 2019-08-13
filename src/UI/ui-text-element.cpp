@@ -1,45 +1,52 @@
 #include "ui-text-element.hpp"
 #include "log.hpp"
 
-void UITextElement::setText(std::string text){
-    this->text.setString(text);
-    load();
+sf::Text& UITextElement::getText(){
+	return this->text;
 }
 
-void UITextElement::load(){
-    this->text.setCharacterSize(35);
-    this->text.setFillColor(sf::Color::White);
+void UITextElement::setProperties(std::string fontPath, unsigned int fontSize, sf::Color color){
+	if(!font.loadFromFile(fontPath)){
+        Log::error("Failed to load font for text element");
+		std::cout << "failed " << std::endl;
+    }
     this->text.setFont(font);
-    this->text.setPosition(sf::Vector2f(position));
+    this->text.setCharacterSize(fontSize);
+    this->text.setFillColor(sf::Color::Green);
 }
 
 void UITextElement::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(text);
+    target.draw(this->text);
 }
 
 void UITextElement::update(){
-
+	setPosition(position);
 }
 
 void UITextElement::setPosition(sf::Vector2f position){
-    this->position = position;
+	this->position = position;
     text.setPosition(position);
     sf::FloatRect textRect = text.getLocalBounds();
     text.setOrigin(textRect.left + textRect.width / 2.0f,
                    textRect.top + textRect.height / 2.0f);
-    // centering text within point of given position
 }
 
 
-UITextElement::UITextElement(sf::Vector2f position, std::string fontPath, std::string text): 
-UIElement(position){
+UITextElement::UITextElement(sf::Vector2f position, std::string fontPath, std::string text, unsigned int fontSize, sf::Color textColor): 
+UIElement(position)
+{
     if(!font.loadFromFile(fontPath)){
         Log::error("Failed to load font for text element");
+		std::cout << "failed " << std::endl;
     }
-    if(!text.empty()){
-        this->text.setString(text); 
-        load();
-    }
+    this->text.setString(text); 
+	this->text.setFont(font);
+	this->text.setCharacterSize(fontSize);
+	this->text.setFillColor(textColor);
+}
+UITextElement::UITextElement(sf::Vector2f position) :
+UIElement(position){
+
 }
 
 UITextElement::~UITextElement(){

@@ -8,7 +8,7 @@
 Level::Level(Game* game, std::string levelMapFileName, std::string tileImagesFileName, std::string levelDataFileName, unsigned int tileSize) :
 GameState(game),
 tileSize(tileSize),
-healthText(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", ""),
+healthText(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "100"),
 healthBar(sf::Vector2f(0, 0), nullptr),
 gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over"),
 levelMapFileName(levelMapFileName),
@@ -80,7 +80,7 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
         healthBar.updateSize(sf::Vector2f(xscale, 1));
         healthBar.update();
         healthText.setPosition(healthBar.getPosition()); // sets position of text to center of health bar
-        healthText.setText(std::to_string(playerShip->getHitpoints()));
+        healthText.getText().setString(std::to_string(playerShip->getHitpoints()));
         healthText.update();
     } else {
         gameOver.setPosition(view.getCenter());

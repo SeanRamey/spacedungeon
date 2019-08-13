@@ -9,12 +9,13 @@ class UITextElement : public UIElement {
         sf::Font font;
 
     public:
-        void load();
+        void setProperties(std::string fontPath, unsigned int fontSize = 35, sf::Color color = sf::Color::Black);
         void update();
         void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-        void setText(std::string text);
         void setPosition(sf::Vector2f position);
-        UITextElement(sf::Vector2f position, std::string fontPath, std::string text);
+		sf::Text& getText();
+        UITextElement(sf::Vector2f position, std::string fontPath, std::string text, unsigned int fontSize = 35, sf::Color color = sf::Color::Black);
+		UITextElement(sf::Vector2f position);
         ~UITextElement();
 };
 #endif
