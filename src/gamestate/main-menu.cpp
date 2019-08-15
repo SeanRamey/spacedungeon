@@ -1,5 +1,6 @@
 #include "main-menu.hpp"
 #include "resources.hpp"
+#include "level.hpp"
 
 void MainMenu::update(sf::Time frameTime, sf::RenderWindow& window){
 	menu.update(frameTime, window);
@@ -11,7 +12,8 @@ void MainMenu::draw(sf::RenderWindow& window){
 }
 
 void MainMenu::ButtonCallback(MainMenu* mm){
-	mm->game->changeState(1, false);
+	std::shared_ptr<Level> level = std::make_shared<Level>(mm->game, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32);
+	mm->game->pushState(level);
 }
 
 void MainMenu::init(){
@@ -31,5 +33,9 @@ void MainMenu::clear(){
 MainMenu::MainMenu(Game* game)
 : GameState(game)
 , menu() {
+
+}
+
+MainMenu::~MainMenu() {
 
 }

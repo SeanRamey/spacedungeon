@@ -1,7 +1,7 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "sfmlpch.hpp"
+#include "allpch.hpp"
 
 #include "player-ship.hpp"
 #include "alien-ship.hpp"
@@ -15,19 +15,17 @@ class Game
     private:
         sf::VideoMode videoMode;
         sf::RenderWindow window;
-
-        std::vector<GameState*> gameStates;
-        int currentState = 0;
-        int prevState = 0;
+        std::stack<std::shared_ptr<GameState>> gameStates;
 
     public:
         void init();
         void run();
         void update(sf::Time frameTime, sf::RenderWindow& window);
         void draw(sf::RenderWindow& window);
-        void changeState(int newState = -1, bool carryPlayer = false);
-        void nextState(bool carryPlayer = true);
-        GameState* getGameState();
+        void changeState(std::shared_ptr<GameState> state);
+        void pushState(std::shared_ptr<GameState> state);
+        void popState();
+        std::shared_ptr<GameState> getGameState();
         
         Game(sf::VideoMode videoMode);
         ~Game();

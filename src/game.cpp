@@ -27,13 +27,12 @@ void Game::init() {
 
     // creation of all levels 
     // they lay in a dorment state while game is being played out until loaded (very little memory wasted)
-    Level* level = new Level(this, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
-    Level* level2 = new Level(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
-	MainMenu* menu = new MainMenu(this);
-	gameStates.push_back(menu);
-    gameStates.push_back(level);
-    gameStates.push_back(level2);
-    menu->init();
+    //Level* level = new Level(this, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
+    //Level* level2 = new Level(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
+
+    // initial game state
+    std::shared_ptr<MainMenu> menu = std::make_shared<MainMenu>(this);
+    pushState(menu);
 }
 
 
@@ -101,53 +100,35 @@ void Game::processEvents() {
 }
 
 void Game::update(sf::Time frametime, sf::RenderWindow& window) {
-    gameStates[currentState]->update(frametime, window);
+    gameStates.top()->update(frametime, window);
 }
 
 void Game::draw(sf::RenderWindow& window) {
-    gameStates[currentState]->draw(window);
+    gameStates.top()->draw(window);
 }
 
-void Game::changeState(int newState, bool carryPlayer) {
+void Game::changeState(std::shared_ptr<GameState> state) {
+	if ( !gameStates.empty() ) {
+        gameStates.top()->clear();
+		gameStates.pop();
+	}
 
-    // check for valid input
-    if(newState < 0 || newState >= gameStates.size()) {
-        return;
-    }
-
-    prevState = currentState;
-
-    // values are casted to check if either are levels
-    Level* prevLevel = dynamic_cast<Level*>(gameStates[prevState]);
-    Level* nextLevel = dynamic_cast<Level*>(gameStates[newState]);
-
-    // carry player state over from previous level
-    if(carryPlayer && prevLevel != nullptr && nextLevel != nullptr){
-        nextLevel->setPlayer(prevLevel->getPlayer());
-        nextLevel->getPlayer()->setLevel(nextLevel);
-        nextLevel->getPlayer()->setVelocity(sf::Vector2f(0, 0));
-        nextLevel->getPlayer()->revive();
-        nextLevel->getPlayer()->setPosition(20, -50);
-    }
-    
-    gameStates.at(prevState)->clear();
-    gameStates.at(newState)->init();
-    currentState = newState;
+    state->init();
+	gameStates.push(state);
 }
 
-
-void Game::nextState(bool carryPlayer) {
-    int nextState;
-    // loop current state when it reaches the end
-    if(gameStates.size() - 1 < currentState + 1) {
-        nextState = 0; // goto first state by default
-    } else {
-        nextState = currentState + 1;
-    }
-
-    changeState(nextState, carryPlayer);
+void Game::pushState(std::shared_ptr<GameState> state) {
+    state->init();
+	gameStates.push(state);
 }
 
-GameState* Game::getGameState() {
-    return gameStates[currentState];
+void Game::popState() {
+	if ( !gameStates.empty() ) {
+        gameStates.top()->clear();
+		gameStates.pop();
+	}
+}
+
+std::shared_ptr<GameState> Game::getGameState() {
+    return gameStates.top();
 }

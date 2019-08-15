@@ -84,8 +84,7 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
         healthText.update();
     } else {
         gameOver.setPosition(view.getCenter());
-        //game->nextState();
-        game->changeState(0, false);
+        game->popState();
     }
 
     removeDestroyedEntities();
