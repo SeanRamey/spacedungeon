@@ -15,22 +15,22 @@ void MainMenu::ButtonCallback(MainMenu* mm){
 }
 
 void MainMenu::init(){
-	menu.addButton(new UIButton(sf::Vector2f(0, 100), Resources::get(Resources::BUTTON), this, &ButtonCallback));
-	menu.getButton(0)->getText().setProperties("data/graphics/Void_2058.ttf", 35, sf::Color::Green);
-	menu.getButton(0)->getText().getText().setString("Start?");
-	menu.getButton(0)->getText().getText().setOutlineColor(sf::Color::Blue);
-	menu.getButton(0)->getText().getText().setOutlineThickness(1.5f);
-	menu.addText(new UITextElement(sf::Vector2f(0, -200), "data/graphics/Void_2058.ttf", "Space Dungeon", 100, sf::Color::Green));
-	menu.getText(0)->getText().setOutlineColor(sf::Color::Blue);
-	menu.getText(0)->getText().setOutlineThickness(5);
+	UIButton* startButton = new UIButton(sf::Vector2f(0, 100), Resources::get(Resources::BUTTON), this, &ButtonCallback);
+	menu.addButton(startButton);
+	startButton->getText().setProperties("data/graphics/Void_2058.ttf", 35, sf::Color::Green);
+	startButton->getText().getText().setString("Start?");
+	startButton->getText().getText().setOutlineColor(sf::Color::Blue);
+	startButton->getText().getText().setOutlineThickness(1.5f);
+	UITextElement* title = new UITextElement(sf::Vector2f(0, -200), "data/graphics/Void_2058.ttf", "Space Dungeon", 100, sf::Color::Green);
+	menu.addText(title);	
+	title->getText().setOutlineColor(sf::Color::Blue);
+	title->getText().setOutlineThickness(5);
 	view.setCenter(0, 0);
 }
-
 
 void MainMenu::clear(){
 	menu.clear();
 }
-
 
 MainMenu::MainMenu(Game* game)
 : GameState(game)
