@@ -37,16 +37,10 @@ namespace Input
             break;
 
         case sf::Event::MouseButtonPressed:
-            if(event->mouseButton.button == -1){
-                break;
-            }
             mouseList[event->mouseButton.button] = 1;
             break;
 
         case sf::Event::MouseButtonReleased:
-            if(event->mouseButton.button == -1){
-                break;
-            }
             mouseList[event->mouseButton.button] = 0;
             break;
 
@@ -72,10 +66,6 @@ namespace Input
 
     bool checkMouse(sf::Mouse::Button mouseKey)
     {
-        if(mouseKey == -1)
-        {
-            return false;
-        }
 
         return mouseList[mouseKey];
     }

@@ -13,7 +13,7 @@ void MainMenu::draw(sf::RenderWindow& window){
 
 void MainMenu::ButtonCallback(MainMenu* mm){
 	std::shared_ptr<Level> level = std::make_shared<Level>(mm->game, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32);
-	mm->game->pushState(level);
+	mm->game->changeState(level);
 }
 
 void MainMenu::init(){

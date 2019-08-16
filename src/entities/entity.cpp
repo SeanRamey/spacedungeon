@@ -74,7 +74,7 @@ float Entity::calculateAngleTo(sf::Vector2f otherPosition){
     sf::Vector2f thisPosition = getPosition();
     temp.x = thisPosition.x - otherPosition.x;
     temp.y = thisPosition.y - otherPosition.y;
-    float newAngle;
+    float newAngle = 0;
     if(temp.x == 0) temp.x += FLT_MIN;
     if(temp.y == 0) temp.y += FLT_MIN;
     if(temp.x != 0 && temp.y != 0) {
@@ -82,10 +82,9 @@ float Entity::calculateAngleTo(sf::Vector2f otherPosition){
         if(otherPosition.x > thisPosition.x){
             newAngle += 180;    
         } 
-    } else {
-        if(temp.x > 0) {
-            newAngle = 300;
-        }
+    } else 
+    if(temp.x > 0) {
+        newAngle = 300;
     }
     return newAngle;
 }

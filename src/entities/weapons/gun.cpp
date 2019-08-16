@@ -21,6 +21,7 @@ Gun::~Gun(){
 
 void Gun::shoot(sf::Vector2f targetPosition){
     switch(gunType){
+        default:
         case BASIC_GUN:
             {
                 BasicBullet* bullet = new BasicBullet(owner->getPosition(), targetPosition, owner, owner->getLevel());

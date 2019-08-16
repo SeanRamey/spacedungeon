@@ -11,7 +11,7 @@ class GameState{
         virtual void init()  = 0;
         sf::View getView();
         GameState(Game* game);
-        ~GameState();
+        virtual ~GameState();
 
     protected:
         sf::View view;

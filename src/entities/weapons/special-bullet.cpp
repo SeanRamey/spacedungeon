@@ -19,7 +19,7 @@ SpecialBullet::~SpecialBullet(){
 void SpecialBullet::destroy(){
     Entity::destroy();
     double degreeSplit = 360 / numSplits;
-    for(int i = 0; i < numSplits; i++){
+    for(size_t i = 0; i < numSplits; i++){
         sf::Vector2f finalPosition;
         finalPosition.x = getPosition().x + cosf(degreesToRadians(i * (degreeSplit + Util::GetRandomNumber(-5, 5))));
         finalPosition.y = getPosition().y + sinf(degreesToRadians(i * (degreeSplit + Util::GetRandomNumber(-5, 5))));

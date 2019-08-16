@@ -31,6 +31,10 @@ void Game::init() {
     //Level* level2 = new Level(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
 
     // initial game state
+    // std::shared_ptr<Level> level2 = std::make_shared<Level>(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32);
+    // pushState(level2);
+    std::shared_ptr<Level> level1 = std::make_shared<Level>(this, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32);
+    pushState(level1);
     std::shared_ptr<MainMenu> menu = std::make_shared<MainMenu>(this);
     pushState(menu);
 }
@@ -91,7 +95,7 @@ void Game::processEvents() {
         if (event.type == sf::Event::EventType::Closed) {
             window.close();
         }
-        else if(event.type ==sf::Event::EventType::MouseMoved) {
+        else if(event.type == sf::Event::EventType::MouseMoved) {
             Input::updateMousePosition(&window);
         }
 

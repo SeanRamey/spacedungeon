@@ -153,8 +153,8 @@ void Level::processCollisions() {
 
     // Iterate over all entities and create pairs of Entities that are colliding.
     std::vector<CollisionPair> collisions;
-    for(int i = 0; i < entities.size(); i++){
-        for(int j = i; j < entities.size(); j++){
+    for(size_t i = 0; i < entities.size(); i++){
+        for(size_t j = i; j < entities.size(); j++){
             Entity* entity1 = entities.at(i);
             Entity* entity2 = entities.at(j);
 
@@ -248,7 +248,7 @@ void Level::loadMap(std::string map, std::string images){
 
     std::vector<std::string> buffer;
     std::vector<struct tileLayers> mapData;
-    for(int i = 1; i < fileData.size(); i++) {
+    for(size_t i = 1; i < fileData.size(); i++) {
             switch(fileData[i]) {
                 case '\n':
                 case ' ':
@@ -365,7 +365,7 @@ void Level::loadEntites(std::string path){
     std::vector<std::string> buffer;
     std::string number;
     Entity* entity;
-    for(int i = 0; i < fileData.size(); i++) {
+    for(size_t i = 0; i < fileData.size(); i++) {
         sf::Vector2u entityPosition;
         if(std::isdigit(fileData[i])) {
             number += fileData[i];

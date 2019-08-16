@@ -46,7 +46,6 @@ class PlayerShip : public Entity {
         Gun specialGun;
         
     // teleporting
-        bool shouldBlink;
         bool canBlink;
         sf::Clock teleportTimer;
         sf::Clock shootTimer;
