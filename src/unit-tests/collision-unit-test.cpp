@@ -10,7 +10,7 @@ TEST_CASE( "Collision::TestMovingAABB() intersection") {
         sf::FloatRect box2(0,5,1,1);
         sf::Vector2f vel1(0,10);
         sf::Vector2f vel2(10,0);
-        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time) == true);
+        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time, sf::Vector2f(0,0)) == true);
         CHECK(time == 0.4f);
     }
 
@@ -19,7 +19,7 @@ TEST_CASE( "Collision::TestMovingAABB() intersection") {
         sf::FloatRect box2(16,8,4,4);
         sf::Vector2f vel1(0,-20);
         sf::Vector2f vel2(-20,0);
-        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time) == true);
+        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time, sf::Vector2f(0,0)) == true);
         CHECK(time == 0.2f);
     }
 
@@ -28,7 +28,7 @@ TEST_CASE( "Collision::TestMovingAABB() intersection") {
         sf::FloatRect box2(8,16,4,4);
         sf::Vector2f vel1(-20,0);
         sf::Vector2f vel2(-20,0);
-        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time) == true);
+        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time, sf::Vector2f(0,0)) == true);
         CHECK(time == 0.0f);
 	}
 		
@@ -37,7 +37,7 @@ TEST_CASE( "Collision::TestMovingAABB() intersection") {
         sf::FloatRect box2(0,16,4,4);
         sf::Vector2f vel1(-20,0);
         sf::Vector2f vel2(20,0);
-        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time) == true);
+        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time, sf::Vector2f(0,0)) == true);
         CHECK(time == 0.4f);
 	}
 
@@ -46,7 +46,7 @@ TEST_CASE( "Collision::TestMovingAABB() intersection") {
         sf::FloatRect box2(10,0,4,4);
         sf::Vector2f vel1(10,0);
         sf::Vector2f vel2(0,10);
-        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time) == true);
+        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time, sf::Vector2f(0,0)) == true);
         CHECK(time == 0.6f);
 	}
 }
@@ -60,7 +60,7 @@ TEST_CASE( "Collision::TestMovingAABB() non-intersection") {
         sf::FloatRect box2(5,0,4,4);
         sf::Vector2f vel1(10,10);
         sf::Vector2f vel2(10,10);
-        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time) == false);
+        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time, sf::Vector2f(0,0)) == false);
         CHECK(time == 0.0f);
 	}
 
@@ -69,7 +69,7 @@ TEST_CASE( "Collision::TestMovingAABB() non-intersection") {
         sf::FloatRect box2(5,5,4,4);
         sf::Vector2f vel1(10,10);
         sf::Vector2f vel2(10,10);
-        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time) == false);
+        CHECK(Collision::TestMovingAABB(box1, box2, vel1, vel2, &time, sf::Vector2f(0,0)) == false);
         CHECK(time == 0.0f);
 	}
 }

@@ -103,7 +103,7 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     processCollisions();
 }
 
-bool typeMatches(CollisionPair& pair, Entity::Type type1, Entity::Type type2) {
+bool typeMatches(CollisionPair<Entity, Entity>& pair, Entity::Type type1, Entity::Type type2) {
     if(pair.entity1->type == type1 && pair.entity2->type == type2) {
         return true;
     }
@@ -117,8 +117,12 @@ bool typeMatches(CollisionPair& pair, Entity::Type type1, Entity::Type type2) {
         return false;
     }
 }
+bool typeMatches(CollisionPair<Entity, Tile>& pair, Entity::Type type) {
+    return pair.entity1->type == type;
+}
 
-Entity* getMatchingEntity(CollisionPair pair, Entity::Type type)
+template<typename T, typename T2>
+Entity* getMatchingEntity(CollisionPair<T, T2> pair, Entity::Type type)
 {
     if(pair.entity1->type == type)
     {
@@ -151,23 +155,37 @@ void Level::processCollisions() {
     // Keep doing this until the full frame time and collisions are accounted for.
 
     // Iterate over all entities and create pairs of Entities that are colliding.
-    std::vector<CollisionPair> collisions;
+    std::vector<CollisionPair<Entity, Entity>> collisions;
+    std::vector<CollisionPair<Entity, Tile>> tileCollisions;
     for(size_t i = 0; i < entities.size(); i++){
         for(size_t j = i; j < entities.size(); j++){
             Entity* entity1 = entities.at(i);
             Entity* entity2 = entities.at(j);
 
-            CollisionPair collision = {entity1, entity2, sf::Vector2f(0,0), 0.0f};
+            CollisionPair<Entity, Entity> collision = {entity1, entity2, sf::Vector2f(0,0), sf::Vector2f(0,0), 0.0f};
 			if(entity1->type == entity2->type) continue;
             if(entity1 != entity2 && 
-				Collision::TestMovingAABB(entity1->getCollisionRect(), entity2->getCollisionRect(), entity1->getFrameVelocity(), entity2->getFrameVelocity(), &collision.time)){
+				Collision::TestMovingAABB(entity1->getCollisionRect(), entity2->getCollisionRect(), entity1->getFrameVelocity(), entity2->getFrameVelocity(), &collision.time, &collision.normals)){
                 collisions.push_back(collision);
             }
         }
     }
+	for(size_t i = 0; i < entities.size(); i++){
+		for(size_t j = i; j < middleTiles.size(); j++){
+			Entity* entity = entities.at(i);
+			Tile* tile = middleTiles.at(j);
+
+            CollisionPair<Entity, Tile> collision = {entity, tile, sf::Vector2f(0,0), sf::Vector2f(0,0), 0.0f};
+
+			if(entity->type == Entity::Type::ALIEN_SHIP) continue;
+			if(Collision::TestMovingAABB(entity->getCollisionRect(), tile->getCollisionRect(), entity->getFrameVelocity(), sf::Vector2f(0, 0), &collision.time, &collision.normals)){
+				tileCollisions.push_back(collision);
+			}
+		}
+	}
 
     // Iterate over all colliding Entities and handle each appropriately.
-    for(CollisionPair pair : collisions) {
+    for(CollisionPair<Entity,Entity> pair : collisions) {
         
         if(typeMatches(pair, Entity::Type::PLAYER_SHIP, Entity::Type::ALIEN_SHIP)) {
             ((PlayerShip*)getMatchingEntity(pair, Entity::Type::PLAYER_SHIP))->damage(1);
@@ -181,6 +199,19 @@ void Level::processCollisions() {
             }
         }
     }
+	for(CollisionPair<Entity,Tile> pair : tileCollisions){
+		if(typeMatches(pair, Entity::Type::PLAYER_SHIP)) {
+			float magnitude = sqrt((pair.entity1->getVelocity().x * pair.entity1->getVelocity().x +
+						pair.entity1->getVelocity().y * pair.entity1->getVelocity().y)) * (1.0f - pair.time);
+			float dotProduct = pair.entity1->getVelocity().x * pair.normals.y + pair.entity1->getVelocity().y * pair.normals.x;
+			if(dotProduct > 0.0f)
+				dotProduct = 1.0f;
+			else if(dotProduct < 0.0f)
+				dotProduct = -1.0f;
+			pair.entity1->setPosition(sf::Vector2f(pair.entity1->getPosition().x + pair.entity1->getFrameVelocity().x * pair.time, pair.entity1->getPosition().y + pair.entity1->getFrameVelocity().y * pair.time));
+			pair.entity1->setVelocity(sf::Vector2f(dotProduct * pair.normals.y * magnitude, dotProduct * pair.normals.x * magnitude));
+		}
+	}
 }
 
 void Level::removeDestroyedEntities() {
@@ -338,7 +369,7 @@ void Level::loadMap(std::string map, std::string images){
     middleGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
 
     for(Tile* tile : middleTiles) {
-        middleGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
+        middleGroundImage.copy(tile->getTexture()->copyToImage(), tile->getPosition().x, tile->getPosition().y);
     }
 
     middleGroundTexture.loadFromImage(middleGroundImage); 
@@ -348,7 +379,7 @@ void Level::loadMap(std::string map, std::string images){
     foreGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
 
     for(Tile* tile : foreGroundTiles) {
-        foreGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
+        foreGroundImage.copy(tile->getTexture()->copyToImage(), tile->getPosition().x, tile->getPosition().y);
     }
 
     foreGroundTexture.loadFromImage(foreGroundImage); 

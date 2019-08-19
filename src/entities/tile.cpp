@@ -2,6 +2,7 @@
 //#include <iostream>
 //#include <vector>
 #include "tile.hpp"
+#include "entity.hpp"
 
 
 Tile::Tile(unsigned int x, unsigned int y, unsigned int w, unsigned int h) :
@@ -34,4 +35,13 @@ const sf::Texture* Tile::getTexture() {
 
 void Tile::setTexture(sf::Texture *texture){
     sprite.setTexture(*texture);
+}
+
+sf::Vector2f Tile::getPosition(){
+	return this->position;
+}
+
+sf::FloatRect Tile::getCollisionRect(){
+	//std::cout << position.x << "  " <<  position.y << "   " << size.x << "   " << size.y << std::endl;
+    return sf::FloatRect(position.x, position.y, size.x, size.y);
 }

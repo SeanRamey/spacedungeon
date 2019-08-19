@@ -10,7 +10,8 @@ namespace Collision {
         sf::FloatRect box2,
         sf::Vector2f vel1,
         sf::Vector2f vel2,
-        float* timeOfCollision );
+        float* timeOfCollision,
+		sf::Vector2f* normals);
         
 }
 

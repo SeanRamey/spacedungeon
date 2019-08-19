@@ -195,7 +195,6 @@ void Entity::revive(){
         case ALIEN_SHIP: setHitpoints(EntityData::AlienShip::hitpoints); break;
         case PLAYER_SHIP: setHitpoints(EntityData::PlayerShip::hitpoints); break;
         case BULLET: setHitpoints(EntityData::Bullet::hitpoints); break;
-        case TILE: setHitpoints(EntityData::DefaultEntity::hitpoints); break;
         default: setHitpoints(EntityData::DefaultEntity::hitpoints); break;
     }
 }

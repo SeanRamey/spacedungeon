@@ -11,10 +11,12 @@
 #include "alien-ship.hpp"
 #include "game-state.hpp"
 
+template <typename T, typename T2>
 struct CollisionPair {
-    Entity *entity1;
-    Entity *entity2;
+    T *entity1;
+    T2 *entity2;
     sf::Vector2f pointOfCollision;
+	sf::Vector2f normals;
     float time;
 };
 

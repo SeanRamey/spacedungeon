@@ -43,7 +43,6 @@ class Entity : public sf::Transformable, public sf::Drawable {
             ALIEN_SHIP,
             PLAYER_SHIP,
             BULLET,
-            TILE,
             NUM_TYPES
         };
         Type type;
