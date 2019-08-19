@@ -16,15 +16,17 @@ void MainMenu::ButtonCallback(MainMenu* mm){
 
 void MainMenu::init(){
 	UIButton* startButton = new UIButton(sf::Vector2f(0, 100), Resources::get(Resources::BUTTON), this, &ButtonCallback);
-	menu.addButton(startButton);
 	startButton->getText().setProperties("data/graphics/Void_2058.ttf", 35, sf::Color::Green);
 	startButton->getText().getText().setString("Start?");
 	startButton->getText().getText().setOutlineColor(sf::Color::Blue);
 	startButton->getText().getText().setOutlineThickness(1.5f);
+
 	UITextElement* title = new UITextElement(sf::Vector2f(0, -200), "data/graphics/Void_2058.ttf", "Space Dungeon", 100, sf::Color::Green);
-	menu.addText(title);	
 	title->getText().setOutlineColor(sf::Color::Blue);
 	title->getText().setOutlineThickness(5);
+
+	menu.addText(title);	
+	menu.addButton(startButton);
 	view.setCenter(0, 0);
 }
 
