@@ -152,15 +152,15 @@ void Level::processCollisions() {
 
     // Iterate over all entities and create pairs of Entities that are colliding.
     std::vector<CollisionPair> collisions;
-    for(int i = 0; i < entities.size(); i++){
-        for(int j = i; j < entities.size(); j++){
+    for(size_t i = 0; i < entities.size(); i++){
+        for(size_t j = i; j < entities.size(); j++){
             Entity* entity1 = entities.at(i);
             Entity* entity2 = entities.at(j);
 
             CollisionPair collision = {entity1, entity2, sf::Vector2f(0,0), 0.0f};
+			if(entity1->type == entity2->type) continue;
             if(entity1 != entity2 && 
-                Collision::TestMovingAABB(entity1->getCollisionRect(), entity2->getCollisionRect(), entity1->getFrameVelocity(), entity2->getFrameVelocity(), &collision.time)
-            ) {
+				Collision::TestMovingAABB(entity1->getCollisionRect(), entity2->getCollisionRect(), entity1->getFrameVelocity(), entity2->getFrameVelocity(), &collision.time)){
                 collisions.push_back(collision);
             }
         }
@@ -189,6 +189,7 @@ void Level::removeDestroyedEntities() {
     // entities while iterating over the
     // container that holds them doesn't
     // play nice.
+
     std::vector<Entity*> entitiesToRemove;
     for(Entity* entity : entities) {
         if(entity->isDestroyed()) {
