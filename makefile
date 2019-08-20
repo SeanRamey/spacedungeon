@@ -205,9 +205,15 @@ gchfiles = $(addsuffix .gch, $(pchfiles))
 DESTDIR =
 
 all: $(BUILD)/$(SUBBUILD)/$(program) $(BUILD)/$(SUBBUILD)/$(testprogram)
+	@$(ECHO) $(DONE_COLOR)build complete!$(NC)
 	@$(ECHO) running tests...
 	$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram) $(TESTPROGFLAGS)
+
+run: $(BUILD)/$(SUBBUILD)/$(program) $(BUILD)/$(SUBBUILD)/$(testprogram)
 	@$(ECHO) $(DONE_COLOR)build complete!$(NC)
+	@$(ECHO) running tests...
+	$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram) $(TESTPROGFLAGS)
+	$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(program)
 
 $(program): $(BUILD)/$(SUBBUILD)/$(program)
 	@$(ECHO) $(DONE_COLOR)done building $(program)!$(NC)
