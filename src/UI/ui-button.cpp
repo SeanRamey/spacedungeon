@@ -53,6 +53,6 @@ void UIButton::setText(std::string text){
 }
 
 void UIButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(sprite);
-    target.draw(text);
+    target.draw(sprite, states);
+    target.draw(text, states);
 }

@@ -54,7 +54,7 @@ void Game::run() {
             processEvents();
 
             // Update game objects
-            update(FRAME_TIME, window);
+            update(FRAME_TIME);
             ++updatesPerSecond;
         }
 
@@ -95,8 +95,8 @@ void Game::processEvents() {
     }
 }
 
-void Game::update(sf::Time frametime, sf::RenderWindow& window) {
-    gameStates.top()->update(frametime, window);
+void Game::update(sf::Time frametime) {
+    gameStates.top()->update(frametime);
 }
 
 void Game::draw(sf::RenderWindow& window) {

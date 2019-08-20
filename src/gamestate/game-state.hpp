@@ -5,7 +5,7 @@
 class Game;
 class GameState{
     public:
-        virtual void update(sf::Time frameTime, sf::RenderWindow& window) = 0;
+        virtual void update(sf::Time frameTime) = 0;
         virtual void draw(sf::RenderWindow& window) = 0;
         virtual void clear() = 0;
         virtual void init()  = 0;

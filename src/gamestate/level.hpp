@@ -68,7 +68,7 @@ class Level : public GameState {
 
         void init();
         void clear();
-        void update(sf::Time frameTime, sf::RenderWindow& window);
+        void update(sf::Time frameTime);
         void draw(sf::RenderWindow& window);
 
         Level(Game* game, std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize = 32);

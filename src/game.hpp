@@ -18,7 +18,7 @@ class Game
     public:
         void init();
         void run();
-        void update(sf::Time frameTime, sf::RenderWindow& window);
+        void update(sf::Time frameTime);
         void draw(sf::RenderWindow& window);
         void changeState(std::shared_ptr<GameState> state);
         void pushState(std::shared_ptr<GameState> state);

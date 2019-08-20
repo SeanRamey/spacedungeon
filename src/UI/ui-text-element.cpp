@@ -14,7 +14,7 @@ void UITextElement::load(){
 }
 
 void UITextElement::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(text);
+    target.draw(text, states);
 }
 
 void UITextElement::update(){

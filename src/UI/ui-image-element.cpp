@@ -7,7 +7,7 @@ void UIImageElement::update(){
 }
 
 void UIImageElement::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(sprite);
+    target.draw(sprite, states);
 }
 
 

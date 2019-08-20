@@ -2,8 +2,8 @@
 #include "resources.hpp"
 #include "level.hpp"
 
-void MainMenu::update(sf::Time frameTime, sf::RenderWindow& window){
-	menu.update(frameTime, window);
+void MainMenu::update(sf::Time frameTime){
+	menu.update(frameTime);
 }
 
 void MainMenu::draw(sf::RenderWindow& window){

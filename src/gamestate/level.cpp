@@ -13,12 +13,10 @@ healthBar(sf::Vector2f(0, 0), nullptr),
 gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over"),
 levelMapFileName(levelMapFileName),
 tileImagesFileName(tileImagesFileName),
-levelDataFileName(levelDataFileName),
-playerIsDead(false) {
+levelDataFileName(levelDataFileName){
     this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
     entities.push_back(this->playerShip);
     healthBar.setTexture(Resources::get(Resources::ID::HEALTH_BAR));
-    checkLose();
 
 }
 
@@ -72,12 +70,12 @@ void Level::draw(sf::RenderWindow& window){
 
 }
 
-void Level::update(sf::Time frameTime, sf::RenderWindow& window){
-    view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
+void Level::update(sf::Time frameTime){
+    view.setSize(sf::Vector2f(Resources::window->getSize().x, Resources::window->getSize().y));
     if(!checkLose()){
          view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
     }
-    window.setView(view);
+    Resources::window->setView(view);
 
     // Draw healthbar or gameover
     if(!checkLose()){

@@ -1,6 +1,6 @@
 #ifndef MENU_HPP
 #define MENU_HPP
-#include <vector>
+#include "stdpch.hpp"
 #include "ui-element.hpp"
 #include "ui-button.hpp"
 #include "ui-text-element.hpp"
@@ -9,7 +9,7 @@
 #include "game.hpp"
 class Menu {
 	public:
-		void update(sf::Time frameTime, sf::RenderWindow& window);
+		void update(sf::Time frameTime);
 		void draw(sf::RenderWindow& window);
 		void addButton(UIButton* button);
 		void addImage(UIImageElement* images);

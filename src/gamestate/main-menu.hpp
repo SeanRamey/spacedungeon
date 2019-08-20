@@ -3,7 +3,7 @@
 #include "menu.hpp"
 class MainMenu : public GameState {
 	public:
-		void update(sf::Time frameTime, sf::RenderWindow& window);
+		void update(sf::Time frameTime);
 		void draw(sf::RenderWindow& window);
 		void init();
 		void clear();

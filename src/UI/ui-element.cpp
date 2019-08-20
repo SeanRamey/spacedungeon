@@ -8,7 +8,7 @@ void UIElement::setTexture(sf::Texture* texture){
     }
 }
 void UIElement::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(sprite);
+    target.draw(sprite, states);
 }
 
 void UIElement::setPosition(sf::Vector2f position){

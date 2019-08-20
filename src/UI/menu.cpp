@@ -29,7 +29,7 @@ void Menu::clear(){
 	texts.clear();
 }
 
-void Menu::update(sf::Time frameTime, sf::RenderWindow& window){
+void Menu::update(sf::Time frameTime){
 	for(UIButton* button : buttons){
 		button->update();
 	}
