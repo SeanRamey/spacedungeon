@@ -11,3 +11,4 @@ log.txt
 .vscode/
 *.hpp.gch
 src/sfmlpch.hpp.gch
+.gdbinit
