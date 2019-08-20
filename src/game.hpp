@@ -7,15 +7,13 @@
 #include "alien-ship.hpp"
 #include "game-state.hpp"
 
-#include <stack>
-#include <vector>
-
 class Game
 {
     private:
         sf::VideoMode videoMode;
         sf::RenderWindow window;
         std::stack<std::shared_ptr<GameState>> gameStates;
+        PlayerShip* player = nullptr;
 
     public:
         void init();
@@ -26,6 +24,7 @@ class Game
         void pushState(std::shared_ptr<GameState> state);
         void popState();
         std::shared_ptr<GameState> getGameState();
+        PlayerShip* getPlayer();
         
         Game(sf::VideoMode videoMode);
         ~Game();

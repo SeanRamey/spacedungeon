@@ -1,5 +1,5 @@
 # default to using clang as the c/c++ compiler
-USE_CLANG ?= true
+USE_CLANG ?= false
 
 #default to debug build
 BUILDTYPE ?= DEBUG

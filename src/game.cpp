@@ -21,20 +21,12 @@ void Game::init() {
     // set up window
     window.create(videoMode, "spacedungeon", sf::Style::Close);
     Resources::window = &window;
+    Resources::load();
     
     // seed random number generator
     Util::SeedRandomNumbers();
 
-    // creation of all levels 
-    // they lay in a dorment state while game is being played out until loaded (very little memory wasted)
-    //Level* level = new Level(this, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
-    //Level* level2 = new Level(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
-
     // initial game state
-    // std::shared_ptr<Level> level2 = std::make_shared<Level>(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32);
-    // pushState(level2);
-    std::shared_ptr<Level> level1 = std::make_shared<Level>(this, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32);
-    pushState(level1);
     std::shared_ptr<MainMenu> menu = std::make_shared<MainMenu>(this);
     pushState(menu);
 }
@@ -112,13 +104,8 @@ void Game::draw(sf::RenderWindow& window) {
 }
 
 void Game::changeState(std::shared_ptr<GameState> state) {
-	if ( !gameStates.empty() ) {
-        gameStates.top()->clear();
-		gameStates.pop();
-	}
-
-    state->init();
-	gameStates.push(state);
+	popState();
+    pushState(state);
 }
 
 void Game::pushState(std::shared_ptr<GameState> state) {
@@ -128,6 +115,11 @@ void Game::pushState(std::shared_ptr<GameState> state) {
 
 void Game::popState() {
 	if ( !gameStates.empty() ) {
+        // check if gamestate is a level and if so, store the player
+        std::shared_ptr<Level> levelState = std::dynamic_pointer_cast<Level>(gameStates.top());
+        if(levelState.get() != nullptr) {
+            player = levelState->getPlayer();
+        }
         gameStates.top()->clear();
 		gameStates.pop();
 	}
@@ -135,4 +127,8 @@ void Game::popState() {
 
 std::shared_ptr<GameState> Game::getGameState() {
     return gameStates.top();
+}
+
+PlayerShip* Game::getPlayer() {
+    return player;
 }

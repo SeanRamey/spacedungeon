@@ -13,12 +13,12 @@ healthBar(sf::Vector2f(0, 0), nullptr),
 gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over"),
 levelMapFileName(levelMapFileName),
 tileImagesFileName(tileImagesFileName),
-levelDataFileName(levelDataFileName) {
-    
-    Resources::load();
+levelDataFileName(levelDataFileName),
+playerIsDead(false) {
     this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
     entities.push_back(this->playerShip);
     healthBar.setTexture(Resources::get(Resources::ID::HEALTH_BAR));
+    checkLose();
 
 }
 
@@ -37,11 +37,16 @@ Level::~Level(){
     }
 }
 
+// does nothing yet.
 bool Level::checkWon(){
     return false;
 }
 
 bool Level::checkLose(){
+    // CLANG COMPILER BUG
+    // if(playerIsDead) {
+    //     return true;
+    // }
     return playerIsDead;
 }
 
@@ -69,12 +74,13 @@ void Level::draw(sf::RenderWindow& window){
 
 void Level::update(sf::Time frameTime, sf::RenderWindow& window){
     view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
-    if(!playerIsDead){
+    if(!checkLose()){
          view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
     }
     window.setView(view);
 
-    if(!playerIsDead){
+    // Draw healthbar or gameover
+    if(!checkLose()){
         float xscale = playerShip->getHitpoints() / 100.0; // percent of total
         healthBar.setPosition(sf::Vector2f(view.getCenter().x, view.getCenter().y - view.getSize().y / 2 + 16 * 1.2));
         healthBar.updateSize(sf::Vector2f(xscale, 1));
@@ -84,6 +90,7 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
         healthText.update();
     } else {
         gameOver.setPosition(view.getCenter());
+        // exit level
         game->popState();
     }
 
@@ -101,6 +108,7 @@ void Level::update(sf::Time frameTime, sf::RenderWindow& window){
             entities.at(i)->update(frameTime);
 		}
     }
+
     processCollisions();
 }
 
