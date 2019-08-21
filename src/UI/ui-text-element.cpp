@@ -43,6 +43,7 @@ UIElement(position)
 	this->text.setFont(font);
 	this->text.setCharacterSize(fontSize);
 	this->text.setFillColor(textColor);
+	setPosition(position);
 }
 UITextElement::UITextElement(sf::Vector2f position) :
 UIElement(position){

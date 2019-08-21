@@ -15,5 +15,7 @@ class MainMenu : public GameState {
 
 	private:
 		Menu menu;
+		std::string titleText;
+		sf::Clock sineWaveTimer;
 };
 #endif
