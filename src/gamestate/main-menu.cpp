@@ -3,10 +3,11 @@
 
 void MainMenu::update(sf::Time frameTime, sf::RenderWindow& window){
 	float elapsedTime = sineWaveTimer.getElapsedTime().asSeconds();
-	for(int i = 0; i < titleText.size(); i++){
+	for(size_t i = 0; i < titleText.size(); i++){
 		const static int magnitude = 20;
 		menu.getText(i)->setPosition(sf::Vector2f(menu.getText(i)->getPosition().x, -200 + (sin(elapsedTime + i)) * magnitude));
 	}
+
 	menu.update(frameTime, window);
 }
 
