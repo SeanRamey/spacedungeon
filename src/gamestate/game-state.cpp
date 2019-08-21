@@ -3,7 +3,7 @@
 
 GameState::GameState(Game* game) :
 view(){
-    this->game = game;
+	this->game = game;
 }
 
 GameState::~GameState(){
@@ -11,5 +11,5 @@ GameState::~GameState(){
 }
 
 sf::View GameState::getView(){
-    return view;
+	return view;
 }

@@ -8,7 +8,7 @@ class MainMenu : public GameState {
 		void init();
 		void clear();
 		static void ButtonCallback(MainMenu* mm);
-		
+
 		sf::View getView();
 		MainMenu(Game* game);
 		~MainMenu();

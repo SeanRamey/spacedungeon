@@ -9,22 +9,22 @@
 
 class Gun {
 
-    public:
-        enum Type{
-            BASIC_GUN,
-            BIG_GUN,
-            NUM_GUNS
-        };
+	public:
+		enum Type{
+			BASIC_GUN,
+			BIG_GUN,
+			NUM_GUNS
+		};
 
-    public:
-        Gun(Entity* owner, Type gunType);
-        ~Gun();
+	public:
+		Gun(Entity* owner, Type gunType);
+		~Gun();
 
-        void shoot(sf::Vector2f targetPosition);
-        void setType(Type gunType);
+		void shoot(sf::Vector2f targetPosition);
+		void setType(Type gunType);
 
-    private:
-        Entity* owner;
-        Type gunType;
+	private:
+		Entity* owner;
+		Type gunType;
 };
 #endif

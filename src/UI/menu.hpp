@@ -18,7 +18,7 @@ class Menu {
 		UIImageElement* getImage(int index);
 		UITextElement* getText(int index);
 		void clear();
-		
+
 		Menu();
 		~Menu();
 

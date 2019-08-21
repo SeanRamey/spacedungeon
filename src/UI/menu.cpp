@@ -41,7 +41,7 @@ void Menu::update(sf::Time frameTime){
 	}
 }
 
-void Menu::draw(sf::RenderWindow& window){	
+void Menu::draw(sf::RenderWindow& window){
 	for(UIButton* button : buttons){
 		window.draw(*button);
 	}
