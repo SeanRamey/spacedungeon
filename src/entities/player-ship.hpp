@@ -7,19 +7,13 @@
 #include "gun.hpp"
 #include "entity.hpp"
 #include "entity-data.hpp"
-//#include <stdlib.h>
-//#include <stdio.h>
-//#include <cmath>
-//#include <chrono>
-// #include <SFML/System.hpp>
-// #include <SFML/Window.hpp>
-// #include <SFML/Graphics.hpp>
 
 class PlayerShip : public Entity {
     public:
         PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::PlayerShip::hitpoints);
         PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::PlayerShip::hitpoints);
         ~PlayerShip();
+        void init();
 
         void update(sf::Time frameTime);
         void handleUserInput();

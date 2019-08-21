@@ -25,7 +25,7 @@ void Gun::shoot(sf::Vector2f targetPosition){
         case BASIC_GUN:
             {
                 BasicBullet* bullet = new BasicBullet(owner->getPosition(), targetPosition, owner, owner->getLevel());
-                Animation basicBulletAnimation = Animation(Resources::get(Resources::ID::BULLET), 10, sf::Vector2u(12,16));
+                Animation basicBulletAnimation = Animation(Resources::getTexture(Resources::TEXTURE_ID::BULLET), 10, sf::Vector2u(12,16));
                 bullet->setAnimation(basicBulletAnimation);
                 owner->getLevel()->addEntity(bullet);
                 break;
@@ -33,7 +33,7 @@ void Gun::shoot(sf::Vector2f targetPosition){
         case BIG_GUN:
             {
                 SpecialBullet* specialBullet = new SpecialBullet(owner->getPosition(), targetPosition, owner, owner->getLevel());
-                Animation specialBulletAnimation = Animation(Resources::get(Resources::ID::SPECIALBULLET), 15, sf::Vector2u(32,32));
+                Animation specialBulletAnimation = Animation(Resources::getTexture(Resources::TEXTURE_ID::SPECIALBULLET), 15, sf::Vector2u(32,32));
                 specialBullet->setAnimation(specialBulletAnimation);
                 owner->getLevel()->addEntity(specialBullet);
                 break;

@@ -6,10 +6,6 @@
 #include "resources.hpp"
 #include "log.hpp"
 #include "level.hpp"
-//#include <cstdlib>
-//#include <iostream>
-//#include <chrono>
-//#include <algorithm>
 
 using namespace std;
 
@@ -17,18 +13,22 @@ PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Tex
 : Entity(x, y, w, h, texture, level, hitPoints),
   gun(this, Gun::Type::BASIC_GUN),
   specialGun(this, Gun::Type::BIG_GUN) {
-    type = Entity::Type::PLAYER_SHIP;
+    init();
 }
 
 PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints) 
 : Entity(position, size, texture, level, hitPoints),
   gun(this, Gun::Type::BASIC_GUN),
   specialGun(this, Gun::Type::BIG_GUN) {
-      type = Entity::Type::PLAYER_SHIP;
+    init();
 }
 
 PlayerShip::~PlayerShip() {
 
+}
+
+void PlayerShip::init() {
+    type = Entity::Type::PLAYER_SHIP;
 }
 
 void PlayerShip::update(sf::Time frameTime) {
@@ -89,6 +89,7 @@ void PlayerShip::firePrimary() {
     if(shootTimer.getElapsedTime().asMilliseconds() > (int)SHOOT_DELAY){
         sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
         gun.shoot(mousePosition);
+        Resources::playSound(Resources::SOUND_ID::SND_PLAYER_SHOOT);
         shootTimer.restart();
     }
 }
@@ -97,6 +98,7 @@ void PlayerShip::fireSpecial() {
     if(specialShootTimer.getElapsedTime().asMilliseconds() > (int)SPECIAL_SHOOT_DELAY) {
         sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
         specialGun.shoot(mousePosition);
+        Resources::playSound(Resources::SOUND_ID::SND_PLAYER_SHOOT);
         specialShootTimer.restart();
     }
 }
