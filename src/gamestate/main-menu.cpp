@@ -23,7 +23,7 @@ void MainMenu::ButtonCallback(MainMenu* mm){
 }
 
 void MainMenu::init(){
-	UIButton* startButton = new UIButton(sf::Vector2f(0, 100), Resources::get(Resources::BUTTON), this, &ButtonCallback);
+	UIButton* startButton = new UIButton(sf::Vector2f(0, 100), Resources::getTexture(Resources::BUTTON), this, &ButtonCallback);
 	startButton->getText().setProperties("data/graphics/Void_2058.ttf", 35, sf::Color::Green);
 	startButton->getText().getText().setString("Start?");
 	startButton->getText().getText().setOutlineColor(sf::Color::Blue);
