@@ -13,413 +13,424 @@ healthBar(sf::Vector2f(0, 0), nullptr),
 gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over"),
 levelMapFileName(levelMapFileName),
 tileImagesFileName(tileImagesFileName),
-levelDataFileName(levelDataFileName) {
-    
-    Resources::load();
-    this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::get(Resources::ID::PLAYER_SHIP), this, 100);
-    entities.push_back(this->playerShip);
-    healthBar.setTexture(Resources::get(Resources::ID::HEALTH_BAR));
+levelDataFileName(levelDataFileName){
+	this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::getTexture(Resources::TEXTURE_ID::PLAYER_SHIP), this, 100);
+	entities.push_back(this->playerShip);
+	healthBar.setTexture(Resources::getTexture(Resources::TEXTURE_ID::HEALTH_BAR));
 
 }
 
 Level::~Level(){
-    for(Entity* entity : entities) {
-        delete entity;
-    }
-    for(Tile* tile : middleTiles) {
-        delete tile;
-    }
-    for(Tile* tile : foreGroundTiles) {
-        delete tile;
-    }
-    for(sf::Texture* texture : tileImages) {
-        delete texture;
-    }
+	for(Entity* entity : entities) {
+		delete entity;
+	}
+	for(Tile* tile : middleTiles) {
+		delete tile;
+	}
+	for(Tile* tile : foreGroundTiles) {
+		delete tile;
+	}
+	for(sf::Texture* texture : tileImages) {
+		delete texture;
+	}
 }
 
+// does nothing yet.
 bool Level::checkWon(){
-    return false;
+	return false;
 }
 
 bool Level::checkLose(){
-    return playerIsDead;
+	// CLANG COMPILER BUG
+	// if(playerIsDead) {
+	//     return true;
+	// }
+	return playerIsDead;
 }
 
 PlayerShip* Level::getPlayer(){
-    return this->playerShip;
+	return this->playerShip;
 }
 
 void Level::draw(sf::RenderWindow& window){
-    window.draw(backGroundSprite);
-    window.draw(middleGroundSprite);
-    for(unsigned int i = 0; i < entities.size(); ++i) {
-        if(!(entities.at(i) == playerShip && playerIsDead)){
-            window.draw(*entities.at(i));
-        }
-    }
-    window.draw(foreGroundSprite);
-    if(!playerIsDead){
-        window.draw(healthBar);
-        window.draw(healthText);
-    } else {
-        window.draw(gameOver);
-    }
+	window.draw(backGroundSprite);
+	window.draw(middleGroundSprite);
+	for(unsigned int i = 0; i < entities.size(); ++i) {
+		if(!(entities.at(i) == playerShip && playerIsDead)){
+			window.draw(*entities.at(i));
+		}
+	}
+	window.draw(foreGroundSprite);
+	if(!playerIsDead){
+		window.draw(healthBar);
+		window.draw(healthText);
+	} else {
+		window.draw(gameOver);
+	}
 
 }
 
-void Level::update(sf::Time frameTime, sf::RenderWindow& window){
-    view.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
-    if(!playerIsDead){
-         view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
-    }
-    window.setView(view);
+void Level::update(sf::Time frameTime){
+	view.setSize(sf::Vector2f(Resources::window->getSize().x, Resources::window->getSize().y));
+	if(!checkLose()){
+		 view.setCenter(playerShip->getPosition().x, playerShip->getPosition().y);
+	}
+	Resources::window->setView(view);
 
-    if(!playerIsDead){
-        float xscale = playerShip->getHitpoints() / 100.0; // percent of total
-        healthBar.setPosition(sf::Vector2f(view.getCenter().x, view.getCenter().y - view.getSize().y / 2 + 16 * 1.2));
-        healthBar.updateSize(sf::Vector2f(xscale, 1));
-        healthBar.update();
-        healthText.setPosition(healthBar.getPosition()); // sets position of text to center of health bar
-        healthText.getText().setString(std::to_string(playerShip->getHitpoints()));
-        healthText.update();
-    } else {
-        gameOver.setPosition(view.getCenter());
-    }
+	// Draw healthbar or gameover
+	if(!checkLose()){
+		float xscale = playerShip->getHitpoints() / 100.0; // percent of total
+		healthBar.setPosition(sf::Vector2f(view.getCenter().x, view.getCenter().y - view.getSize().y / 2 + 16 * 1.2));
+		healthBar.updateSize(sf::Vector2f(xscale, 1));
+		healthBar.update();
+		healthText.setPosition(healthBar.getPosition()); // sets position of text to center of health bar
+		healthText.getText().setString(std::to_string(playerShip->getHitpoints()));
+		healthText.update();
+	} else {
+		gameOver.setPosition(view.getCenter());
+		// exit level
+		game->popState();
+	}
 
-    removeDestroyedEntities();
+	removeDestroyedEntities();
 
-    for(Tile* tile : middleTiles){
-        tile->update(frameTime);
-    }
-    for(Tile* tile : foreGroundTiles){
-        tile->update(frameTime);
-    }
+	for(Tile* tile : middleTiles){
+		tile->update(frameTime);
+	}
+	for(Tile* tile : foreGroundTiles){
+		tile->update(frameTime);
+	}
 
-    for(unsigned int i = 0; i < entities.size(); ++i) {
-        if(!(entities.at(i) == playerShip && playerIsDead)){
-            entities.at(i)->update(frameTime);
+	for(unsigned int i = 0; i < entities.size(); ++i) {
+		if(!(entities.at(i) == playerShip && playerIsDead)){
+			entities.at(i)->update(frameTime);
 		}
-    }
-    processCollisions();
+	}
+
+	processCollisions();
 }
 
 bool typeMatches(CollisionPair& pair, Entity::Type type1, Entity::Type type2) {
-    if(pair.entity1->type == type1 && pair.entity2->type == type2) {
-        return true;
-    }
-    else if(pair.entity1->type == type2 && pair.entity2->type == type1) {
-        Entity* tempEntity = pair.entity1;
-        pair.entity1 = pair.entity2;
-        pair.entity2 = tempEntity;
-        return true;
-    }
-    else {
-        return false;
-    }
+	if(pair.entity1->type == type1 && pair.entity2->type == type2) {
+		return true;
+	}
+	else if(pair.entity1->type == type2 && pair.entity2->type == type1) {
+		Entity* tempEntity = pair.entity1;
+		pair.entity1 = pair.entity2;
+		pair.entity2 = tempEntity;
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 Entity* getMatchingEntity(CollisionPair pair, Entity::Type type)
 {
-    if(pair.entity1->type == type)
-    {
-        return pair.entity1;
-    }
-    else
-    if(pair.entity2->type == type)
-    {
-        return pair.entity2;
-    }
-    else
-    {
-        return nullptr;
-    }
-    
+	if(pair.entity1->type == type)
+	{
+		return pair.entity1;
+	}
+	else
+	if(pair.entity2->type == type)
+	{
+		return pair.entity2;
+	}
+	else
+	{
+		return nullptr;
+	}
+
 }
 
 void Level::processCollisions() {
 
-    // Implement line collisions
-    // Need to iterate through all objects creating a line from their previous position
-    // to their current one, then compare each line to all other objects' lines.
-    // Find all the collisions and put them in a container.
-    //
-    // Iterate over all the collisions and get the time of collision and position of collision.
-    // Handle each collision at the position of collision one at a time starting with the first chonological collision.
-    // Each time a collision is handled, the remainder of frame time must be calculated from the amount of time
-    // it took to reach each collision subtracted from the full frame time.
-    // Then all the other colliding object must be updated again with the remaining frame time.
-    // Keep doing this until the full frame time and collisions are accounted for.
+	// Implement line collisions
+	// Need to iterate through all objects creating a line from their previous position
+	// to their current one, then compare each line to all other objects' lines.
+	// Find all the collisions and put them in a container.
+	//
+	// Iterate over all the collisions and get the time of collision and position of collision.
+	// Handle each collision at the position of collision one at a time starting with the first chonological collision.
+	// Each time a collision is handled, the remainder of frame time must be calculated from the amount of time
+	// it took to reach each collision subtracted from the full frame time.
+	// Then all the other colliding object must be updated again with the remaining frame time.
+	// Keep doing this until the full frame time and collisions are accounted for.
 
-    // Iterate over all entities and create pairs of Entities that are colliding.
-    std::vector<CollisionPair> collisions;
-    for(int i = 0; i < entities.size(); i++){
-        for(int j = i; j < entities.size(); j++){
-            Entity* entity1 = entities.at(i);
-            Entity* entity2 = entities.at(j);
+	// Iterate over all entities and create pairs of Entities that are colliding.
+	std::vector<CollisionPair> collisions;
+	for(size_t i = 0; i < entities.size(); i++){
+		for(size_t j = i; j < entities.size(); j++){
+			Entity* entity1 = entities.at(i);
+			Entity* entity2 = entities.at(j);
 
-            CollisionPair collision = {entity1, entity2, sf::Vector2f(0,0), 0.0f};
-            if(entity1 != entity2 && 
-                Collision::TestMovingAABB(entity1->getCollisionRect(), entity2->getCollisionRect(), entity1->getFrameVelocity(), entity2->getFrameVelocity(), &collision.time)
-            ) {
-                collisions.push_back(collision);
-            }
-        }
-    }
+			CollisionPair collision = {entity1, entity2, sf::Vector2f(0,0), 0.0f};
+			if(entity1 != entity2 &&
+				Collision::TestMovingAABB(entity1->getCollisionRect(), entity2->getCollisionRect(), entity1->getFrameVelocity(), entity2->getFrameVelocity(), &collision.time)
+			) {
+				collisions.push_back(collision);
+			}
+		}
+	}
 
-    // Iterate over all colliding Entities and handle each appropriately.
-    for(CollisionPair pair : collisions) {
-        
-        if(typeMatches(pair, Entity::Type::PLAYER_SHIP, Entity::Type::ALIEN_SHIP)) {
-            ((PlayerShip*)getMatchingEntity(pair, Entity::Type::PLAYER_SHIP))->damage(1);
-            ((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
-        }
+	// Iterate over all colliding Entities and handle each appropriately.
+	for(CollisionPair pair : collisions) {
 
-        if(typeMatches(pair, Entity::Type::ALIEN_SHIP, Entity::Type::BULLET)) {
-            if(!((Bullet*)getMatchingEntity(pair, Entity::Type::BULLET))->isDestroyed()) {
-                ((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
-                ((Bullet*)getMatchingEntity(pair, Entity::Type::BULLET))->destroy();
-            }
-        }
-    }
+		if(typeMatches(pair, Entity::Type::PLAYER_SHIP, Entity::Type::ALIEN_SHIP)) {
+			((PlayerShip*)getMatchingEntity(pair, Entity::Type::PLAYER_SHIP))->damage(1);
+			((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
+			Resources::playSound(Resources::SOUND_ID::SND_HIT);
+		}
+
+		if(typeMatches(pair, Entity::Type::ALIEN_SHIP, Entity::Type::BULLET)) {
+			if(!((Bullet*)getMatchingEntity(pair, Entity::Type::BULLET))->isDestroyed()) {
+				((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
+				((Bullet*)getMatchingEntity(pair, Entity::Type::BULLET))->destroy();
+			}
+		}
+	}
 }
 
 void Level::removeDestroyedEntities() {
-    // Create a list of entities to delete
-    // THEN remove them, because deleting
-    // entities while iterating over the
-    // container that holds them doesn't
-    // play nice.
-    std::vector<Entity*> entitiesToRemove;
-    for(Entity* entity : entities) {
-        if(entity->isDestroyed()) {
-            entitiesToRemove.push_back(entity);
-        }
-    }
+	// Create a list of entities to delete
+	// THEN remove them, because deleting
+	// entities while iterating over the
+	// container that holds them doesn't
+	// play nice.
+	std::vector<Entity*> entitiesToRemove;
+	for(Entity* entity : entities) {
+		if(entity->isDestroyed()) {
+			entitiesToRemove.push_back(entity);
+		}
+	}
 
-    for(Entity* entity : entitiesToRemove) {
-        deleteEntity(entity);
-    }
+	for(Entity* entity : entitiesToRemove) {
+		deleteEntity(entity);
+	}
 }
 
 void Level::addEntity(Entity* entity) {
-    if(entity == nullptr) {
-        return; // not valid pointer
-    }
-    entities.push_back(entity);
+	if(entity == nullptr) {
+		return; // not valid pointer
+	}
+	entities.push_back(entity);
 }
 
 void Level::deleteEntity(Entity* entity) {
-    entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
-    entities.shrink_to_fit();
-    if(entity == playerShip) { // player dies
-        playerIsDead = true;
-        return;
-    }
+	entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
+	entities.shrink_to_fit();
+	if(entity == playerShip) { // player dies
+		playerIsDead = true;
+		return;
+	}
 
-    if(entity != nullptr) {
-        delete entity; // delete the entity before removal
-    }
+	if(entity != nullptr) {
+		delete entity; // delete the entity before removal
+	}
 }
 
 struct tileLayers {
-    // a temporary struct to store the data of the layers of a tile map
-    // used in file parsing
-    unsigned char backGround, middleGround, foreGround;
-    tileLayers(unsigned char bg, unsigned char mg, unsigned char fg){
-        this->backGround = bg;
-        this->middleGround = mg;
-        this->foreGround = fg;
-    }
+	// a temporary struct to store the data of the layers of a tile map
+	// used in file parsing
+	unsigned char backGround, middleGround, foreGround;
+	tileLayers(unsigned char bg, unsigned char mg, unsigned char fg){
+		this->backGround = bg;
+		this->middleGround = mg;
+		this->foreGround = fg;
+	}
 };
 
 void Level::loadMap(std::string map, std::string images){
-    std::ifstream file(map);
+	std::ifstream file(map);
 
-    if(!file.is_open()){
-        Log::error("Failed to open file: " + map);
-        exit(-1);
-    }
-    file >> mapSize.x >> mapSize.y;  
+	if(!file.is_open()){
+		Log::error("Failed to open file: " + map);
+		exit(-1);
+	}
+	file >> mapSize.x >> mapSize.y;
 
-    std::vector<char> fileData;
-    fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-    file.close();
+	std::vector<char> fileData;
+	fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+	file.close();
 
-    std::vector<std::string> buffer;
-    std::vector<struct tileLayers> mapData;
-    for(int i = 1; i < fileData.size(); i++) {
-            switch(fileData[i]) {
-                case '\n':
-                case ' ':
-                    mapData.push_back(tileLayers((unsigned char)std::stoul(buffer[0]), (unsigned char)std::stoul(buffer[1]), (unsigned char)std::stoul(buffer[2]))); // add the current buffer to mapData as an unsigned char
-                    buffer.clear();
-                    break;
-                default:
-                    int j = 0;
-                    buffer.push_back(std::string());
-                    while(true){
- 
-                        if(fileData[i] == ',' || fileData[i] == ' ' || fileData[i] == '\n') {
-                            j++;
-                            if(j == 3)  {
-                                i--; 
-                                break;
-                            }
-                            if(fileData[i] == ','){
-                                i++;
-                                buffer.push_back(std::string());
-                            }
-                        }
-                        buffer[j] += fileData[i];
-                        i++;
-                    }
-        }
-    }
+	std::vector<std::string> buffer;
+	std::vector<struct tileLayers> mapData;
+	for(size_t i = 1; i < fileData.size(); i++) {
+			switch(fileData[i]) {
+				case '\n':
+				case ' ':
+					mapData.push_back(tileLayers((unsigned char)std::stoul(buffer[0]), (unsigned char)std::stoul(buffer[1]), (unsigned char)std::stoul(buffer[2]))); // add the current buffer to mapData as an unsigned char
+					buffer.clear();
+					break;
+				default:
+					int j = 0;
+					buffer.push_back(std::string());
+					while(true){
 
-    // Load the tileset source image
-    sf::Image tilesetImage;
-    if(!tilesetImage.loadFromFile(images)){
-       Log::error("failed load tile map");
-    }
+						if(fileData[i] == ',' || fileData[i] == ' ' || fileData[i] == '\n') {
+							j++;
+							if(j == 3)  {
+								i--;
+								break;
+							}
+							if(fileData[i] == ','){
+								i++;
+								buffer.push_back(std::string());
+							}
+						}
+						buffer[j] += fileData[i];
+						i++;
+					}
+		}
+	}
 
-    // Store how many tiles are in the tileset
-    sf::Vector2u tileCount;
-    tileCount.x = tilesetImage.getSize().x / tileSize; 
-    tileCount.y = tilesetImage.getSize().y / tileSize;
+	// Load the tileset source image
+	sf::Image tilesetImage;
+	if(!tilesetImage.loadFromFile(images)){
+	   Log::error("failed load tile map");
+	}
 
-    // Store each tile graphic as a sf::Texture in an array
-    for(unsigned int y = 0; y < tileCount.y; y++) {
-        for(unsigned int x = 0; x < tileCount.x; x++) {
-            tileImages.push_back(new sf::Texture());
-            tileImages.at(y * tileCount.x + x)->loadFromImage(tilesetImage, sf::IntRect(x * tileSize, y * tileSize, tileSize, tileSize));
-        }
-    }
+	// Store how many tiles are in the tileset
+	sf::Vector2u tileCount;
+	tileCount.x = tilesetImage.getSize().x / tileSize;
+	tileCount.y = tilesetImage.getSize().y / tileSize;
 
-    // Create an image of the entire map so that only 1 draw call is needed for the whole map
-    sf::Image backGroundImage;
-    backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
+	// Store each tile graphic as a sf::Texture in an array
+	for(unsigned int y = 0; y < tileCount.y; y++) {
+		for(unsigned int x = 0; x < tileCount.x; x++) {
+			tileImages.push_back(new sf::Texture());
+			tileImages.at(y * tileCount.x + x)->loadFromImage(tilesetImage, sf::IntRect(x * tileSize, y * tileSize, tileSize, tileSize));
+		}
+	}
 
-    // Create background image of the map
-    for(unsigned int y = 0; y < mapSize.y; y++) {
-        for(unsigned int x = 0; x < mapSize.x; x++) {
-            if(mapData.at(x + y * mapSize.x).backGround != 0) {
-                backGroundImage.copy(tileImages[mapData[x + y * mapSize.x].backGround - 1]->copyToImage(), x * tileSize, y * tileSize);
-            }
-        }
-    }
-    
-    // Create middle tiles in the map
-    for(unsigned int y = 0; y < mapSize.y; y++) {
-        for(unsigned int x = 0; x < mapSize.x; x++) {
-            if(mapData.at(x + y * mapSize.x).middleGround != 0) {
-                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
-                middleTiles.push_back(tile);
-                middleTiles[middleTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].middleGround - 1]);
-            }
-        }
-    }
+	// Create an image of the entire map so that only 1 draw call is needed for the whole map
+	sf::Image backGroundImage;
+	backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
 
-    // Create foreground tiles in the map
-    for(unsigned int y = 0; y < mapSize.y; y++) {
-        for(unsigned int x = 0; x < mapSize.x; x++) {
-            if(mapData.at(x + y * mapSize.x).foreGround != 0) {
-                Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
-                foreGroundTiles.push_back(tile);
-                foreGroundTiles[foreGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].foreGround - 1]);
-            }
-        }
-    }
+	// Create background image of the map
+	for(unsigned int y = 0; y < mapSize.y; y++) {
+		for(unsigned int x = 0; x < mapSize.x; x++) {
+			if(mapData.at(x + y * mapSize.x).backGround != 0) {
+				backGroundImage.copy(tileImages[mapData[x + y * mapSize.x].backGround - 1]->copyToImage(), x * tileSize, y * tileSize);
+			}
+		}
+	}
 
-    backGroundTexture.loadFromImage(backGroundImage); 
-    backGroundSprite.setTexture(backGroundTexture);
+	// Create middle tiles in the map
+	for(unsigned int y = 0; y < mapSize.y; y++) {
+		for(unsigned int x = 0; x < mapSize.x; x++) {
+			if(mapData.at(x + y * mapSize.x).middleGround != 0) {
+				Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
+				middleTiles.push_back(tile);
+				middleTiles[middleTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].middleGround - 1]);
+			}
+		}
+	}
 
-    sf::Image middleGroundImage;
-    middleGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
+	// Create foreground tiles in the map
+	for(unsigned int y = 0; y < mapSize.y; y++) {
+		for(unsigned int x = 0; x < mapSize.x; x++) {
+			if(mapData.at(x + y * mapSize.x).foreGround != 0) {
+				Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
+				foreGroundTiles.push_back(tile);
+				foreGroundTiles[foreGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].foreGround - 1]);
+			}
+		}
+	}
 
-    for(Tile* tile : middleTiles) {
-        middleGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
-    }
+	backGroundTexture.loadFromImage(backGroundImage);
+	backGroundSprite.setTexture(backGroundTexture);
 
-    middleGroundTexture.loadFromImage(middleGroundImage); 
-    middleGroundSprite.setTexture(middleGroundTexture);
+	sf::Image middleGroundImage;
+	middleGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
 
-    sf::Image foreGroundImage;
-    foreGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
+	for(Tile* tile : middleTiles) {
+		middleGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
+	}
 
-    for(Tile* tile : foreGroundTiles) {
-        foreGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
-    }
+	middleGroundTexture.loadFromImage(middleGroundImage);
+	middleGroundSprite.setTexture(middleGroundTexture);
 
-    foreGroundTexture.loadFromImage(foreGroundImage); 
-    foreGroundSprite.setTexture(foreGroundTexture);
+	sf::Image foreGroundImage;
+	foreGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
+
+	for(Tile* tile : foreGroundTiles) {
+		foreGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
+	}
+
+	foreGroundTexture.loadFromImage(foreGroundImage);
+	foreGroundSprite.setTexture(foreGroundTexture);
 }
 
 void Level::loadEntites(std::string path){
-    std::vector<char> fileData;
-    std::ifstream file;
-    file.open(path);
-    fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-    file.close();
+	std::vector<char> fileData;
+	std::ifstream file;
+	file.open(path);
+	fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+	file.close();
 
-    std::vector<std::string> buffer;
-    std::string number;
-    Entity* entity;
-    for(int i = 0; i < fileData.size(); i++) {
-        sf::Vector2u entityPosition;
-        if(std::isdigit(fileData[i])) {
-            number += fileData[i];
-        } else if(fileData[i] == '\n'){
-            buffer.push_back(number);
-            number.clear();
-            entityPosition.x = std::stoi(buffer[0]);
-            entityPosition.y = std::stoi(buffer[1]);
-            switch(std::stoi(buffer[2])) { // third element is type of entiy
-                case 1:
-                entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, Resources::get(Resources::ID::ALIEN_SHIP), this);
-            }
+	std::vector<std::string> buffer;
+	std::string number;
+	Entity* entity;
+	for(size_t i = 0; i < fileData.size(); i++) {
+		sf::Vector2u entityPosition;
+		if(std::isdigit(fileData[i])) {
+			number += fileData[i];
+		} else if(fileData[i] == '\n'){
+			buffer.push_back(number);
+			number.clear();
+			entityPosition.x = std::stoi(buffer[0]);
+			entityPosition.y = std::stoi(buffer[1]);
+			switch(std::stoi(buffer[2])) { // third element is type of entiy
+				case 1:
+				entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, Resources::getTexture(Resources::TEXTURE_ID::ALIEN_SHIP), this);
+			}
 
-            entities.push_back(entity);
-            buffer.clear();
-        } else {
-            // comma
-            buffer.push_back(number);
-            number.clear();
-        }
-    }
+			entities.push_back(entity);
+			buffer.clear();
+		} else {
+			// comma
+			buffer.push_back(number);
+			number.clear();
+		}
+	}
 }
 
 void Level::init() {
-    playerIsDead = false;
-    loadMap(levelMapFileName, tileImagesFileName);
-    loadEntites(levelDataFileName);    
+	playerIsDead = false;
+	loadMap(levelMapFileName, tileImagesFileName);
+	loadEntites(levelDataFileName);
 }
 
 void Level::clear(){
-    // memory management
-    for(Entity* entity : entities){
-        if(entity != playerShip){
-            delete entity;
-        }
-    }
-    entities.clear();
-    for(Tile* tile : foreGroundTiles){
-        delete tile;
-    }
-    foreGroundTiles.clear();
-    for(Tile* tile : middleTiles){
-        delete tile;
-    }
-    middleTiles.clear();
-    for(sf::Texture* tileImage : tileImages){
-        delete tileImage;
-    }
-    tileImages.clear();
+	// memory management
+	for(Entity* entity : entities){
+		if(entity != playerShip){
+			delete entity;
+		}
+	}
+	entities.clear();
+
+	for(Tile* tile : foreGroundTiles){
+		delete tile;
+	}
+	foreGroundTiles.clear();
+
+	for(Tile* tile : middleTiles){
+		delete tile;
+	}
+	middleTiles.clear();
+
+	for(sf::Texture* tileImage : tileImages){
+		delete tileImage;
+	}
+	tileImages.clear();
 }
 
 void Level::setPlayer(PlayerShip* playerShip){
-    entities.erase(std::remove(entities.begin(), entities.end(), this->playerShip), entities.end());
-    entities.shrink_to_fit();
-    this->playerShip = playerShip;
-    playerIsDead = false;
-    entities.push_back(playerShip);
+	entities.erase(std::remove(entities.begin(), entities.end(), this->playerShip), entities.end());
+	entities.shrink_to_fit();
+	this->playerShip = playerShip;
+	playerIsDead = false;
+	entities.push_back(playerShip);
 }

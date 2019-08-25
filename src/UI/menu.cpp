@@ -29,7 +29,7 @@ void Menu::clear(){
 	texts.clear();
 }
 
-void Menu::update(sf::Time frameTime, sf::RenderWindow& window){
+void Menu::update(sf::Time frameTime){
 	for(UIButton* button : buttons){
 		button->update();
 	}
@@ -41,7 +41,7 @@ void Menu::update(sf::Time frameTime, sf::RenderWindow& window){
 	}
 }
 
-void Menu::draw(sf::RenderWindow& window){	
+void Menu::draw(sf::RenderWindow& window){
 	for(UIButton* button : buttons){
 		window.draw(*button);
 	}

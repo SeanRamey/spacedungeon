@@ -12,66 +12,66 @@
 #include "game-state.hpp"
 
 struct CollisionPair {
-    Entity *entity1;
-    Entity *entity2;
-    sf::Vector2f pointOfCollision;
-    float time;
+	Entity *entity1;
+	Entity *entity2;
+	sf::Vector2f pointOfCollision;
+	float time;
 };
 
 
 class Level : public GameState {
-    private:
+	private:
 
-        std::vector<Entity*> entities;
+		std::vector<Entity*> entities;
 
-        std::vector<Tile*> middleTiles;
-        std::vector<Tile*> foreGroundTiles;
-        
-        PlayerShip* playerShip;
-        std::vector<sf::Texture*> tileImages;
+		std::vector<Tile*> middleTiles;
+		std::vector<Tile*> foreGroundTiles;
 
-        sf::Sprite backGroundSprite;
-        sf::Texture backGroundTexture;
+		PlayerShip* playerShip;
+		std::vector<sf::Texture*> tileImages;
 
-        sf::Sprite middleGroundSprite;
-        sf::Texture middleGroundTexture;
+		sf::Sprite backGroundSprite;
+		sf::Texture backGroundTexture;
 
-        sf::Sprite foreGroundSprite;
-        sf::Texture foreGroundTexture;
+		sf::Sprite middleGroundSprite;
+		sf::Texture middleGroundTexture;
 
-        sf::Vector2u mapSize;
-        unsigned int tileSize;
+		sf::Sprite foreGroundSprite;
+		sf::Texture foreGroundTexture;
 
-        bool hasWon = false;
-        bool playerIsDead = false;
-        
-        UITextElement healthText;
-        UIImageElement healthBar;
+		sf::Vector2u mapSize;
+		unsigned int tileSize;
 
-        UITextElement gameOver;
+		bool hasWon = false;
+		bool playerIsDead = false;
 
-        std::string levelMapFileName;
-        std::string tileImagesFileName;
-        std::string levelDataFileName;
+		UITextElement healthText;
+		UIImageElement healthBar;
 
-    public:
-        void processCollisions();
-        bool checkWon();
-        bool checkLose();
-        void loadEntites(std::string);
-        void removeDestroyedEntities();
-        PlayerShip* getPlayer();
-        void setPlayer(PlayerShip* playerShip);
-        void loadMap(std::string map, std::string images);
-        void addEntity(Entity* entity);
-        void deleteEntity(Entity* entity);
+		UITextElement gameOver;
 
-        void init();
-        void clear();
-        void update(sf::Time frameTime, sf::RenderWindow& window);
-        void draw(sf::RenderWindow& window);
+		std::string levelMapFileName;
+		std::string tileImagesFileName;
+		std::string levelDataFileName;
 
-        Level(Game* game, std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize = 32);
-        ~Level();
+	public:
+		void processCollisions();
+		bool checkWon();
+		bool checkLose();
+		void loadEntites(std::string);
+		void removeDestroyedEntities();
+		PlayerShip* getPlayer();
+		void setPlayer(PlayerShip* playerShip);
+		void loadMap(std::string map, std::string images);
+		void addEntity(Entity* entity);
+		void deleteEntity(Entity* entity);
+
+		void init();
+		void clear();
+		void update(sf::Time frameTime);
+		void draw(sf::RenderWindow& window);
+
+		Level(Game* game, std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize = 32);
+		~Level();
 };
 #endif

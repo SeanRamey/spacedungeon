@@ -25,13 +25,13 @@ void Tile::update(sf::Time frameTime) {
 }
 
 void Tile::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-    target.draw(sprite, states);
+	target.draw(sprite, states);
 }
 
 const sf::Texture* Tile::getTexture() {
-    return sprite.getTexture();
+	return sprite.getTexture();
 }
 
 void Tile::setTexture(sf::Texture *texture){
-    sprite.setTexture(*texture);
+	sprite.setTexture(*texture);
 }

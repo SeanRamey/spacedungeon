@@ -6,23 +6,23 @@
 //#include "SFML/System.hpp"
 
 class Bullet : public Entity {
-    public:
-        Bullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, sf::Vector2u size, unsigned int initialSpeed, unsigned int damage, Level* level, sf::Time maxTimeAlive = sf::seconds(3));
-        virtual ~Bullet();
-        virtual void update(sf::Time frameTime);
-        unsigned int getDamage();
+	public:
+		Bullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, sf::Vector2u size, unsigned int initialSpeed, unsigned int damage, Level* level, sf::Time maxTimeAlive = sf::seconds(3));
+		virtual ~Bullet();
+		virtual void update(sf::Time frameTime);
+		unsigned int getDamage();
 
-    protected:
-        Entity* owner;
-        unsigned int initialSpeed;
-        unsigned int damage;
+	protected:
+		Entity* owner;
+		unsigned int initialSpeed;
+		unsigned int damage;
 
-        sf::Clock timeAlive;
-        sf::Time maxTimeAlive;
+		sf::Clock timeAlive;
+		sf::Time maxTimeAlive;
 
-        sf::Vector2f targetPosition;
+		sf::Vector2f targetPosition;
 
-    private:
-    
+	private:
+
 };
-#endif 
+#endif

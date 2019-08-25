@@ -7,7 +7,7 @@
 
 namespace Log {
 
-    void error(const std::string& message);
+	void error(const std::string& message);
 
 }
 

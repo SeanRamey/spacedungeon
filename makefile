@@ -1,5 +1,5 @@
 # default to using clang as the c/c++ compiler
-USE_CLANG ?= true
+USE_CLANG ?= false
 
 #default to debug build
 BUILDTYPE ?= DEBUG
@@ -10,7 +10,7 @@ BUILD := build
 ifeq ($(BUILDTYPE),DEBUG)
 # standard compile and link flags and link libraries (DEBUG)
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++11 -march=native -fno-omit-frame-pointer
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++17 -march=native -fno-omit-frame-pointer
 CPPFLAGS = -DDEBUG -DSFML
 LDFLAGS = -march=native -fno-omit-frame-pointer
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
@@ -22,7 +22,7 @@ SUBBUILD := debug
 else ifeq ($(BUILDTYPE),RELEASE)
 # standard compile and link flags and link libraries (RELEASE)
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -std=c++11 -O3 -march=native -flto
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -std=c++17 -O3 -march=native -flto
 CPPFLAGS = -DRELEASE -DSFML
 LDFLAGS = -s -O3 -march=native -flto
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
@@ -54,6 +54,41 @@ program = spacedungeon
 # name of unit tests program
 testprogram = tests
 
+# color config
+
+# Black        0;30     Dark Gray     1;30
+# Red          0;31     Light Red     1;31
+# Green        0;32     Light Green   1;32
+# Brown/Orange 0;33     Yellow        1;33
+# Blue         0;34     Light Blue    1;34
+# Purple       0;35     Light Purple  1;35
+# Cyan         0;36     Light Cyan    1;36
+# Light Gray   0;37     White         1;37
+NC = '\033[0m' # no color
+BLACK = '\033[0;30m'
+RED = '\033[0;31m'
+GREEN = '\033[0;32m'
+BROWN = '\033[0;33m'
+BLUE = '\033[0;34m'
+PURPLE = '\033[0;35m'
+CYAN = '\033[0;36m'
+LGRAY = '\033[0;37m'
+DGRAY = '\033[1;30m'
+LRED = '\033[1;31m'
+LGREEN = '\033[1;32m'
+YELLOW = '\033[1;33m'
+LBLUE = '\033[1;34m'
+LPURPLE = '\033[1;35m'
+LCYAN = '\033[1;36m'
+WHITE = '\033[1;37m'
+
+COMPILE_COLOR = $(CYAN)
+LINK_COLOR = $(CYAN)
+DONE_COLOR = $(GREEN)
+PRECOMPILE_COLOR = $(LRED)
+GENDEPENDS_COLOR = $(LPURPLE)
+COMPILER_PROG_COLOR = $(LGREEN)
+LINK_PROG_COLOR = $(LGREEN)
 
 # autodetect os
 OSTARGET ?= UNKNOWN
@@ -84,6 +119,7 @@ ifeq ($(OSTARGET),LINUX)
 	MKDIR := mkdir -p
 	SLASH = /
 	CP := cp
+	ECHO := echo -e
 	PREFIX ?= /usr/local
 
 	# compiler/linker programs
@@ -119,6 +155,7 @@ ifeq ($(OSTARGET),MACOSX)
 	RMDIR := rm -rf
 	MKDIR := mkdir -p
 	CP := cp
+	ECHO := echo -e
 	SLASH = /
 	PREFIX ?= /usr/local
 
@@ -142,6 +179,7 @@ ifeq ($(OSTARGET),WINDOWS)
 	RMDIR := rmdir /S/Q
 	MKDIR := mkdir
 	CP := robocopy
+	ECHO := echo
 	SLASH = \\
 	PREFIX ?=
 
@@ -167,54 +205,60 @@ gchfiles = $(addsuffix .gch, $(pchfiles))
 DESTDIR =
 
 all: $(BUILD)/$(SUBBUILD)/$(program) $(BUILD)/$(SUBBUILD)/$(testprogram)
-	@echo running tests...
+	@$(ECHO) $(DONE_COLOR)build complete!$(NC)
+	@$(ECHO) running tests...
 	$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram) $(TESTPROGFLAGS)
-	@echo build complete!
+
+run: $(BUILD)/$(SUBBUILD)/$(program) $(BUILD)/$(SUBBUILD)/$(testprogram)
+	@$(ECHO) $(DONE_COLOR)build complete!$(NC)
+	@$(ECHO) running tests...
+	$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram) $(TESTPROGFLAGS)
+	$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(program)
 
 $(program): $(BUILD)/$(SUBBUILD)/$(program)
-	@echo done building $(program)!
+	@$(ECHO) $(DONE_COLOR)done building $(program)!$(NC)
 
 $(testprogram): $(BUILD)/$(SUBBUILD)/$(testprogram)
-	@echo done building $(testprogram)!
-	@echo running tests...
+	@$(ECHO) $(DONE_COLOR)done building $(testprogram)!$(NC)
+	@$(ECHO) running tests...
 	@$(BUILD)$(SLASH)$(SUBBUILD)$(SLASH)$(testprogram) $(TESTPROGFLAGS)
 
 # build single file
 single: $(BUILD)/$(SUBBUILD)/$(in).o
 
 $(BUILD)/$(SUBBUILD)/$(program): $(objects)
-	@echo linking "$^" into "$@" using these libraries: "$(LDLIBS)"
+	@$(ECHO) linking $(LINK_COLOR)"$^"$(NC) into "$@" using these libraries: "$(LDLIBS)"
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
-	@echo linking "$@" done!
-	@echo ""
+	@$(ECHO) $(LINK_COLOR)linking "$@" done!$(NC)
+	@$(ECHO) ""
 
 $(BUILD)/$(SUBBUILD)/$(testprogram): $(unit-test-objects) $(filter-out $(BUILD)/$(SUBBUILD)/$(program-main:.cpp=.o),$(objects))
-	@echo linking "$^" into "$@" using these libraries: "$(LDLIBS)"
+	@$(ECHO) linking $(LINK_COLOR)"$^"$(NC) into "$@" using these libraries: "$(LDLIBS)"
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
-	@echo linking "$@" done!
-	@echo ""
+	@$(ECHO) $(LINK_COLOR)linking "$@" done!$(NC)
+	@$(ECHO) ""
 
 $(objects): $(gchfiles)
 
 $(unit-test-objects): $(gchfiles)
 
 $(BUILD)/$(SUBBUILD)/%.o: %.cpp
-	@echo compiling "$<" to "$@" with $(CXX)
+	@$(ECHO) compiling $(COMPILE_COLOR)"$<"$(NC) to "$@" with $(COMPILER_PROG_COLOR)$(CXX)$(NC)
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 %.hpp.gch: %.hpp
-	@echo precompiling header "$<" to "$@" with $(CXX)
+	@$(ECHO) precompiling header $(PRECOMPILE_COLOR)"$<"$(NC) to "$@" with $(COMPILER_PROG_COLOR)$(CXX)$(NC)
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) $<
 
 $(objects) $(depends): | $(BUILD) $(BUILD)/$(SUBBUILD)
 
 $(BUILD) $(BUILD)/$(SUBBUILD):
-	@echo creating directories
+	@$(ECHO) $(DGRAY)creating directories$(NC)
 	@$(MKDIR) $(BUILD) $(addprefix $(BUILD)$(SLASH)$(SUBBUILD)$(SLASH),$(cppdirs)) $(addprefix $(BUILD)$(SLASH)$(SUBBUILD)$(SLASH),$(unit-test-cppdirs))
 
 # rule to generate a dependency file
 $(BUILD)/$(SUBBUILD)/%.d: %.cpp
-	@echo generating dependencies for "$<"
+	@$(ECHO) generating dependencies for $(GENDEPENDS_COLOR)"$<"$(NC)
 	@$(CXX) $(CXXFLAGS) $< -MM -MT $(@:.d=.o) >$@
 
 # include all dependency files in the makefile
@@ -223,15 +267,15 @@ $(BUILD)/$(SUBBUILD)/%.d: %.cpp
 .PHONY: clean cleandep install uninstall
 clean:
 #	$(RM) $(subst /,$(SLASH),$(objects)) $(subst /,$(SLASH),$(depends)) $(subst /,$(SLASH),$(BUILD)/$(program))
-	@echo cleaning...
+	@$(ECHO) cleaning...
 	@$(RMDIR) $(BUILD)
 	@$(RM) $(SRC)$(SLASH)*.gch
-	@echo done.
+	@$(ECHO) $(DONE_COLOR)done.$(NC)
 
 cleandep:
-	@echo cleaning dependencies...
+	@$(ECHO) cleaning dependencies...
 	@$(RM) $(subst /,$(SLASH),$(depends))
-	@echo done.
+	@$(ECHO) $(DONE_COLOR)done.$(NC)
 
 install: $(BUILD)/$(SUBBUILD)/$(program)
 ifeq ($(OSTARGET),WINDOWS)
@@ -252,9 +296,9 @@ else
 endif
 
 help:
-	#@echo Commands:
-	#@echo make all ---------------------------------- builds the program and puts all the output files in a directory called build
-	#@echo make single in=<path-to-file/file> -------- builds only a single file (omit the .cpp or .c extension and ignore the quotes as well)
-	#@echo make install ------------------------------ builds the program just like make all and installs the final files to a directory
-	#@echo make uninstall ---------------------------- will remove all the files from the install directory
-	#@echo make clean -------------------------------- will remove the build directory
+	#@$(ECHO) Commands:
+	#@$(ECHO) make all ---------------------------------- builds the program and puts all the output files in a directory called build
+	#@$(ECHO) make single in=<path-to-file/file> -------- builds only a single file (omit the .cpp or .c extension and ignore the quotes as well)
+	#@$(ECHO) make install ------------------------------ builds the program just like make all and installs the final files to a directory
+	#@$(ECHO) make uninstall ---------------------------- will remove all the files from the install directory
+	#@$(ECHO) make clean -------------------------------- will remove the build directory

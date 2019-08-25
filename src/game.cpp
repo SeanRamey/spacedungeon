@@ -9,7 +9,7 @@ using namespace Input;
 Game::Game(sf::VideoMode videoMode)
 : videoMode(videoMode)
 {
-    init();
+	init();
 }
 
 Game::~Game() {
@@ -18,139 +18,117 @@ Game::~Game() {
 
 void Game::init() {
 
-    // set up window
-    window.create(videoMode, "spacedungeon", sf::Style::Close);
-    Resources::window = &window;
-    
-    // seed random number generator
-    Util::SeedRandomNumbers();
+	// set up window
+	window.create(videoMode, "spacedungeon", sf::Style::Close);
+	Resources::window = &window;
+	Resources::load();
 
-    // creation of all levels 
-    // they lay in a dorment state while game is being played out until loaded (very little memory wasted)
-    Level* level = new Level(this, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
-    Level* level2 = new Level(this, "data/levels/test-map2.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32); 
-	MainMenu* menu = new MainMenu(this);
-	gameStates.push_back(menu);
-    gameStates.push_back(level);
-    gameStates.push_back(level2);
-    menu->init();
+	// seed random number generator
+	Util::SeedRandomNumbers();
+
+	// initial game state
+	std::shared_ptr<MainMenu> menu = std::make_shared<MainMenu>(this);
+	pushState(menu);
 }
 
 
 void Game::run() {
-    // Start the game loop
-    sf::Clock loopTimer;
-    sf::Time secondsTime = sf::Time::Zero;
-    sf::Time unprocessedTime = sf::Time::Zero;
-    const sf::Time FRAME_TIME = sf::seconds(1.0f/60.0f); // 60 FPS
-    unsigned int framesPerSecond = 0;
-    unsigned int updatesPerSecond = 0;
+	// Start the game loop
+	sf::Clock loopTimer;
+	sf::Time secondsTime = sf::Time::Zero;
+	sf::Time unprocessedTime = sf::Time::Zero;
+	const sf::Time FRAME_TIME = sf::seconds(1.0f/60.0f); // 60 FPS
+	unsigned int framesPerSecond = 0;
+	unsigned int updatesPerSecond = 0;
 
-    window.setVerticalSyncEnabled(true);
+	window.setVerticalSyncEnabled(true);
 
-    while (window.isOpen()) {
-        unprocessedTime += loopTimer.getElapsedTime();
-        secondsTime += loopTimer.getElapsedTime();
-        loopTimer.restart();
+	while (window.isOpen()) {
+		unprocessedTime += loopTimer.getElapsedTime();
+		secondsTime += loopTimer.getElapsedTime();
+		loopTimer.restart();
 
-        while(unprocessedTime >= FRAME_TIME) {
-            unprocessedTime -= FRAME_TIME;
+		while(unprocessedTime >= FRAME_TIME) {
+			unprocessedTime -= FRAME_TIME;
 
-            processEvents();
+			processEvents();
 
-            // Update game objects
-            update(FRAME_TIME, window);
-            ++updatesPerSecond;
-        }
+			// Update game objects
+			update(FRAME_TIME);
+			++updatesPerSecond;
+		}
 
-        // Clear screen
-        window.clear(sf::Color::Black);
+		// Clear screen
+		window.clear(sf::Color::Black);
 
-        // Draw graphics to buffer
-        draw(window);
+		// Draw graphics to buffer
+		draw(window);
 
-        // Display buffer
-        window.display();
+		// Display buffer
+		window.display();
 
-        ++framesPerSecond;
+		++framesPerSecond;
 
-        // Check if 1 second has passed
-        if( secondsTime.asSeconds() >= 1) {
-            #ifdef DEBUG
-            std::cout << "FPS: " << framesPerSecond << ", Updates Per Second: " << updatesPerSecond << "\n";
-	        #endif
-	        secondsTime = sf::Time::Zero;
-            updatesPerSecond = 0;
-            framesPerSecond = 0;
-        }
-    }
+		// Check if 1 second has passed
+		if( secondsTime.asSeconds() >= 1) {
+			#ifdef DEBUG
+			std::cout << "FPS: " << framesPerSecond << ", Updates Per Second: " << updatesPerSecond << "\n";
+			#endif
+			secondsTime = sf::Time::Zero;
+			updatesPerSecond = 0;
+			framesPerSecond = 0;
+		}
+	}
 }
 
 void Game::processEvents() {
-    sf::Event event;
-    while (this->window.pollEvent(event)) {
-        if (event.type == sf::Event::EventType::Closed) {
-            window.close();
-        }
-        else if(event.type ==sf::Event::EventType::MouseMoved) {
-            Input::updateMousePosition(&window);
-        }
+	sf::Event event;
+	while (this->window.pollEvent(event)) {
+		if (event.type == sf::Event::EventType::Closed) {
+			window.close();
+		}
+		else if(event.type == sf::Event::EventType::MouseMoved) {
+			Input::updateMousePosition(&window);
+		}
 
-        Input::handleEvent(&event);
-    }
+		Input::handleEvent(&event);
+	}
 }
 
-void Game::update(sf::Time frametime, sf::RenderWindow& window) {
-    Level* level = dynamic_cast<Level*>(gameStates[currentState]);
-    gameStates[currentState]->update(frametime, window);
-    if(level != nullptr) {
-        if(level->checkLose()) {
-            // TODO handle player losing sequence
-            changeState(0, true);
-        }
-    }
+void Game::update(sf::Time frametime) {
+	gameStates.top()->update(frametime);
 }
 
 void Game::draw(sf::RenderWindow& window) {
-    gameStates[currentState]->draw(window);
+	gameStates.top()->draw(window);
 }
 
-void Game::changeState(int newState, bool carryPlayer) {
-    int prevState = currentState;
-    gameStates[currentState]->clear();
-    if(newState == -1) {
-        // looping value to end if we hit the end
-        currentState++;
-        if(currentState > STATECOUNT - 1) {
-            currentState = 0;
-        }
-        if(currentState < 0) {
-            currentState = STATECOUNT - 1;
-        }
-    } else {
-        this->currentState = newState;
-    }
+void Game::changeState(std::shared_ptr<GameState> state) {
+	popState();
+	pushState(state);
+}
 
-    // values are casted to check if either are levels
-    Level* prevLevel = dynamic_cast<Level*>(gameStates[prevState]);
-    Level* currLevel = dynamic_cast<Level*>(gameStates[currentState]);
-    if(prevLevel != nullptr){
-        // storing previous level to access previous player
-        previousLevel = prevLevel;
-    }
-    if(currLevel != nullptr){
-        // used as a reset sequence, moves player
-		if(carryPlayer && previousLevel != nullptr){
-        	currLevel->setPlayer(previousLevel->getPlayer());
-        	currLevel->getPlayer()->setLevel(currLevel);
-			currLevel->getPlayer()->setVelocity(sf::Vector2f(0, 0));
+void Game::pushState(std::shared_ptr<GameState> state) {
+	state->init();
+	gameStates.push(state);
+}
+
+void Game::popState() {
+	if ( !gameStates.empty() ) {
+		// check if gamestate is a level and if so, store the player
+		std::shared_ptr<Level> levelState = std::dynamic_pointer_cast<Level>(gameStates.top());
+		if(levelState.get() != nullptr) {
+			player = levelState->getPlayer();
 		}
-		currLevel->getPlayer()->revive();
-		currLevel->getPlayer()->setPosition(20, -50);
-    } 
-    gameStates[currentState]->init();
+		gameStates.top()->clear();
+		gameStates.pop();
+	}
 }
 
-GameState* Game::getGameState() {
-    return gameStates[currentState];
+std::shared_ptr<GameState> Game::getGameState() {
+	return gameStates.top();
+}
+
+PlayerShip* Game::getPlayer() {
+	return player;
 }

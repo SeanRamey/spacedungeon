@@ -7,12 +7,12 @@
 
 AlienShip::AlienShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level)
 : Entity(position, size, texture, level) {
-    type = Entity::Type::ALIEN_SHIP;
+	type = Entity::Type::ALIEN_SHIP;
 }
 
 AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level)
 : Entity(x, y, w, h, texture, level) {
-    type = Entity::Type::ALIEN_SHIP;
+	type = Entity::Type::ALIEN_SHIP;
 }
 
 AlienShip::~AlienShip() {
@@ -30,61 +30,61 @@ AlienShip::~AlienShip() {
 // }
 
 void AlienShip::update(sf::Time frameTime) {
-    updateAI();
-    Entity::update(frameTime);
+	updateAI();
+	Entity::update(frameTime);
 }
 
 void AlienShip::updateAI() {
-    
-    switch(state) {
-        case MOVING:
-        movingState();
-        break;
 
-        case FIRING:
-        firingState();
-        break;
+	switch(state) {
+		case MOVING:
+		movingState();
+		break;
 
-        default:
-        movingState();
-    }
+		case FIRING:
+		firingState();
+		break;
+
+		default:
+		movingState();
+	}
 }
 
 void AlienShip::movingState() {
-    if(changeMovementTimer.getElapsedTime() >= CHANGE_MOVEMENT_DELAY) {
-        switch(Util::GetRandomNumber(0,3)) {
-            case 0:
-            // up
-            setVelocity(sf::Vector2f(0,-30));
-            break;
+	if(changeMovementTimer.getElapsedTime() >= CHANGE_MOVEMENT_DELAY) {
+		switch(Util::GetRandomNumber(0,3)) {
+			case 0:
+			// up
+			setVelocity(sf::Vector2f(0,-30));
+			break;
 
-            case 1:
-            // right
-            setVelocity(sf::Vector2f(30,0));
-            break;
+			case 1:
+			// right
+			setVelocity(sf::Vector2f(30,0));
+			break;
 
-            case 2:
-            // down
-            setVelocity(sf::Vector2f(0,30));
-            break;
+			case 2:
+			// down
+			setVelocity(sf::Vector2f(0,30));
+			break;
 
-            case 3:
-            // left
-            setVelocity(sf::Vector2f(-30,0));
-            break;
+			case 3:
+			// left
+			setVelocity(sf::Vector2f(-30,0));
+			break;
 
-            default:
-            break;
-        }
+			default:
+			break;
+		}
 
-        changeMovementTimer.restart();
-        state = FIRING;
-    }
+		changeMovementTimer.restart();
+		state = FIRING;
+	}
 }
 
 void AlienShip::firingState() {
-    fire();
-    state = MOVING;
+	fire();
+	state = MOVING;
 }
 
 void AlienShip::fire() {

@@ -1,14 +1,15 @@
 #include "main-menu.hpp"
 #include "resources.hpp"
+#include "level.hpp"
 
-void MainMenu::update(sf::Time frameTime, sf::RenderWindow& window){
+void MainMenu::update(sf::Time frameTime){
 	float elapsedTime = sineWaveTimer.getElapsedTime().asSeconds();
 	for(size_t i = 0; i < titleText.size(); i++){
 		const static int magnitude = 20;
 		menu.getText(i)->setPosition(sf::Vector2f(menu.getText(i)->getPosition().x, -200 + (sin(elapsedTime + i)) * magnitude));
 	}
 
-	menu.update(frameTime, window);
+	menu.update(frameTime);
 }
 
 void MainMenu::draw(sf::RenderWindow& window){
@@ -17,7 +18,8 @@ void MainMenu::draw(sf::RenderWindow& window){
 }
 
 void MainMenu::ButtonCallback(MainMenu* mm){
-	mm->game->changeState(1, true);
+	std::shared_ptr<Level> level = std::make_shared<Level>(mm->game, "data/levels/test-map.map", "data/graphics/tileset.png", "data/levels/test-map.dat", 32);
+	mm->game->pushState(level);
 }
 
 void MainMenu::init(){
@@ -50,5 +52,9 @@ MainMenu::MainMenu(Game* game)
 , menu()
 , titleText("Space Dungeon"){
 	sf::Clock sineWaveTimer;
+
+}
+
+MainMenu::~MainMenu() {
 
 }

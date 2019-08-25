@@ -7,8 +7,8 @@
 
 int main(){
 
-    Game game(sf::VideoMode(1080, 720, 32));
-    game.run();
+	Game game(sf::VideoMode(1080, 720, 32));
+	game.run();
 
-    return 0;
+	return 0;
 }

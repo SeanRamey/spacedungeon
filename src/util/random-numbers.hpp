@@ -3,10 +3,10 @@
 
 namespace Util
 {
-    void SeedRandomNumbers();
-    unsigned int GetRandomNumber(unsigned int min, unsigned int max);
+	void SeedRandomNumbers();
+	unsigned int GetRandomNumber(unsigned int min, unsigned int max);
 }
-    
+
 
 
 #endif
