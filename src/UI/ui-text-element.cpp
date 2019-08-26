@@ -26,7 +26,7 @@ void UITextElement::setPosition(sf::Vector2f position){
 	text.setPosition(position);
 	sf::FloatRect textRect = text.getLocalBounds();
 	text.setOrigin(textRect.left + textRect.width / 2.0f,
-				   textRect.top + textRect.height / 2.0f);
+				textRect.top + textRect.height / 2.0f);
 	// centering text within point of given position
 }
 

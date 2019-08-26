@@ -18,26 +18,34 @@ struct CollisionPair {
 	float time;
 };
 
+enum TILE_LAYER {
+	FLOOR,
+	WALL,
+	SHADOW
+};
 
 class Level : public GameState {
 	private:
 
 		std::vector<Entity*> entities;
 
-		std::vector<Tile*> middleTiles;
-		std::vector<Tile*> foreGroundTiles;
+		std::vector<Tile*> floorTiles;
+		std::vector<Tile*> wallTiles;
+		std::vector<Tile*> shadowTiles;
 
 		PlayerShip* playerShip;
-		std::vector<sf::Texture*> tileImages;
+		std::vector<sf::Texture*> shadowImages;
+		std::vector<sf::Texture*> floorImages;
+		std::vector<sf::Texture*> wallImages;
 
-		sf::Sprite backGroundSprite;
-		sf::Texture backGroundTexture;
+		sf::Sprite floorSprite;
+		sf::Texture floorTexture;
 
-		sf::Sprite middleGroundSprite;
-		sf::Texture middleGroundTexture;
+		sf::Sprite wallSprite;
+		sf::Texture wallTexture;
 
-		sf::Sprite foreGroundSprite;
-		sf::Texture foreGroundTexture;
+		sf::Sprite shadowSprite;
+		sf::Texture shadowTexture;
 
 		sf::Vector2u mapSize;
 		unsigned int tileSize;
@@ -50,9 +58,13 @@ class Level : public GameState {
 
 		UITextElement gameOver;
 
-		std::string levelMapFileName;
-		std::string tileImagesFileName;
-		std::string levelDataFileName;
+		const std::string shadowFileName;
+		const std::string floorFileName;
+		const std::string wallFileName;
+		const std::string shadowImagesFileName;
+		const std::string floorImagesFileName;
+		const std::string wallImagesFileName;
+		const std::string levelDataFileName;
 
 	public:
 		void processCollisions();
@@ -63,6 +75,7 @@ class Level : public GameState {
 		PlayerShip* getPlayer();
 		void setPlayer(PlayerShip* playerShip);
 		void loadMap(std::string map, std::string images);
+		void loadLayer(TILE_LAYER layer);
 		void addEntity(Entity* entity);
 		void deleteEntity(Entity* entity);
 
@@ -71,7 +84,7 @@ class Level : public GameState {
 		void update(sf::Time frameTime);
 		void draw(sf::RenderWindow& window);
 
-		Level(Game* game, std::string levelMapFilename, std::string tileImagesFilename, std::string levelDataFilename, unsigned int tileSize = 32);
+		Level(Game* game, std::string shadowMapFileName, std::string floorMapFileName, std::string wallMapFileName, std::string shadowImagesFileName, std::string floorImagesFileName, std::string wallImagesFileName, std::string levelDataFileName, unsigned int tileSize);
 		~Level();
 };
 #endif
