@@ -256,12 +256,20 @@ struct tileLayers {
 };
 */
 
+void Level::loadMap() {
+	static const TILE_LAYER layers[3] = {SHADOW, WALL, FLOOR};
+	for(size_t i = 0; i < 3; i++) {
+		loadLayer(layers[i]);
+	}
+}
+
 void Level::loadLayer(TILE_LAYER layer) {
 	std::string mapFile, imageFile;
 	std::vector<sf::Texture*>* tileImages;
 	sf::Texture* textureToLoad;
 	sf::Sprite* spriteToLoad;
 	std::vector<Tile*>* tilesToLoad;
+
 	switch(layer) {
 		case SHADOW:
 			mapFile = shadowFileName;
@@ -320,10 +328,6 @@ void Level::loadLayer(TILE_LAYER layer) {
 	sf::Image tilesetImage;
 	if(!tilesetImage.loadFromFile(imageFile)){
 		Log::error("failed load tile map image");
-	}
-
-	for(int i = 0; i < parsedData.size(); i++){
-		std::cout << parsedData[i] << std::endl;
 	}
 
 	// counting amount of tiles in the image
@@ -526,9 +530,7 @@ void Level::loadEntites(std::string path){
 
 void Level::init() {
 	playerIsDead = false;
-	loadLayer(SHADOW);
-	loadLayer(FLOOR);
-	loadLayer(WALL);
+	loadMap();
 	loadEntites(levelDataFileName);
 }
 

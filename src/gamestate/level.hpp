@@ -74,7 +74,7 @@ class Level : public GameState {
 		void removeDestroyedEntities();
 		PlayerShip* getPlayer();
 		void setPlayer(PlayerShip* playerShip);
-		void loadMap(std::string map, std::string images);
+		void loadMap();
 		void loadLayer(TILE_LAYER layer);
 		void addEntity(Entity* entity);
 		void deleteEntity(Entity* entity);
