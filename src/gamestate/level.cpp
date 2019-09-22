@@ -303,6 +303,8 @@ void Level::loadLayer(TILE_LAYER layer) {
 		Log::error("Failed to open file: " + mapFile);
 		exit(-1);
 	}
+
+	// read in map dimensions
 	file >> mapSize.x >> mapSize.y;
 
 	std::vector<char> fileData;
@@ -342,7 +344,7 @@ void Level::loadLayer(TILE_LAYER layer) {
 		}
 	}
 
-	// create a temporary image to create textures from
+	// create a temporary image to create textures
 	sf::Image image;
 	image.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
 
@@ -350,19 +352,17 @@ void Level::loadLayer(TILE_LAYER layer) {
 	for(unsigned int y = 0; y < mapSize.y; y++) {
 		for(unsigned int x = 0; x < mapSize.x; x++) {
 			if(parsedData.at(x + y * mapSize.x) != 0) {
+				// copy to image
 				image.copy(tileImages->at(parsedData[x + y * mapSize.x] - 1)->copyToImage(), x * tileSize, y * tileSize);
-			}
-		}
-	}
-	for(unsigned int y = 0; y < mapSize.y; y++) {
-		for(unsigned int x = 0; x < mapSize.x; x++) {
-			if(parsedData.at(x + y * mapSize.x) != 0) {
+
+				// create tile
 				Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
 				tilesToLoad->push_back(tile);
 				tilesToLoad->back()->setTexture(tileImages->at(parsedData[x + y * mapSize.x] - 1));
 			}
 		}
 	}
+
 	for(Tile* tile : *tilesToLoad) {
 		image.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
 	}
