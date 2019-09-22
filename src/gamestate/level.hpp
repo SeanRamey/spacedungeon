@@ -21,7 +21,7 @@ struct CollisionPair {
 enum TILE_LAYER {
 	FLOOR,
 	WALL,
-	SHADOW
+	NUM_LAYERS
 };
 
 class Level : public GameState {
@@ -31,10 +31,8 @@ class Level : public GameState {
 
 		std::vector<Tile*> floorTiles;
 		std::vector<Tile*> wallTiles;
-		std::vector<Tile*> shadowTiles;
 
 		PlayerShip* playerShip;
-		std::vector<sf::Texture*> shadowImages;
 		std::vector<sf::Texture*> floorImages;
 		std::vector<sf::Texture*> wallImages;
 
@@ -84,7 +82,7 @@ class Level : public GameState {
 		void update(sf::Time frameTime);
 		void draw(sf::RenderWindow& window);
 
-		Level(Game* game, std::string shadowMapFileName, std::string floorMapFileName, std::string wallMapFileName, std::string shadowImagesFileName, std::string floorImagesFileName, std::string wallImagesFileName, std::string levelDataFileName, unsigned int tileSize);
+		Level(Game* game, std::string floorMapFileName, std::string wallMapFileName, std::string floorImagesFileName, std::string wallImagesFileName, std::string levelDataFileName, unsigned int tileSize);
 		~Level();
 };
 #endif

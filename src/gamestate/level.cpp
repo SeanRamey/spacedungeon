@@ -5,24 +5,20 @@
 #include "game.hpp"
 #include "collision-tests.hpp"
 
-Level::Level(Game* game, std::string shadowMapFileName, std::string floorMapFileName, std::string wallMapFileName,
-		std::string shadowImagesFileName, std::string floorImagesFileName, std::string wallImagesFileName, std::string levelDataFileName, unsigned int tileSize) :
+Level::Level(Game* game, std::string floorMapFileName, std::string wallMapFileName, std::string floorImagesFileName, std::string wallImagesFileName, std::string levelDataFileName, unsigned int tileSize) :
 GameState(game),
 tileSize(tileSize),
 healthText(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", ""),
 healthBar(sf::Vector2f(0, 0), nullptr),
 gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over"),
-shadowFileName(shadowMapFileName),
 floorFileName(floorMapFileName),
 wallFileName(wallMapFileName),
-shadowImagesFileName(shadowImagesFileName),
 floorImagesFileName(floorImagesFileName),
 wallImagesFileName(wallImagesFileName),
 levelDataFileName(levelDataFileName){
 	this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::getTexture(Resources::TEXTURE_ID::PLAYER_SHIP), this, 100);
 	entities.push_back(this->playerShip);
 	healthBar.setTexture(Resources::getTexture(Resources::TEXTURE_ID::HEALTH_BAR));
-
 }
 
 Level::~Level(){
@@ -35,16 +31,10 @@ Level::~Level(){
 	for(Tile* tile : wallTiles) {
 		delete tile;
 	}
-	for(Tile* tile : shadowTiles) {
-		delete tile;
-	}
 	for(sf::Texture* texture : floorImages) {
 		delete texture;
 	}
 	for(sf::Texture* texture : wallImages) {
-		delete texture;
-	}
-	for(sf::Texture* texture : shadowImages) {
 		delete texture;
 	}
 }
@@ -107,11 +97,10 @@ void Level::update(sf::Time frameTime){
 	}
 
 	removeDestroyedEntities();
-	for(Tile* tile : wallTiles){ tile->update(frameTime); }
-	for(Tile* tile : shadowTiles){
+	for(Tile* tile : wallTiles) {
 		tile->update(frameTime);
 	}
-	for(Tile* tile : floorTiles){
+	for(Tile* tile : floorTiles) {
 		tile->update(frameTime);
 	}
 
@@ -257,9 +246,8 @@ struct tileLayers {
 */
 
 void Level::loadMap() {
-	static const TILE_LAYER layers[3] = {SHADOW, WALL, FLOOR};
-	for(size_t i = 0; i < 3; i++) {
-		loadLayer(layers[i]);
+	for(size_t i = 0; i < TILE_LAYER::NUM_LAYERS; ++i) {
+		loadLayer((TILE_LAYER)i);
 	}
 }
 
@@ -271,14 +259,6 @@ void Level::loadLayer(TILE_LAYER layer) {
 	std::vector<Tile*>* tilesToLoad;
 
 	switch(layer) {
-		case SHADOW:
-			mapFile = shadowFileName;
-			imageFile = shadowImagesFileName;
-			tileImages = &shadowImages;
-			textureToLoad = &shadowTexture;
-			spriteToLoad = &shadowSprite;
-			tilesToLoad = &shadowTiles;
-			break;
 		case WALL:
 			mapFile = wallFileName;
 			imageFile = wallImagesFileName;
@@ -295,6 +275,9 @@ void Level::loadLayer(TILE_LAYER layer) {
 			spriteToLoad = &floorSprite;
 			tilesToLoad = &floorTiles;
 			break;
+		default:
+			Log::error("Unhandled layer in map loading!");
+			return;
 	}
 
 	std::ifstream file(mapFile);
@@ -543,30 +526,21 @@ void Level::clear(){
 	}
 	entities.clear();
 
-	for(Tile* tile : shadowTiles){
-		delete tile;
-	}
 	for(Tile* tile : floorTiles){
 		delete tile;
 	}
 	for(Tile* tile : wallTiles){
 		delete tile;
 	}
-	shadowTiles.clear();
 	floorTiles.clear();
 	wallTiles.clear();
 
-
-	for(sf::Texture* tileImage : shadowImages){
-		delete tileImage;
-	}
 	for(sf::Texture* tileImage : floorImages){
 		delete tileImage;
 	}
 	for(sf::Texture* tileImage : wallImages){
 		delete tileImage;
 	}
-	shadowImages.clear();
 	floorImages.clear();
 	wallImages.clear();
 }
