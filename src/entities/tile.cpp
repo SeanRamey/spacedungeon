@@ -8,6 +8,7 @@ Tile::Tile(unsigned int x, unsigned int y, unsigned int w, unsigned int h) :
 position(x,y),
 size(w,h)
 {
+	sprite.setPosition(x, y);
 }
 
 Tile::Tile(sf::Vector2f position, sf::Vector2u size) :

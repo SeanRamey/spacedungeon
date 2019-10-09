@@ -289,9 +289,9 @@ else
 endif
 
 uninstall:
-ifeq ($(OSTARGET), WINDOWS) 
+ifeq ($(OSTARGET), WINDOWS)
 	$(RMDIR) $(DESTDIR)$(PREFIX)bin
-else 
+else
 	$(RMDIR) $(DESTDIR)$(PREFIX)$(SLASH)bin$(SLASH)$(program)
 endif
 

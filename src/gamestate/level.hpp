@@ -10,6 +10,7 @@
 #include "ui-image-element.hpp"
 #include "alien-ship.hpp"
 #include "game-state.hpp"
+#include "map.hpp"
 
 struct CollisionPair {
 	Entity *entity1;
@@ -25,64 +26,43 @@ enum TILE_LAYER {
 };
 
 class Level : public GameState {
-	private:
-
-		std::vector<Entity*> entities;
-
-		std::vector<Tile*> floorTiles;
-		std::vector<Tile*> wallTiles;
-
-		PlayerShip* playerShip;
-		std::vector<sf::Texture*> floorImages;
-		std::vector<sf::Texture*> wallImages;
-
-		sf::Sprite floorSprite;
-		sf::Texture floorTexture;
-
-		sf::Sprite wallSprite;
-		sf::Texture wallTexture;
-
-		sf::Sprite shadowSprite;
-		sf::Texture shadowTexture;
-
-		sf::Vector2u mapSize;
-		unsigned int tileSize;
-
-		bool hasWon = false;
-		bool playerIsDead = false;
-
-		UITextElement healthText;
-		UIImageElement healthBar;
-
-		UITextElement gameOver;
-
-		const std::string shadowFileName;
-		const std::string floorFileName;
-		const std::string wallFileName;
-		const std::string shadowImagesFileName;
-		const std::string floorImagesFileName;
-		const std::string wallImagesFileName;
-		const std::string levelDataFileName;
 
 	public:
-		void processCollisions();
-		bool checkWon();
-		bool checkLose();
-		void loadEntites(std::string);
-		void removeDestroyedEntities();
-		PlayerShip* getPlayer();
-		void setPlayer(PlayerShip* playerShip);
-		void loadMap();
-		void loadLayer(TILE_LAYER layer);
-		void addEntity(Entity* entity);
-		void deleteEntity(Entity* entity);
+	Level(Game* game, std::string levelDataFileName, std::string entityDataFileName, std::string wallImagesFileName, std::string floorImagesFileName, unsigned int tileSize = 32);
+	~Level();
+	void processCollisions();
+	bool checkWon();
+	bool checkLose();
+	void loadEntites(std::string);
+	void removeDestroyedEntities();
+	PlayerShip* getPlayer();
+	void setPlayer(PlayerShip* playerShip);
+	void loadMap();
+	void loadLayer(TILE_LAYER layer);
+	void addEntity(Entity* entity);
+	void deleteEntity(Entity* entity);
 
-		void init();
-		void clear();
-		void update(sf::Time frameTime);
-		void draw(sf::RenderWindow& window);
+	void init();
+	void clear();
+	void update(sf::Time frameTime);
+	void draw(sf::RenderWindow& window);
 
-		Level(Game* game, std::string floorMapFileName, std::string wallMapFileName, std::string floorImagesFileName, std::string wallImagesFileName, std::string levelDataFileName, unsigned int tileSize);
-		~Level();
+	private:
+	Map map;
+	std::vector<Entity*> entities;
+	PlayerShip* playerShip;
+
+	bool hasWon = false;
+	bool playerIsDead = false;
+
+	UITextElement healthText;
+	UIImageElement healthBar;
+	UITextElement gameOver;
+
+	unsigned int tileSize = 32;
+	const std::string floorImagesFileName;
+	const std::string wallImagesFileName;
+	const std::string levelDataFileName;
+	const std::string entityDataFileName;
 };
 #endif

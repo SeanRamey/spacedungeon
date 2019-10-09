@@ -5,45 +5,36 @@
 #include "game.hpp"
 #include "collision-tests.hpp"
 
-Level::Level(Game* game, std::string floorMapFileName, std::string wallMapFileName, std::string floorImagesFileName, std::string wallImagesFileName, std::string levelDataFileName, unsigned int tileSize) :
+///////////////////////////
+Level::Level(Game* game, std::string levelDataFileName, std::string entityDataFileName, std::string wallImagesFileName, std::string floorImagesFileName, unsigned int tileSize) :
 GameState(game),
-tileSize(tileSize),
 healthText(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", ""),
 healthBar(sf::Vector2f(0, 0), nullptr),
 gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over"),
-floorFileName(floorMapFileName),
-wallFileName(wallMapFileName),
+tileSize(tileSize),
 floorImagesFileName(floorImagesFileName),
 wallImagesFileName(wallImagesFileName),
-levelDataFileName(levelDataFileName){
+levelDataFileName(levelDataFileName),
+entityDataFileName(entityDataFileName) {
 	this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::getTexture(Resources::TEXTURE_ID::PLAYER_SHIP), this, 100);
 	entities.push_back(this->playerShip);
 	healthBar.setTexture(Resources::getTexture(Resources::TEXTURE_ID::HEALTH_BAR));
 }
 
+///////////////////////////
 Level::~Level(){
 	for(Entity* entity : entities) {
 		delete entity;
 	}
-	for(Tile* tile : floorTiles) {
-		delete tile;
-	}
-	for(Tile* tile : wallTiles) {
-		delete tile;
-	}
-	for(sf::Texture* texture : floorImages) {
-		delete texture;
-	}
-	for(sf::Texture* texture : wallImages) {
-		delete texture;
-	}
 }
 
+///////////////////////////
 // TODO implement checkWon function
 bool Level::checkWon(){
 	return false;
 }
 
+///////////////////////////
 bool Level::checkLose(){
 	// CLANG COMPILER BUG
 	// if(playerIsDead) {
@@ -52,19 +43,22 @@ bool Level::checkLose(){
 	return playerIsDead;
 }
 
+///////////////////////////
 PlayerShip* Level::getPlayer(){
 	return this->playerShip;
 }
 
+///////////////////////////
 void Level::draw(sf::RenderWindow& window){
-	window.draw(floorSprite);
-	window.draw(shadowSprite);
+	//window.draw(floorSprite);
+	//window.draw(shadowSprite);
+	window.draw(map);
 	for(unsigned int i = 0; i < entities.size(); ++i) {
 		if(!(entities.at(i) == playerShip && playerIsDead)){
 			window.draw(*entities.at(i));
 		}
 	}
-	window.draw(wallSprite);
+	//window.draw(wallSprite);
 	if(!playerIsDead){
 		window.draw(healthBar);
 		window.draw(healthText);
@@ -74,6 +68,7 @@ void Level::draw(sf::RenderWindow& window){
 
 }
 
+///////////////////////////
 void Level::update(sf::Time frameTime){
 	view.setSize(sf::Vector2f(Resources::window->getSize().x, Resources::window->getSize().y));
 	if(!checkLose()){
@@ -97,12 +92,6 @@ void Level::update(sf::Time frameTime){
 	}
 
 	removeDestroyedEntities();
-	for(Tile* tile : wallTiles) {
-		tile->update(frameTime);
-	}
-	for(Tile* tile : floorTiles) {
-		tile->update(frameTime);
-	}
 
 	for(unsigned int i = 0; i < entities.size(); ++i) {
 		if(!(entities.at(i) == playerShip && playerIsDead)){
@@ -113,6 +102,7 @@ void Level::update(sf::Time frameTime){
 	processCollisions();
 }
 
+///////////////////////////
 bool typeMatches(CollisionPair& pair, Entity::Type type1, Entity::Type type2) {
 	if(pair.entity1->type == type1 && pair.entity2->type == type2) {
 		return true;
@@ -128,6 +118,7 @@ bool typeMatches(CollisionPair& pair, Entity::Type type1, Entity::Type type2) {
 	}
 }
 
+///////////////////////////
 Entity* getMatchingEntity(CollisionPair pair, Entity::Type type)
 {
 	if(pair.entity1->type == type)
@@ -146,6 +137,7 @@ Entity* getMatchingEntity(CollisionPair pair, Entity::Type type)
 
 }
 
+///////////////////////////
 void Level::processCollisions() {
 
 	// Implement line collisions
@@ -194,6 +186,7 @@ void Level::processCollisions() {
 	}
 }
 
+///////////////////////////
 void Level::removeDestroyedEntities() {
 	// Create a list of entities to delete
 	// THEN remove them, because deleting
@@ -212,6 +205,7 @@ void Level::removeDestroyedEntities() {
 	}
 }
 
+///////////////////////////
 void Level::addEntity(Entity* entity) {
 	if(entity == nullptr) {
 		return; // not valid pointer
@@ -219,6 +213,7 @@ void Level::addEntity(Entity* entity) {
 	entities.push_back(entity);
 }
 
+///////////////////////////
 void Level::deleteEntity(Entity* entity) {
 	entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end()); // removes entity pointer from list
 	entities.shrink_to_fit();
@@ -232,251 +227,12 @@ void Level::deleteEntity(Entity* entity) {
 	}
 }
 
-/*
-struct tileLayers {
-	// a temporary struct to store the data of the layers of a tile map
-	// used in file parsing
-	unsigned char backGround, middleGround, foreGround;
-	tileLayers(unsigned char bg, unsigned char mg, unsigned char fg){
-		this->backGround = bg;
-		this->middleGround = mg;
-		this->foreGround = fg;
-	}
-};
-*/
-
+///////////////////////////
 void Level::loadMap() {
-	for(size_t i = 0; i < TILE_LAYER::NUM_LAYERS; ++i) {
-		loadLayer((TILE_LAYER)i);
-	}
+	map.load(levelDataFileName, wallImagesFileName, floorImagesFileName, tileSize, tileSize);
 }
 
-void Level::loadLayer(TILE_LAYER layer) {
-	std::string mapFile, imageFile;
-	std::vector<sf::Texture*>* tileImages;
-	sf::Texture* textureToLoad;
-	sf::Sprite* spriteToLoad;
-	std::vector<Tile*>* tilesToLoad;
-
-	switch(layer) {
-		case WALL:
-			mapFile = wallFileName;
-			imageFile = wallImagesFileName;
-			tileImages = &wallImages;
-			textureToLoad = &wallTexture;
-			spriteToLoad = &wallSprite;
-			tilesToLoad = &wallTiles;
-			break;
-		case FLOOR:
-			mapFile = floorFileName;
-			imageFile = floorImagesFileName;
-			tileImages = &floorImages;
-			textureToLoad = &floorTexture;
-			spriteToLoad = &floorSprite;
-			tilesToLoad = &floorTiles;
-			break;
-		default:
-			Log::error("Unhandled layer in map loading!");
-			return;
-	}
-
-	std::ifstream file(mapFile);
-
-	if(!file.is_open()){
-		Log::error("Failed to open file: " + mapFile);
-		exit(-1);
-	}
-
-	// read in map dimensions
-	file >> mapSize.x >> mapSize.y;
-
-	std::vector<char> fileData;
-	fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-	file.close();
-
-	std::string buffer;
-	std::vector<int> parsedData;
-	for(size_t i = 1; i < fileData.size(); i++) {
-		switch(fileData[i]) {
-			case '\n':
-			case ' ':
-				parsedData.push_back(std::stoi(buffer));
-				buffer.clear();
-				break;
-			default:
-				buffer.push_back(fileData[i]);
-				break;
-		}
-	}
-
-	// Load the tileset source image
-	sf::Image tilesetImage;
-	if(!tilesetImage.loadFromFile(imageFile)){
-		Log::error("failed load tile map image");
-	}
-
-	// counting amount of tiles in the image
-	sf::Vector2u tileCount;
-	tileCount.x = tilesetImage.getSize().x / tileSize;
-	tileCount.y = tilesetImage.getSize().y / tileSize;
-	// Store each tile graphic as a sf::Texture in an array
-	for(unsigned int y = 0; y < tileCount.y; y++) {
-		for(unsigned int x = 0; x < tileCount.x; x++) {
-			tileImages->push_back(new sf::Texture());
-			tileImages->at(y * tileCount.x + x)->loadFromImage(tilesetImage, sf::IntRect(x * tileSize, y * tileSize, tileSize, tileSize));
-		}
-	}
-
-	// create a temporary image to create textures
-	sf::Image image;
-	image.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
-
-	// Create background image of the map
-	for(unsigned int y = 0; y < mapSize.y; y++) {
-		for(unsigned int x = 0; x < mapSize.x; x++) {
-			if(parsedData.at(x + y * mapSize.x) != 0) {
-				// copy to image
-				image.copy(tileImages->at(parsedData[x + y * mapSize.x] - 1)->copyToImage(), x * tileSize, y * tileSize);
-
-				// create tile
-				Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
-				tilesToLoad->push_back(tile);
-				tilesToLoad->back()->setTexture(tileImages->at(parsedData[x + y * mapSize.x] - 1));
-			}
-		}
-	}
-
-	for(Tile* tile : *tilesToLoad) {
-		image.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
-	}
-
-	textureToLoad->loadFromImage(image);
-	spriteToLoad->setTexture(*textureToLoad);
-}
-/*
-void Level::loadMap(std::string map, std::string floorImages, std::string shadowImages, ){
-	std::ifstream file(map);
-
-	if(!file.is_open()){
-		Log::error("Failed to open file: " + map);
-		exit(-1);
-	}
-	file >> mapSize.x >> mapSize.y;
-
-	std::vector<char> fileData;
-	fileData.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-	file.close();
-
-	std::vector<std::string> buffer;
-	std::vector<struct tileLayers> mapData;
-	for(size_t i = 1; i < fileData.size(); i++) {
-			switch(fileData[i]) {
-				case '\n':
-				case ' ':
-					mapData.push_back(tileLayers((unsigned char)std::stoi(buffer[0]), (unsigned char)std::stoi(buffer[1]), (unsigned char)std::stoi(buffer[2]))); // add the current buffer to mapData as an unsigned char
-					buffer.clear();
-					break;
-				default:
-					int j = 0;
-					buffer.push_back(std::string());
-					while(true){
-
-						if(fileData[i] == ',' || fileData[i] == ' ' || fileData[i] == '\n') {
-							j++;
-							if(j == 3)  {
-								i--;
-								break;
-							}
-							if(fileData[i] == ','){
-								i++;
-								buffer.push_back(std::string());
-							}
-						}
-						buffer[j] += fileData[i];
-						i++;
-					}
-		}
-	}
-
-	// Load the tileset source image
-	sf::Image tilesetImage;
-	if(!tilesetImage.loadFromFile(images)){
-		Log::error("failed load tile map");
-	}
-
-	// Store how many tiles are in the tileset
-	sf::Vector2u tileCount;
-	tileCount.x = tilesetImage.getSize().x / tileSize;
-	tileCount.y = tilesetImage.getSize().y / tileSize;
-
-	// Store each tile graphic as a sf::Texture in an array
-	for(unsigned int y = 0; y < tileCount.y; y++) {
-		for(unsigned int x = 0; x < tileCount.x; x++) {
-			tileImages.push_back(new sf::Texture());
-			tileImages.at(y * tileCount.x + x)->loadFromImage(tilesetImage, sf::IntRect(x * tileSize, y * tileSize, tileSize, tileSize));
-		}
-	}
-
-	// Create an image of the entire map so that only 1 draw call is needed for the whole map
-	sf::Image backGroundImage;
-	backGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
-
-	// Create background image of the map
-	for(unsigned int y = 0; y < mapSize.y; y++) {
-		for(unsigned int x = 0; x < mapSize.x; x++) {
-			if(mapData.at(x + y * mapSize.x).backGround != 0) {
-				backGroundImage.copy(tileImages[mapData[x + y * mapSize.x].backGround - 1]->copyToImage(), x * tileSize, y * tileSize);
-			}
-		}
-	}
-
-	// Create middle tiles in the map
-	for(unsigned int y = 0; y < mapSize.y; y++) {
-		for(unsigned int x = 0; x < mapSize.x; x++) {
-			if(mapData.at(x + y * mapSize.x).middleGround != 0) {
-				Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
-				middleTiles.push_back(tile);
-				middleTiles[middleTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].middleGround - 1]);
-			}
-		}
-	}
-
-	// Create foreground tiles in the map
-	for(unsigned int y = 0; y < mapSize.y; y++) {
-		for(unsigned int x = 0; x < mapSize.x; x++) {
-			if(mapData.at(x + y * mapSize.x).foreGround != 0) {
-				Tile *tile = new Tile(x * tileSize, y * tileSize, tileSize, tileSize);
-				foreGroundTiles.push_back(tile);
-				foreGroundTiles[foreGroundTiles.size() - 1]->setTexture(tileImages[mapData[x + y * mapSize.x].foreGround - 1]);
-			}
-		}
-	}
-
-	backGroundTexture.loadFromImage(backGroundImage);
-	backGroundSprite.setTexture(backGroundTexture);
-
-	sf::Image middleGroundImage;
-	middleGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
-
-	for(Tile* tile : middleTiles) {
-		middleGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
-	}
-
-	middleGroundTexture.loadFromImage(middleGroundImage);
-	middleGroundSprite.setTexture(middleGroundTexture);
-
-	sf::Image foreGroundImage;
-	foreGroundImage.create(mapSize.x * tileSize, mapSize.y * tileSize, sf::Color::Transparent);
-
-	for(Tile* tile : foreGroundTiles) {
-		foreGroundImage.copy(tile->getTexture()->copyToImage(), tile->position.x, tile->position.y);
-	}
-
-	foreGroundTexture.loadFromImage(foreGroundImage);
-	foreGroundSprite.setTexture(foreGroundTexture);
-}
-*/
-
+///////////////////////////
 void Level::loadEntites(std::string path){
 	std::vector<char> fileData;
 	std::ifstream file;
@@ -511,12 +267,14 @@ void Level::loadEntites(std::string path){
 	}
 }
 
+///////////////////////////
 void Level::init() {
 	playerIsDead = false;
 	loadMap();
-	loadEntites(levelDataFileName);
+	loadEntites(entityDataFileName);
 }
 
+///////////////////////////
 void Level::clear(){
 	// memory management
 	for(Entity* entity : entities){
@@ -525,26 +283,9 @@ void Level::clear(){
 		}
 	}
 	entities.clear();
-
-	for(Tile* tile : floorTiles){
-		delete tile;
-	}
-	for(Tile* tile : wallTiles){
-		delete tile;
-	}
-	floorTiles.clear();
-	wallTiles.clear();
-
-	for(sf::Texture* tileImage : floorImages){
-		delete tileImage;
-	}
-	for(sf::Texture* tileImage : wallImages){
-		delete tileImage;
-	}
-	floorImages.clear();
-	wallImages.clear();
 }
 
+///////////////////////////
 void Level::setPlayer(PlayerShip* playerShip){
 	entities.erase(std::remove(entities.begin(), entities.end(), this->playerShip), entities.end());
 	entities.shrink_to_fit();
