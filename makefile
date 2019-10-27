@@ -10,7 +10,7 @@ BUILD := build
 ifeq ($(BUILDTYPE),DEBUG)
 # standard compile and link flags and link libraries (DEBUG)
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++17 -march=native -fno-omit-frame-pointer
+CXXFLAGS = -Wpedantic -Wall -Wextra -fmax-errors=2 -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++17 -march=native -fno-omit-frame-pointer
 CPPFLAGS = -DDEBUG -DSFML
 LDFLAGS = -march=native -fno-omit-frame-pointer
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
