@@ -44,7 +44,7 @@ void UIImageElement::setPosition(sf::Vector2f position){
 	sprite.setPosition(position);
 	sf::FloatRect textRect = sprite.getLocalBounds();
 	sprite.setOrigin(textRect.left + textRect.width / 2.0f,
-					textRect.top + textRect.height / 2.0f);
+				   textRect.top + textRect.height / 2.0f);
 	// centering text within point of given position
 }
 
