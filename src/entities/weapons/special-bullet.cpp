@@ -24,7 +24,7 @@ void SpecialBullet::destroy(){
 		finalPosition.x = getPosition().x + cosf(degreesToRadians(i * (degreeSplit + Util::GetRandomNumber(-5, 5))));
 		finalPosition.y = getPosition().y + sinf(degreesToRadians(i * (degreeSplit + Util::GetRandomNumber(-5, 5))));
 		SpecialBulletSplit* shrapnel = new SpecialBulletSplit(getPosition(), finalPosition, owner, level);
-		shrapnel->setTexture(Resources::getTexture(Resources::TEXTURE_ID::SHRAPNEL));
+		shrapnel->setTexture(Resources::getTexture(Resources::TextureID::SHRAPNEL));
 		level->addEntity(shrapnel);
 	}
 }

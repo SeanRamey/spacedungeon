@@ -89,7 +89,7 @@ void PlayerShip::firePrimary() {
 	if(shootTimer.getElapsedTime().asMilliseconds() > (int)SHOOT_DELAY){
 		sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
 		gun.shoot(mousePosition);
-		Resources::playSound(Resources::SOUND_ID::SND_PLAYER_SHOOT);
+		Resources::playSound(Resources::SoundID::SND_PLAYER_SHOOT);
 		shootTimer.restart();
 	}
 }
@@ -98,7 +98,7 @@ void PlayerShip::fireSpecial() {
 	if(specialShootTimer.getElapsedTime().asMilliseconds() > (int)SPECIAL_SHOOT_DELAY) {
 		sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
 		specialGun.shoot(mousePosition);
-		Resources::playSound(Resources::SOUND_ID::SND_PLAYER_SHOOT);
+		Resources::playSound(Resources::SoundID::SND_PLAYER_SHOOT);
 		specialShootTimer.restart();
 	}
 }
