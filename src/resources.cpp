@@ -66,6 +66,28 @@ namespace Resources {
 		}
 	}
 
+	void unload() {
+		for(int i = 0; i < NUM_TEXTURES; i++) {
+			sf::Texture* texture = textureMap[(TextureID)i];
+			if(texture != nullptr) {
+				delete texture;
+			}
+		}
+
+		for(int i = 0; i < NUM_SOUNDS; i++) {
+			sf::SoundBuffer *buffer = soundBufferMap[(SoundID)i];
+			sf::Sound *sound = soundMap[(SoundID)i];
+
+			if(sound != nullptr) {
+				delete sound;
+			}
+
+			if(buffer != nullptr) {
+				delete buffer;
+			}
+		}
+	}
+
 	void playSound(SoundID id) {
 		if(soundMap[id] != nullptr) {
 			soundMap[id]->play();

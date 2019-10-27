@@ -26,6 +26,7 @@ namespace Resources {
 	};
 
 	void load();
+	void unload();
 	void playSound(SoundID id);
 	sf::Sound* getSound(SoundID id);
 	sf::Texture* getTexture(TextureID id);

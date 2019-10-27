@@ -13,7 +13,7 @@ Game::Game(sf::VideoMode videoMode)
 }
 
 Game::~Game() {
-
+	Resources::unload();
 }
 
 void Game::init() {
