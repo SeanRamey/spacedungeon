@@ -4,7 +4,7 @@
 #include "level.hpp"
 #include "resources.hpp"
 #include "main-menu.hpp"
-using namespace Input;
+#include "input.hpp"
 
 Game::Game(sf::VideoMode videoMode)
 : videoMode(videoMode)
