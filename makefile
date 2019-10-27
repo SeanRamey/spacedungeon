@@ -39,7 +39,7 @@ SRC := src
 # make sure to use the $(SLASH) variable for the directory seperator if
 # a subdirectory is included
 # example: dir$(SLASH)nextdir
-cppdirs = entities util entities$(SLASH)weapons UI manager gamestate
+cppdirs = entities util entities$(SLASH)weapons ui manager gamestate
 unit-test-cppdirs = unit-tests
 
 # a list of headers to pre-compile
