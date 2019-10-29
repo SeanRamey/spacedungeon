@@ -3,7 +3,7 @@
 
 #include "allpch.hpp"
 #include "input.hpp"
-#include "othermath.h"
+#include "math-util.hpp"
 #include "gun.hpp"
 #include "entity.hpp"
 #include "entity-data.hpp"

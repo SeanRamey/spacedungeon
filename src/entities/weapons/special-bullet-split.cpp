@@ -1,7 +1,7 @@
 #include "stdpch.hpp"
 
 #include "special-bullet-split.hpp"
-#include "othermath.h"
+#include "math-util.hpp"
 #include "entity.hpp"
 #include "player-ship.hpp"
 //#include <cmath>

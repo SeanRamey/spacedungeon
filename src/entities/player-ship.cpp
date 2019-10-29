@@ -2,7 +2,7 @@
 
 #include "player-ship.hpp"
 #include "input.hpp"
-#include "othermath.h"
+#include "math-util.hpp"
 #include "resources.hpp"
 #include "log.hpp"
 #include "level.hpp"

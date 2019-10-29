@@ -6,6 +6,7 @@
 #include "floatline.hpp"
 #include "entity-data.hpp"
 #include "damageable.hpp"
+#include "math-util.hpp"
 
 class Level; // forward declare to avoid circular dependency
 
@@ -25,7 +26,6 @@ class Entity : public sf::Transformable, public sf::Drawable, public Damageable 
 		void setVelocity(sf::Vector2f vector);
 		void accelerate(sf::Vector2f velocity);
 		void limitVelocity(const unsigned int MAX_SPEED);
-		float calculateAngleTo(sf::Vector2f position);
 		void face(sf::Vector2f position);
 		sf::FloatRect getCollisionRect();
 		FloatLine getCollisionLine();

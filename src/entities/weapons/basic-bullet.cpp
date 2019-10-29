@@ -2,7 +2,7 @@
 #include "basic-bullet.hpp"
 //#include <iostream>
 #include "input.hpp"
-#include "othermath.h"
+#include "math-util.hpp"
 //#include <cmath>
 #include "player-ship.hpp"
 #include "random-numbers.hpp"

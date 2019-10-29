@@ -1,7 +1,7 @@
 #include "stdpch.hpp"
 #include "level.hpp"
 #include "entity.hpp"
-#include "othermath.h"
+#include "math-util.hpp"
 #include "log.hpp"
 #include "level.hpp"
 #include "entity-data.hpp"
@@ -66,27 +66,7 @@ void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 void Entity::face(sf::Vector2f position){
-	setRotation(calculateAngleTo(position) - 90); // minus 90 degrees because SFML assumes a different direction is 0
-}
-
-float Entity::calculateAngleTo(sf::Vector2f otherPosition){
-	sf::Vector2f temp;
-	sf::Vector2f thisPosition = getPosition();
-	temp.x = thisPosition.x - otherPosition.x;
-	temp.y = thisPosition.y - otherPosition.y;
-	float newAngle = 0;
-	if(temp.x == 0) temp.x += FLT_MIN;
-	if(temp.y == 0) temp.y += FLT_MIN;
-	if(temp.x != 0 && temp.y != 0) {
-		newAngle = radiansToDegrees(atanf((temp.y) / (temp.x)));
-		if(otherPosition.x > thisPosition.x){
-			newAngle += 180;
-		}
-	} else
-	if(temp.x > 0) {
-		newAngle = 300;
-	}
-	return newAngle;
+	setRotation(Math::calculateAngleFromTo(getPosition(), position) - 90); // minus 90 degrees because SFML assumes a different direction is 0
 }
 
 void Entity::setVelocity(sf::Vector2f newVelocity) {
