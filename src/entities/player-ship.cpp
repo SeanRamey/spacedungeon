@@ -32,7 +32,7 @@ void PlayerShip::init() {
 }
 
 void PlayerShip::update(sf::Time frameTime) {
-	if(teleportTimer.getElapsedTime().asMilliseconds() > (int)BLINK_DELAY) {
+	if(teleportTimer.getElapsedTime().asMilliseconds() > (int)EntityData::PlayerShip::BLINK_DELAY) {
 		canBlink = true;
 	}
 
@@ -42,25 +42,25 @@ void PlayerShip::update(sf::Time frameTime) {
 	//std::cout << mousePosition.x << " " << mousePosition.y << std::endl;
 	// slow down ship
 	if(!up && !down && !left && !right) {
-		velocity *= FRICTION;
+		velocity *= EntityData::PlayerShip::FRICTION;
 	}
 	Entity::update(frameTime);
-	limitVelocity(MAX_SPEED);
+	limitVelocity(EntityData::PlayerShip::MAX_SPEED);
 }
 
 void PlayerShip::handleUserInput() {
 
 	if(up = Input::checkKey(sf::Keyboard::W)) {
-		accelerate(sf::Vector2f(0, -(float)ACCELERATION));
+		accelerate(sf::Vector2f(0, -(float)EntityData::PlayerShip::ACCELERATION));
 	}
 	if(left = Input::checkKey(sf::Keyboard::A)) {
-		accelerate(sf::Vector2f(-(float)ACCELERATION, 0));
+		accelerate(sf::Vector2f(-(float)EntityData::PlayerShip::ACCELERATION, 0));
 	}
 	if(down = Input::checkKey(sf::Keyboard::S)) {
-		accelerate(sf::Vector2f(0, (float)ACCELERATION));
+		accelerate(sf::Vector2f(0, (float)EntityData::PlayerShip::ACCELERATION));
 	}
 	if(right = Input::checkKey(sf::Keyboard::D)) {
-		accelerate(sf::Vector2f((float)ACCELERATION,0));
+		accelerate(sf::Vector2f((float)EntityData::PlayerShip::ACCELERATION,0));
 	}
 	if(Input::checkKey(sf::Keyboard::Space)) {
 	   teleport(getRotation());
@@ -76,8 +76,8 @@ void PlayerShip::handleUserInput() {
 void PlayerShip::teleport(float angle) {
 	if(canBlink) {
 		sf::Vector2f nextPosition;
-		nextPosition.x += BLINK_DISTANCE * cosf(degreesToRadians(angle - 90));
-		nextPosition.y += BLINK_DISTANCE * sinf(degreesToRadians(angle - 90));
+		nextPosition.x += EntityData::PlayerShip::BLINK_DISTANCE * cosf(degreesToRadians(angle - 90));
+		nextPosition.y += EntityData::PlayerShip::BLINK_DISTANCE * sinf(degreesToRadians(angle - 90));
 		move(nextPosition);
 		canBlink = false;
 		teleportTimer.restart();
@@ -86,7 +86,7 @@ void PlayerShip::teleport(float angle) {
 }
 
 void PlayerShip::firePrimary() {
-	if(shootTimer.getElapsedTime().asMilliseconds() > (int)SHOOT_DELAY){
+	if(shootTimer.getElapsedTime().asMilliseconds() > (int)EntityData::PlayerShip::SHOOT_DELAY){
 		sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
 		gun.shoot(mousePosition);
 		Resources::playSound(Resources::SoundID::SND_PLAYER_SHOOT);
@@ -95,7 +95,7 @@ void PlayerShip::firePrimary() {
 }
 
 void PlayerShip::fireSpecial() {
-	if(specialShootTimer.getElapsedTime().asMilliseconds() > (int)SPECIAL_SHOOT_DELAY) {
+	if(specialShootTimer.getElapsedTime().asMilliseconds() > (int)EntityData::PlayerShip::SPECIAL_SHOOT_DELAY) {
 		sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
 		specialGun.shoot(mousePosition);
 		Resources::playSound(Resources::SoundID::SND_PLAYER_SHOOT);

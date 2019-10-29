@@ -137,11 +137,11 @@ void Entity::setTexture(sf::Texture* texture) {
 void Entity::restore(){
 	this->isDead = false;
 
-	Hitpoints newHp(EntityData::DefaultEntity::hitpoints, EntityData::DefaultEntity::hitpoints);
+	Hitpoints newHp(EntityData::DefaultEntity::HITPOINTS, EntityData::DefaultEntity::HITPOINTS);
 	switch(type) {
-		case ALIEN_SHIP:	newHp.setMax(EntityData::AlienShip::hitpoints); newHp.set(EntityData::AlienShip::hitpoints); break;
-		case PLAYER_SHIP:	newHp.setMax(EntityData::PlayerShip::hitpoints); newHp.set(EntityData::PlayerShip::hitpoints); break;
-		case BULLET:	newHp.setMax(EntityData::Bullet::hitpoints); newHp.set(EntityData::Bullet::hitpoints); break;
+		case ALIEN_SHIP:	newHp.setMax(EntityData::AlienShip::HITPOINTS); newHp.set(EntityData::AlienShip::HITPOINTS); break;
+		case PLAYER_SHIP:	newHp.setMax(EntityData::PlayerShip::HITPOINTS); newHp.set(EntityData::PlayerShip::HITPOINTS); break;
+		case BULLET:	newHp.setMax(EntityData::Bullet::HITPOINTS); newHp.set(EntityData::Bullet::HITPOINTS); break;
 		default:	break;
 	}
 }

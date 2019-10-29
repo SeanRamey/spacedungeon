@@ -10,8 +10,8 @@
 
 class PlayerShip : public Entity {
 	public:
-		PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::PlayerShip::hitpoints);
-		PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::PlayerShip::hitpoints);
+		PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::PlayerShip::HITPOINTS);
+		PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::PlayerShip::HITPOINTS);
 		~PlayerShip();
 		void init();
 
@@ -44,16 +44,6 @@ class PlayerShip : public Entity {
 		sf::Clock teleportTimer;
 		sf::Clock shootTimer;
 		sf::Clock specialShootTimer;
-
-		const unsigned int MAX_SPEED = 1000; // MAX_SPEED MUST BE LARGER THAN ACCELERATION
-		const unsigned int ACCELERATION = 100;
-		const unsigned int BLINK_DELAY = 750; // in milliseconds
-		const unsigned int SHOOT_DELAY = 200;
-		const unsigned int SPECIAL_SHOOT_DELAY = 1000;
-		const unsigned int BLINK_DISTANCE = 200;
-		const unsigned int MAX_SHIELD_LEVEL = 5;
-		const unsigned int MAX_POWER_LEVEL = 10;
-		const float FRICTION = 0.95;
 };
 
 #endif

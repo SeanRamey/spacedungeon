@@ -13,8 +13,8 @@ class Level; // forward declare to avoid circular dependency
 class Entity : public sf::Transformable, public sf::Drawable, public Damageable {
 
 	public:
-		Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::DefaultEntity::hitpoints);
-		Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::DefaultEntity::hitpoints);
+		Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::DefaultEntity::HITPOINTS);
+		Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::DefaultEntity::HITPOINTS);
 		virtual ~Entity();
 
 		virtual void update(sf::Time frameTime);
