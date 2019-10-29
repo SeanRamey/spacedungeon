@@ -13,7 +13,7 @@ class Damageable {
 	virtual void destroy();
 	virtual void restore();
 	virtual bool isDestroyed();
-	virtual Hitpoints getHitpoints();
+	Hitpoints getHitpoints();
 
 	private:
 	Hitpoints hitpoints;

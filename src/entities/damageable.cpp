@@ -24,17 +24,17 @@ void Damageable::heal(unsigned int amount) {
 
 ///////////////////////////
 void Damageable::destroy() {
-	hitpoints.deplete(hitpoints.get()); // deplete all hitpoints
+	hitpoints.deplete(hitpoints.getAmount()); // deplete all hitpoints
 }
 
 ///////////////////////////
 void Damageable::restore() {
-	hitpoints.replenish(hitpoints.max()); // replenish the max amount
+	hitpoints.replenish(hitpoints.getMaxAmount()); // replenish the max amount
 }
 
 ///////////////////////////
 bool Damageable::isDestroyed() {
-	return (hitpoints.get() == 0) ? true : false;
+	return (hitpoints.getAmount() == 0) ? true : false;
 }
 
 ///////////////////////////

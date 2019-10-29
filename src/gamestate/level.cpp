@@ -78,12 +78,12 @@ void Level::update(sf::Time frameTime){
 
 	// Draw healthbar or gameover
 	if(!checkLose()){
-		float xscale = playerShip->getHitpoints() / 100.0; // percent of total
+		float xscale = playerShip->getHitpoints().getAmount() / 100.f; // God, wtf?? No idea why this has to be divided by 100. Should just use getAsPercent()
 		healthBar.setPosition(sf::Vector2f(view.getCenter().x, view.getCenter().y - view.getSize().y / 2 + 16 * 1.2));
 		healthBar.updateSize(sf::Vector2f(xscale, 1));
 		healthBar.update();
 		healthText.setPosition(healthBar.getPosition()); // sets position of text to center of health bar
-		healthText.setText(std::to_string(playerShip->getHitpoints()));
+		healthText.setText(std::to_string(playerShip->getHitpoints().getAmount()));
 		healthText.update();
 	} else {
 		gameOver.setPosition(view.getCenter());

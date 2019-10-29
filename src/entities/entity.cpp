@@ -9,12 +9,12 @@
 bool windowContains(sf::View view, sf::Sprite sprite);
 
 Entity::Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints)
-: velocity(0,0)
+: Damageable(hitPoints, hitPoints)
+, velocity(0,0)
 , collisionRect(position.x, position.y, size.x, size.y)
 , prevPosition(position)
 , sprite()
 , isDead(false)
-, hitPoints(hitPoints)
 , level(level) {
 	if(texture != nullptr) {
 		sprite.setTexture(*texture);
@@ -24,12 +24,12 @@ Entity::Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, L
 }
 
 Entity::Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints)
-: velocity(0,0)
+: Damageable(hitPoints, hitPoints)
+, velocity(0,0)
 , collisionRect(x,y,w,h)
 , prevPosition(x,y)
 , sprite()
 , isDead(false)
-, hitPoints(hitPoints)
 , level(level) {
 	if(texture != nullptr) {
 		sprite.setTexture(*texture);
@@ -150,54 +150,26 @@ void Entity::setAnimation(Animation newAnimation){
 	sprite.setTextureRect(animation.getCurrentCellRect());
 }
 
-unsigned int Entity::getHitpoints() {
-	return hitPoints;
-}
-
 void Entity::setTexture(sf::Texture* texture) {
 	sprite.setTexture(*texture);
 }
 
-void Entity::repair(unsigned int hitPoints) {
-	if(this->hitPoints + hitPoints > 0) {
-		this->hitPoints += hitPoints;
-	}
-}
-
-void Entity::damage(unsigned int hitPoints) {
-	if(this->hitPoints - hitPoints <= 0) {
-		this->hitPoints = 0;
-		destroy();
-	}
-	else if(this->hitPoints - hitPoints > 0) {
-		this->hitPoints -= hitPoints;
-	}
-}
-
-void Entity::setHitpoints(unsigned int hitPoints) {
-	this->hitPoints = hitPoints;
-}
-
-void Entity::destroy() {
-	hitPoints = 0;
-	isDead = true;
-}
-
-bool Entity::isDestroyed() {
-	return isDead;
-}
-
-void Entity::revive(){
+void Entity::restore(){
 	this->isDead = false;
 
+	Hitpoints newHp(EntityData::DefaultEntity::hitpoints, EntityData::DefaultEntity::hitpoints);
 	switch(type) {
-		case ALIEN_SHIP: setHitpoints(EntityData::AlienShip::hitpoints); break;
-		case PLAYER_SHIP: setHitpoints(EntityData::PlayerShip::hitpoints); break;
-		case BULLET: setHitpoints(EntityData::Bullet::hitpoints); break;
-		default: setHitpoints(EntityData::DefaultEntity::hitpoints); break;
+		case ALIEN_SHIP:	newHp.setMax(EntityData::AlienShip::hitpoints); newHp.set(EntityData::AlienShip::hitpoints); break;
+		case PLAYER_SHIP:	newHp.setMax(EntityData::PlayerShip::hitpoints); newHp.set(EntityData::PlayerShip::hitpoints); break;
+		case BULLET:	newHp.setMax(EntityData::Bullet::hitpoints); newHp.set(EntityData::Bullet::hitpoints); break;
+		default:	break;
 	}
 }
 
 void Entity::setLevel(Level* level){
 	this->level = level;
+}
+
+bool Entity::isMarkedForDeletion() {
+	return isReadyToDelete;
 }

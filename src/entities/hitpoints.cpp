@@ -20,19 +20,15 @@ Hitpoints::~Hitpoints() {
 
 ///////////////////////////
 void Hitpoints::replenish(unsigned int amount) {
-	if(amount + hp <= hpMax) {
+	if(hp != hpMax && amount + hp <= hpMax) {
 		hp += amount;
-	} else {
-		hp = hpMax;
 	}
 }
 
 ///////////////////////////
 void Hitpoints::deplete(unsigned int amount) {
-	if(amount - hp >= 0) {
+	if(hp != 0 && hp - amount >= 0) {
 		hp -= amount;
-	} else {
-		hp = 0;
 	}
 }
 
@@ -49,11 +45,16 @@ void Hitpoints::setMax(unsigned int amount) {
 }
 
 ///////////////////////////
-unsigned int Hitpoints::get() {
+unsigned int Hitpoints::getAmount() {
 	return hp;
 }
 
 ///////////////////////////
-unsigned int Hitpoints::max() {
+float Hitpoints::getAsPercent() {
+	return hp / hpMax;
+}
+
+///////////////////////////
+unsigned int Hitpoints::getMaxAmount() {
 	return hpMax;
 }

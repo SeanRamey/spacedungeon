@@ -10,8 +10,9 @@ class Hitpoints {
 	void deplete(unsigned int amount);
 	void set(unsigned int amount);
 	void setMax(unsigned int amount);
-	unsigned int get();
-	unsigned int max();
+	unsigned int getAmount();
+	float getAsPercent();
+	unsigned int getMaxAmount();
 
 	private:
 	unsigned int hpMax = 0;
