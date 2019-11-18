@@ -1,5 +1,6 @@
 # default to using clang as the c/c++ compiler
 USE_CLANG ?= false
+USE_ZAPCC ?= false
 
 #default to debug build
 BUILDTYPE ?= DEBUG
@@ -10,7 +11,7 @@ BUILD := build
 ifeq ($(BUILDTYPE),DEBUG)
 # standard compile and link flags and link libraries (DEBUG)
 CFLAGS =
-CXXFLAGS = -Wpedantic -Wall -Wextra -fmax-errors=2 -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++17 -march=native -fno-omit-frame-pointer
+CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++17 -march=native -fno-omit-frame-pointer
 CPPFLAGS = -DDEBUG -DSFML
 LDFLAGS = -march=native -fno-omit-frame-pointer
 LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
@@ -134,11 +135,20 @@ ifeq ($(OSTARGET),LINUX)
 	        LDFLAGS += -L/home/sean/Coding/spacedungeon/lib
 	        LDFLAGS += -stdlib=libc++
         endif
-    else
-	    CC := gcc
-	    CXX := g++
-	    CPP := cpp
-	    LD := g++
+	endif
+	ifeq ($(USE_ZAPCC), true)
+	    CC := zapcc
+	    CXX := zapcc
+	    CPP := zapcc
+	    LD := zapcc
+	endif
+	ifneq ($(USE_CLANG), true)
+		ifneq ($(USE_ZAPCC), true)
+			CC := gcc
+			CXX := g++
+			CPP := cpp
+			LD := g++
+		endif
     endif
 
 	# extension of output program

@@ -1,43 +1,31 @@
 #include "stdpch.hpp"
 
 #include "animation.hpp"
-#include "math.h"
-//#include <iostream>
+#include <cmath>
+#include <cassert>
 
 
-
+///////////////////////////
 Animation::Animation(sf::Texture* sourceTexture, unsigned int cellsPerSecond, sf::Vector2u cellSize, bool repeating)
-: numCells(0,0)
-, cellSize(cellSize)
-, sourceTexture(sourceTexture)
-, repeating(repeating)
-, finished(false)
-, paused(false)
-, currentCell(0)
+: repeating(repeating)
 {
-	timePerCell = sf::seconds(1.0/cellsPerSecond);
-	timeBeforeNextCell = timePerCell;
-	numCells.x = sourceTexture->getSize().x / cellSize.x;
-	numCells.y = sourceTexture->getSize().y / cellSize.y;
+	setCellsPerSecond(cellsPerSecond);
+	setTexture(sourceTexture);
+	setCellSize(cellSize);
+	setNumCells(cellSize);
 }
 
-Animation::Animation()
-: numCells(0,0)
-, cellSize(0,0)
-, sourceTexture(nullptr)
-, timePerCell(sf::Time::Zero)
-, timeBeforeNextCell(sf::Time::Zero)
-, repeating(false)
-, finished(true)
-, paused(true)
-, currentCell(0) {
+///////////////////////////
+Animation::Animation() {
 
 }
 
+///////////////////////////
 Animation::~Animation() {
 
 }
 
+///////////////////////////
 void Animation::update(sf::Time frameTime) {
 	if(!paused) {
 		if(finished) {
@@ -49,6 +37,7 @@ void Animation::update(sf::Time frameTime) {
 				// Make sure to not go past the number of cells
 				if(currentCell + 1 < numCells.x * numCells.y) {
 					++currentCell;
+					sprite.setTextureRect(getCurrentCellRect());
 				} else {
 					finished = true;
 				}
@@ -60,6 +49,17 @@ void Animation::update(sf::Time frameTime) {
 	}
 }
 
+///////////////////////////
+void Animation::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	target.draw(sprite, states);
+}
+
+///////////////////////////
+void Animation::setTexture(sf::Texture* texture) {
+	sprite.setTexture(*texture);
+}
+
+///////////////////////////
 sf::IntRect Animation::getCurrentCellRect() {
 	sf::IntRect textureRect;
 
@@ -82,32 +82,87 @@ sf::IntRect Animation::getCurrentCellRect() {
 
 }
 
-sf::Texture* Animation::getTexture() {
-	return sourceTexture;
+///////////////////////////
+sf::Vector2u Animation::getCellSize() {
+	return cellSize;
 }
 
+///////////////////////////
+const sf::Texture* Animation::getTexture() {
+	return sprite.getTexture();
+}
+
+///////////////////////////
 void Animation::restart() {
 	currentCell = 0;
 	timeBeforeNextCell = timePerCell;
 	finished = false;
 }
 
+///////////////////////////
 void Animation::pause() {
 	paused = true;
 }
 
+///////////////////////////
 void Animation::unpause() {
 	paused = false;
 }
 
+///////////////////////////
 bool Animation::isFinished() {
 	return finished;
 }
 
+///////////////////////////
 bool Animation::isRepeating() {
 	return repeating;
 }
 
+///////////////////////////
 bool Animation::isPaused() {
 	return paused;
+}
+
+///////////////////////////
+void Animation::setCellsPerSecond(unsigned int cellsPerSecond) {
+	timePerCell = sf::seconds(1.0f/cellsPerSecond);
+	timeBeforeNextCell = timePerCell;
+}
+
+///////////////////////////
+void Animation::setCellSize(sf::Vector2u cellSize) {
+	setCellSize(cellSize.x, cellSize.y);
+}
+
+///////////////////////////
+void Animation::setCellSize(unsigned int w, unsigned int h) {
+	cellSize.x = w;
+	cellSize.y = h;
+	setNumCells(cellSize);
+}
+
+///////////////////////////
+void Animation::setRepeat(bool repeat) {
+	repeating = repeat;
+}
+
+sf::Vector2u Animation::getNumCells() {
+	return this->numCells;
+}
+
+sf::Vector2u Animation::getNumCells(sf::Vector2u cellSize) {
+	assert(cellSize.x != 0);
+	assert(cellSize.y != 0);
+	sf::Vector2u numCells;
+	numCells.x = sprite.getTexture()->getSize().x / cellSize.x;
+	numCells.y = sprite.getTexture()->getSize().y / cellSize.y;
+	return numCells;
+}
+
+void Animation::setNumCells(sf::Vector2u cellSize) {
+	assert(cellSize.x != 0);
+	assert(cellSize.y != 0);
+	numCells.x = sprite.getTexture()->getSize().x / cellSize.x;
+	numCells.y = sprite.getTexture()->getSize().y / cellSize.y;
 }

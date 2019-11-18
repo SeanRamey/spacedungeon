@@ -6,9 +6,10 @@
 #include "random-numbers.hpp"
 #include "resources.hpp"
 #include "math-util.hpp"
+#include "object-factories.hpp"
 
 Bullet::Bullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, sf::Vector2u size, unsigned int initialSpeed, unsigned int damage, Level* level, sf::Time maxTimeAlive) :
-Entity(position, size, nullptr, level, EntityData::Bullet::HITPOINTS){
+Entity(position, size, level){
 	this->type = Entity::Type::BULLET;
 	this->initialSpeed = initialSpeed;
 	this->maxTimeAlive = maxTimeAlive;

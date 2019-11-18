@@ -6,20 +6,21 @@
 #include "resources.hpp"
 #include "log.hpp"
 #include "level.hpp"
+#include "object-factories.hpp"
 
 using namespace std;
 
-PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints)
-: Entity(x, y, w, h, texture, level, hitPoints),
-  gun(this, Gun::Type::BASIC_GUN),
-  specialGun(this, Gun::Type::BIG_GUN) {
+PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* level)
+: Entity(x, y, w, h, level)
+, gun(this, Gun::Type::BASIC_GUN)
+, specialGun(this, Gun::Type::BIG_GUN) {
 	init();
 }
 
-PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints)
-: Entity(position, size, texture, level, hitPoints),
-  gun(this, Gun::Type::BASIC_GUN),
-  specialGun(this, Gun::Type::BIG_GUN) {
+PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, Level* level)
+: Entity(position, size, level)
+, gun(this, Gun::Type::BASIC_GUN)
+, specialGun(this, Gun::Type::BIG_GUN) {
 	init();
 }
 
@@ -29,6 +30,7 @@ PlayerShip::~PlayerShip() {
 
 void PlayerShip::init() {
 	type = Entity::Type::PLAYER_SHIP;
+	setAnimation(AnimationFactory::createAnimation(AnimationFactory::AnimationType::PLAYER_IDLE));
 }
 
 void PlayerShip::update(sf::Time frameTime) {

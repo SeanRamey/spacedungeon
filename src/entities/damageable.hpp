@@ -15,7 +15,7 @@ class Damageable {
 	virtual bool isDestroyed();
 	Hitpoints getHitpoints();
 
-	private:
+	protected:
 	Hitpoints hitpoints;
 };
 

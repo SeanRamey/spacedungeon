@@ -6,36 +6,29 @@
 #include "level.hpp"
 #include "entity-data.hpp"
 
-bool windowContains(sf::View view, sf::Sprite sprite);
-
-Entity::Entity(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints)
-: Damageable(hitPoints, hitPoints)
+Entity::Entity(sf::Vector2f position, sf::Vector2u size, Level* level)
+: Damageable(EntityData::DefaultEntity::HITPOINTS, EntityData::DefaultEntity::HITPOINTS)
 , velocity(0,0)
 , collisionRect(position.x, position.y, size.x, size.y)
 , prevPosition(position)
-, sprite()
-, isDead(false)
 , level(level) {
-	if(texture != nullptr) {
-		sprite.setTexture(*texture);
-	}
 	setOrigin(sf::Vector2f(size.x/2, size.y/2));
 	setPosition(position);
 }
 
-Entity::Entity(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints)
-: Damageable(hitPoints, hitPoints)
+Entity::Entity(float x, float y, unsigned int w, unsigned int h, Level* level)
+: Damageable(EntityData::DefaultEntity::HITPOINTS, EntityData::DefaultEntity::HITPOINTS)
 , velocity(0,0)
 , collisionRect(x,y,w,h)
 , prevPosition(x,y)
-, sprite()
-, isDead(false)
 , level(level) {
-	if(texture != nullptr) {
-		sprite.setTexture(*texture);
-	}
 	setOrigin(sf::Vector2f(w/2, h/2));
 	setPosition(x,y);
+}
+
+Entity::Entity()
+: Damageable(EntityData::DefaultEntity::HITPOINTS, EntityData::DefaultEntity::HITPOINTS)
+{
 }
 
 Entity::~Entity() {
@@ -46,23 +39,16 @@ void Entity::update(sf::Time frameTime) {
 	lastFrameTime = frameTime;
 	prevPosition = getPosition();
 	move(velocity * frameTime.asSeconds());
-	collisionRect.left = getPosition().x;
-	collisionRect.top = getPosition().y;
-	if(animation.getTexture() != nullptr) {
-		animation.update(frameTime);
-		sprite.setTextureRect(animation.getCurrentCellRect());
-	}
-
+	sf::Vector2f position(getPosition());
+	collisionRect.left = position.x;
+	collisionRect.top = position.y;
+	//animation.setPosition(position); // don't need this because the transform is passed along in the draw function.
+	animation.update(frameTime);
 }
 
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	states.transform *= getTransform(); // will apply all transformations on the entity to the sprite when it is drawn
-
-
-	//if(windowContains(target.getView(), sprite)) {
-		target.draw(sprite, states);
-	//}
-
+	states.transform.combine(getTransform()); // will apply all transformations on the entity to the sprite when it is drawn
+	target.draw(animation, states);
 }
 
 void Entity::face(sf::Vector2f position){
@@ -107,31 +93,24 @@ Level* Entity::getLevel() {
 	return level;
 }
 
+void Entity::setCollisionRect(sf::FloatRect collisionRect) {
+	this->collisionRect = collisionRect;
+}
+
 sf::FloatRect Entity::getCollisionRect() {
 	return collisionRect;
 }
 
-FloatLine Entity::getCollisionLine() {
-	return FloatLine(prevPosition, getPosition());
-}
-
-bool Entity::windowContains(sf::View view, sf::Sprite sprite) const {
-	if(sprite.getPosition().x > -100 + view.getCenter().x - view.getSize().x / 2 && sprite.getPosition().x < 100 + view.getCenter().x + view.getSize().x / 2 &&
-	   sprite.getPosition().y > -100 + view.getCenter().y - view.getSize().y / 2 && sprite.getPosition().y < 100 + view.getCenter().y + view.getSize().y / 2){
-		return true;
-	}
-
-	return false;
-}
-
 void Entity::setAnimation(Animation newAnimation){
 	animation = newAnimation;
-	sprite.setTexture(*animation.getTexture());
-	sprite.setTextureRect(animation.getCurrentCellRect());
 }
 
 void Entity::setTexture(sf::Texture* texture) {
-	sprite.setTexture(*texture);
+	animation.setTexture(texture);
+}
+
+const sf::Texture* Entity::getTexture() {
+	return animation.getTexture();
 }
 
 void Entity::restore(){
@@ -144,6 +123,7 @@ void Entity::restore(){
 		case BULLET:	newHp.setMax(EntityData::Bullet::HITPOINTS); newHp.set(EntityData::Bullet::HITPOINTS); break;
 		default:	break;
 	}
+	this->hitpoints = newHp;
 }
 
 void Entity::setLevel(Level* level){

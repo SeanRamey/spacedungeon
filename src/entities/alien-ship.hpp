@@ -9,8 +9,8 @@
 class AlienShip : public Entity
 {
 	public:
-		AlienShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level);
-		AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level);
+		AlienShip(sf::Vector2f position, sf::Vector2u size, Level* level);
+		AlienShip(float x, float y, unsigned int w, unsigned int h, Level* level);
 		~AlienShip();
 
 		void update(sf::Time frameTime);
@@ -18,6 +18,7 @@ class AlienShip : public Entity
 
 	private:
 
+		void init();
 		void updateAI();
 		void movingState();
 		void firingState();

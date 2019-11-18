@@ -16,7 +16,7 @@ floorImagesFileName(floorImagesFileName),
 wallImagesFileName(wallImagesFileName),
 levelDataFileName(levelDataFileName),
 entityDataFileName(entityDataFileName) {
-	this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::getTexture(Resources::TextureID::PLAYER_SHIP), this, 100);
+	this->playerShip = new PlayerShip(50, 50, 32, 32, this);
 	entities.push_back(this->playerShip);
 	healthBar.setTexture(Resources::getTexture(Resources::TextureID::HEALTH_BAR));
 }
@@ -254,7 +254,7 @@ void Level::loadEntites(std::string path){
 			entityPosition.y = std::stoi(buffer[1]);
 			switch(std::stoi(buffer[2])) { // third element is type of entiy
 				case 1:
-				entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, Resources::getTexture(Resources::TextureID::ALIEN_SHIP), this);
+				entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, this);
 			}
 
 			entities.push_back(entity);

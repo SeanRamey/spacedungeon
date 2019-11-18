@@ -10,8 +10,8 @@
 
 class PlayerShip : public Entity {
 	public:
-		PlayerShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::PlayerShip::HITPOINTS);
-		PlayerShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level, unsigned int hitPoints = EntityData::PlayerShip::HITPOINTS);
+		PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* level);
+		PlayerShip(sf::Vector2f position, sf::Vector2u size, Level* level);
 		~PlayerShip();
 		void init();
 
