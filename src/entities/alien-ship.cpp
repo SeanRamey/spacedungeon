@@ -3,6 +3,7 @@
 #include "alien-ship.hpp"
 #include "random-numbers.hpp"
 #include "object-factories.hpp"
+#include "entity-data.hpp"
 //#include <iostream>
 //#include <algorithm>
 
@@ -47,7 +48,7 @@ void AlienShip::updateAI() {
 }
 
 void AlienShip::movingState() {
-	if(changeMovementTimer.getElapsedTime() >= CHANGE_MOVEMENT_DELAY) {
+	if(changeMovementTimer.getElapsedTime().asMilliseconds() >= EntityData::AlienShip::CHANGE_MOVEMENT_DELAY) {
 		switch(Util::GetRandomNumber(0,3)) {
 			case 0:
 			// up
