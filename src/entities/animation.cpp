@@ -140,6 +140,7 @@ void Animation::setCellSize(unsigned int w, unsigned int h) {
 	cellSize.x = w;
 	cellSize.y = h;
 	setNumCells(cellSize);
+	sprite.setTextureRect(getCurrentCellRect());
 }
 
 ///////////////////////////
