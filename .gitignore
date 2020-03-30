@@ -9,6 +9,7 @@ lib/
 log.txt
 *.code-workspace
 .vscode/
+.VSCodeCounter/
 *.hpp.gch
 src/sfmlpch.hpp.gch
 .gdbinit

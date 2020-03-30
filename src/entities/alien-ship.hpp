@@ -9,15 +9,16 @@
 class AlienShip : public Entity
 {
 	public:
-		AlienShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level);
-		AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level);
+		AlienShip(sf::Vector2f position, sf::Vector2u size, Level* level);
+		AlienShip(float x, float y, unsigned int w, unsigned int h, Level* level);
 		~AlienShip();
 
-		void update(sf::Time frameTime);
+		void update(sf::Time frameTime) override;
 		void fire();
 
 	private:
 
+		void init();
 		void updateAI();
 		void movingState();
 		void firingState();
@@ -30,9 +31,6 @@ class AlienShip : public Entity
 			MOVING
 		};
 		State state = MOVING;
-		const sf::Time CHANGE_MOVEMENT_DELAY = sf::seconds(1);
-		const sf::Time FIRING_DELAY = sf::seconds(1);
-		const unsigned int MAX_SPEED = 100; // pixels per second
 
 };
 

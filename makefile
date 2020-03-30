@@ -1,5 +1,6 @@
 # default to using clang as the c/c++ compiler
 USE_CLANG ?= false
+USE_ZAPCC ?= false
 
 #default to debug build
 BUILDTYPE ?= DEBUG
@@ -39,7 +40,7 @@ SRC := src
 # make sure to use the $(SLASH) variable for the directory seperator if
 # a subdirectory is included
 # example: dir$(SLASH)nextdir
-cppdirs = entities util entities$(SLASH)weapons UI manager gamestate
+cppdirs = entities util entities$(SLASH)weapons ui gamestate
 unit-test-cppdirs = unit-tests
 
 # a list of headers to pre-compile
@@ -53,42 +54,6 @@ unit-test-main = tests-main.cpp
 program = spacedungeon
 # name of unit tests program
 testprogram = tests
-
-# color config
-
-# Black        0;30     Dark Gray     1;30
-# Red          0;31     Light Red     1;31
-# Green        0;32     Light Green   1;32
-# Brown/Orange 0;33     Yellow        1;33
-# Blue         0;34     Light Blue    1;34
-# Purple       0;35     Light Purple  1;35
-# Cyan         0;36     Light Cyan    1;36
-# Light Gray   0;37     White         1;37
-NC = '\033[0m' # no color
-BLACK = '\033[0;30m'
-RED = '\033[0;31m'
-GREEN = '\033[0;32m'
-BROWN = '\033[0;33m'
-BLUE = '\033[0;34m'
-PURPLE = '\033[0;35m'
-CYAN = '\033[0;36m'
-LGRAY = '\033[0;37m'
-DGRAY = '\033[1;30m'
-LRED = '\033[1;31m'
-LGREEN = '\033[1;32m'
-YELLOW = '\033[1;33m'
-LBLUE = '\033[1;34m'
-LPURPLE = '\033[1;35m'
-LCYAN = '\033[1;36m'
-WHITE = '\033[1;37m'
-
-COMPILE_COLOR = $(CYAN)
-LINK_COLOR = $(CYAN)
-DONE_COLOR = $(GREEN)
-PRECOMPILE_COLOR = $(LRED)
-GENDEPENDS_COLOR = $(LPURPLE)
-COMPILER_PROG_COLOR = $(LGREEN)
-LINK_PROG_COLOR = $(LGREEN)
 
 # autodetect os
 OSTARGET ?= UNKNOWN
@@ -106,6 +71,75 @@ ifeq ($(OSTARGET),UNKNOWN)
 		endif
 	endif
 endif
+
+# color config
+ifeq ($(OSTARGET),LINUX)
+	# Black        0;30     Dark Gray     1;30
+	# Red          0;31     Light Red     1;31
+	# Green        0;32     Light Green   1;32
+	# Brown/Orange 0;33     Yellow        1;33
+	# Blue         0;34     Light Blue    1;34
+	# Purple       0;35     Light Purple  1;35
+	# Cyan         0;36     Light Cyan    1;36
+	# Light Gray   0;37     White         1;37
+	NC = '\033[0m' # no color
+	BLACK = '\033[0;30m'
+	RED = '\033[0;31m'
+	GREEN = '\033[0;32m'
+	BROWN = '\033[0;33m'
+	BLUE = '\033[0;34m'
+	PURPLE = '\033[0;35m'
+	CYAN = '\033[0;36m'
+	LGRAY = '\033[0;37m'
+	DGRAY = '\033[1;30m'
+	LRED = '\033[1;31m'
+	LGREEN = '\033[1;32m'
+	YELLOW = '\033[1;33m'
+	LBLUE = '\033[1;34m'
+	LPURPLE = '\033[1;35m'
+	LCYAN = '\033[1;36m'
+	WHITE = '\033[1;37m'
+endif
+
+ifeq ($(OSTARGET),WINDOWS)
+	# Black        0;30     Dark Gray     1;30
+	# Red          0;31     Light Red     1;31
+	# Green        0;32     Light Green   1;32
+	# Brown/Orange 0;33     Yellow        1;33
+	# Blue         0;34     Light Blue    1;34
+	# Purple       0;35     Light Purple  1;35
+	# Cyan         0;36     Light Cyan    1;36
+	# Light Gray   0;37     White         1;37
+	# THIS:  is the escape character on Windows for
+	# whatever DUMB reason..
+	NC = [0m # no color
+	BLACK = [0;30m
+	RED = [0;31m
+	GREEN = [0;32m
+	BROWN = [0;33m
+	BLUE = [0;34m
+	PURPLE = [0;35m
+	CYAN = [0;36m
+	LGRAY = [0;37m
+	DGRAY = [1;30m
+	LRED = [1;31m
+	LGREEN = [1;32m
+	YELLOW = [1;33m
+	LBLUE = [1;34m
+	LPURPLE = [1;35m
+	LCYAN = [1;36m
+	WHITE = [1;37m
+endif
+
+BACK_COLOR = $(BLACK)
+DEFAULT_COLOR = $(WHITE)
+COMPILE_COLOR = $(CYAN)
+LINK_COLOR = $(BLUE)
+DONE_COLOR = $(GREEN)
+PRECOMPILE_COLOR = $(LRED)
+GENDEPENDS_COLOR = $(LPURPLE)
+COMPILER_PROG_COLOR = $(LGREEN)
+LINK_PROG_COLOR = $(LGREEN)
 
 ifeq ($(OSTARGET),LINUX)
 	# OS specific options
@@ -134,11 +168,20 @@ ifeq ($(OSTARGET),LINUX)
 	        LDFLAGS += -L/home/sean/Coding/spacedungeon/lib
 	        LDFLAGS += -stdlib=libc++
         endif
-    else
-	    CC := gcc
-	    CXX := g++
-	    CPP := cpp
-	    LD := g++
+	endif
+	ifeq ($(USE_ZAPCC), true)
+	    CC := zapcc
+	    CXX := zapcc
+	    CPP := zapcc
+	    LD := zapcc
+	endif
+	ifneq ($(USE_CLANG), true)
+		ifneq ($(USE_ZAPCC), true)
+			CC := gcc
+			CXX := g++
+			CPP := cpp
+			LD := g++
+		endif
     endif
 
 	# extension of output program
@@ -233,7 +276,7 @@ $(BUILD)/$(SUBBUILD)/$(program): $(objects)
 	@$(ECHO) ""
 
 $(BUILD)/$(SUBBUILD)/$(testprogram): $(unit-test-objects) $(filter-out $(BUILD)/$(SUBBUILD)/$(program-main:.cpp=.o),$(objects))
-	@$(ECHO) linking $(LINK_COLOR)"$^"$(NC) into "$@" using these libraries: "$(LDLIBS)"
+	@$(ECHO) linking $(LINK_COLOR)"$^"$(NC) into $(LINK_PROG_COLOR)"$@"$(NC) using these libraries: $(LRED)"$(LDLIBS)"$(NC)
 	@$(LD) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 	@$(ECHO) $(LINK_COLOR)linking "$@" done!$(NC)
 	@$(ECHO) ""
@@ -250,7 +293,7 @@ $(BUILD)/$(SUBBUILD)/%.o: %.cpp
 	@$(ECHO) precompiling header $(PRECOMPILE_COLOR)"$<"$(NC) to "$@" with $(COMPILER_PROG_COLOR)$(CXX)$(NC)
 	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) $<
 
-$(objects) $(depends): | $(BUILD) $(BUILD)/$(SUBBUILD)
+$(objects) $(depends): | $(BUILD) $(BUILD)$(SLASH)$(SUBBUILD)
 
 $(BUILD) $(BUILD)/$(SUBBUILD):
 	@$(ECHO) $(DGRAY)creating directories$(NC)

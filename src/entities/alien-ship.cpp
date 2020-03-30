@@ -2,32 +2,29 @@
 
 #include "alien-ship.hpp"
 #include "random-numbers.hpp"
+#include "object-factories.hpp"
+#include "entity-data.hpp"
 //#include <iostream>
 //#include <algorithm>
 
-AlienShip::AlienShip(sf::Vector2f position, sf::Vector2u size, sf::Texture* texture, Level* level)
-: Entity(position, size, texture, level) {
-	type = Entity::Type::ALIEN_SHIP;
+AlienShip::AlienShip(sf::Vector2f position, sf::Vector2u size, Level* level)
+: Entity(position, size, level) {
+	init();
 }
 
-AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, sf::Texture* texture, Level* level)
-: Entity(x, y, w, h, texture, level) {
-	type = Entity::Type::ALIEN_SHIP;
+AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, Level* level)
+: Entity(x, y, w, h, level) {
+	init();
 }
 
 AlienShip::~AlienShip() {
 
 }
 
-// void AlienShip::checkCollision(Entity* entity) {
-//     if(entity != this) {
-//         if(collisionBox.intersects(&entity->collisionBox)) {
-//             if(entity->type == Entity::PLAYER_SHIP) {
-//                 // entity->damage(damage);
-//             }
-//         }
-//     }
-// }
+void AlienShip::init() {
+	type = Entity::Type::ALIEN_SHIP;
+	setAnimation(AnimationFactory::createAnimation(AnimationFactory::AnimationType::ALIEN_SHIP_IDLE));
+}
 
 void AlienShip::update(sf::Time frameTime) {
 	updateAI();
@@ -51,7 +48,7 @@ void AlienShip::updateAI() {
 }
 
 void AlienShip::movingState() {
-	if(changeMovementTimer.getElapsedTime() >= CHANGE_MOVEMENT_DELAY) {
+	if(changeMovementTimer.getElapsedTime().asMilliseconds() >= EntityData::AlienShip::CHANGE_MOVEMENT_DELAY) {
 		switch(Util::GetRandomNumber(0,3)) {
 			case 0:
 			// up

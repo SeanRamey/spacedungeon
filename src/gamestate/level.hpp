@@ -19,12 +19,6 @@ struct CollisionPair {
 	float time;
 };
 
-enum TILE_LAYER {
-	FLOOR,
-	WALL,
-	NUM_LAYERS
-};
-
 class Level : public GameState {
 
 	public:
@@ -38,7 +32,6 @@ class Level : public GameState {
 	PlayerShip* getPlayer();
 	void setPlayer(PlayerShip* playerShip);
 	void loadMap();
-	void loadLayer(TILE_LAYER layer);
 	void addEntity(Entity* entity);
 	void deleteEntity(Entity* entity);
 

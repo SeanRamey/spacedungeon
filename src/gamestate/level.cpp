@@ -16,9 +16,9 @@ floorImagesFileName(floorImagesFileName),
 wallImagesFileName(wallImagesFileName),
 levelDataFileName(levelDataFileName),
 entityDataFileName(entityDataFileName) {
-	this->playerShip = new PlayerShip(50, 50, 32, 32, Resources::getTexture(Resources::TEXTURE_ID::PLAYER_SHIP), this, 100);
+	this->playerShip = new PlayerShip(50, 50, 32, 32, this);
 	entities.push_back(this->playerShip);
-	healthBar.setTexture(Resources::getTexture(Resources::TEXTURE_ID::HEALTH_BAR));
+	healthBar.setTexture(Resources::getTexture(Resources::TextureID::HEALTH_BAR));
 }
 
 ///////////////////////////
@@ -78,12 +78,12 @@ void Level::update(sf::Time frameTime){
 
 	// Draw healthbar or gameover
 	if(!checkLose()){
-		float xscale = playerShip->getHitpoints() / 100.0; // percent of total
+		float xscale = playerShip->getHitpoints().getAmount() / 100.f; // God, wtf?? No idea why this has to be divided by 100. Should just use getAsPercent()
 		healthBar.setPosition(sf::Vector2f(view.getCenter().x, view.getCenter().y - view.getSize().y / 2 + 16 * 1.2));
 		healthBar.updateSize(sf::Vector2f(xscale, 1));
 		healthBar.update();
 		healthText.setPosition(healthBar.getPosition()); // sets position of text to center of health bar
-		healthText.setText(std::to_string(playerShip->getHitpoints()));
+		healthText.setText(std::to_string(playerShip->getHitpoints().getAmount()));
 		healthText.update();
 	} else {
 		gameOver.setPosition(view.getCenter());
@@ -174,7 +174,7 @@ void Level::processCollisions() {
 		if(typeMatches(pair, Entity::Type::PLAYER_SHIP, Entity::Type::ALIEN_SHIP)) {
 			((PlayerShip*)getMatchingEntity(pair, Entity::Type::PLAYER_SHIP))->damage(1);
 			((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
-			Resources::playSound(Resources::SOUND_ID::SND_HIT);
+			Resources::playSound(Resources::SoundID::SND_HIT);
 		}
 
 		if(typeMatches(pair, Entity::Type::ALIEN_SHIP, Entity::Type::BULLET)) {
@@ -254,7 +254,7 @@ void Level::loadEntites(std::string path){
 			entityPosition.y = std::stoi(buffer[1]);
 			switch(std::stoi(buffer[2])) { // third element is type of entiy
 				case 1:
-				entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, Resources::getTexture(Resources::TEXTURE_ID::ALIEN_SHIP), this);
+				entity = new AlienShip(entityPosition.x, entityPosition.y, 32, 32, this);
 			}
 
 			entities.push_back(entity);

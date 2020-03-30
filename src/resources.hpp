@@ -2,10 +2,13 @@
 #define RESOURCES_HPP
 
 #include "sfmlpch.hpp"
+#include "animation.hpp"
 
 namespace Resources {
+
 	extern sf::RenderWindow* window;
-	enum TEXTURE_ID : int {
+
+	enum TextureID : int {
 		PLAYER_SHIP,
 		ALIEN_SHIP,
 		BULLET,
@@ -16,17 +19,18 @@ namespace Resources {
 		NUM_TEXTURES
 	};
 
-	enum SOUND_ID : int {
+	enum SoundID : int {
 		SND_PLAYER_SHOOT,
 		SND_HIT,
 		NUM_SOUNDS
 	};
 
 	void load();
-	void playSound(SOUND_ID id);
-	sf::Sound* getSound(SOUND_ID id);
-	sf::Texture* getTexture(TEXTURE_ID id);
-	sf::SoundBuffer* getSoundBuffer(SOUND_ID id);
+	void unload();
+	void playSound(SoundID id);
+	sf::Sound* getSound(SoundID id);
+	sf::Texture* getTexture(TextureID id);
+	sf::SoundBuffer* getSoundBuffer(SoundID id);
 }
 
 #endif
