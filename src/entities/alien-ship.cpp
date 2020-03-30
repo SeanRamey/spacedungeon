@@ -7,30 +7,36 @@
 //#include <iostream>
 //#include <algorithm>
 
+///////////////////////////
 AlienShip::AlienShip(sf::Vector2f position, sf::Vector2u size, Level* level)
 : Entity(position, size, level) {
 	init();
 }
 
+///////////////////////////
 AlienShip::AlienShip(float x, float y, unsigned int w, unsigned int h, Level* level)
 : Entity(x, y, w, h, level) {
 	init();
 }
 
+///////////////////////////
 AlienShip::~AlienShip() {
 
 }
 
+///////////////////////////
 void AlienShip::init() {
 	type = Entity::Type::ALIEN_SHIP;
 	setAnimation(AnimationFactory::createAnimation(AnimationFactory::AnimationType::ALIEN_SHIP_IDLE));
 }
 
+///////////////////////////
 void AlienShip::update(sf::Time frameTime) {
 	updateAI();
 	Entity::update(frameTime);
 }
 
+///////////////////////////
 void AlienShip::updateAI() {
 
 	switch(state) {
@@ -47,6 +53,7 @@ void AlienShip::updateAI() {
 	}
 }
 
+///////////////////////////
 void AlienShip::movingState() {
 	if(changeMovementTimer.getElapsedTime().asMilliseconds() >= EntityData::AlienShip::CHANGE_MOVEMENT_DELAY) {
 		switch(Util::GetRandomNumber(0,3)) {
@@ -79,11 +86,13 @@ void AlienShip::movingState() {
 	}
 }
 
+///////////////////////////
 void AlienShip::firingState() {
 	fire();
 	state = MOVING;
 }
 
+///////////////////////////
 void AlienShip::fire() {
 
 }

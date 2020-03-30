@@ -10,15 +10,18 @@
 using namespace Resources;
 using namespace Input;
 
+///////////////////////////
 Gun::Gun(Entity* owner, Gun::Type gunType){
 	this->owner = owner;
 	this->gunType = gunType;
 }
 
+///////////////////////////
 Gun::~Gun(){
 
 }
 
+///////////////////////////
 void Gun::shoot(sf::Vector2f targetPosition){
 	switch(gunType){
 		default:
@@ -37,6 +40,7 @@ void Gun::shoot(sf::Vector2f targetPosition){
 	}
 }
 
+///////////////////////////
 void Gun::setType(Gun::Type gunType){
 	this->gunType = gunType;
 }

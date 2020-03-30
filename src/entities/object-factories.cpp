@@ -1,6 +1,7 @@
 #include "object-factories.hpp"
 #include "resources.hpp"
 
+///////////////////////////
 Animation AnimationFactory::createAnimation(AnimationType type) {
 
 	Animation animation;

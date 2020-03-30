@@ -5,6 +5,7 @@
 #include <iostream>
 #include "log.hpp"
 
+///////////////////////////
 UIButton::UIButton(sf::Vector2f position, sf::Texture* texture, GameState* parent, void (*callback)(MainMenu*)) :
 UIElement(position){
 	this->parent = parent;
@@ -14,10 +15,12 @@ UIElement(position){
 	}
 }
 
+///////////////////////////
 UIButton::~UIButton(){
 
 }
 
+///////////////////////////
 void UIButton::setProperties(unsigned int fontSize, sf::Color color, std::string fontPath, sf::Vector2f position){
 	if(!font.loadFromFile(fontPath)){
 		Log::error("failed to load font in button");
@@ -29,6 +32,7 @@ void UIButton::setProperties(unsigned int fontSize, sf::Color color, std::string
 	this->text.setPosition(position);
 }
 
+///////////////////////////
 void UIButton::update(){
 	sprite.setPosition(position);
 	sprite.setOrigin(sf::Vector2f(size.x/2, size.y/2));
@@ -45,13 +49,17 @@ void UIButton::update(){
 	text.setOutlineColor(sf::Color::Black);
 }
 
+///////////////////////////
 void UIButton::setSize(sf::Vector2u size){
 	this->size = size;
 }
+
+///////////////////////////
 void UIButton::setText(std::string text){
 	this->text.setString(text);
 }
 
+///////////////////////////
 void UIButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(sprite, states);
 	target.draw(text, states);

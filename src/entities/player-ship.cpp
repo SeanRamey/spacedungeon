@@ -10,6 +10,7 @@
 
 using namespace std;
 
+///////////////////////////
 PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* level)
 : Entity(x, y, w, h, level)
 , gun(this, Gun::Type::BASIC_GUN)
@@ -17,6 +18,7 @@ PlayerShip::PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* 
 	init();
 }
 
+///////////////////////////
 PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, Level* level)
 : Entity(position, size, level)
 , gun(this, Gun::Type::BASIC_GUN)
@@ -24,15 +26,18 @@ PlayerShip::PlayerShip(sf::Vector2f position, sf::Vector2u size, Level* level)
 	init();
 }
 
+///////////////////////////
 PlayerShip::~PlayerShip() {
 
 }
 
+///////////////////////////
 void PlayerShip::init() {
 	type = Entity::Type::PLAYER_SHIP;
 	setAnimation(AnimationFactory::createAnimation(AnimationFactory::AnimationType::PLAYER_IDLE));
 }
 
+///////////////////////////
 void PlayerShip::update(sf::Time frameTime) {
 	if(teleportTimer.getElapsedTime().asMilliseconds() > (int)EntityData::PlayerShip::BLINK_DELAY) {
 		canBlink = true;
@@ -50,6 +55,7 @@ void PlayerShip::update(sf::Time frameTime) {
 	limitVelocity(EntityData::PlayerShip::MAX_SPEED);
 }
 
+///////////////////////////
 void PlayerShip::handleUserInput() {
 
 	if(up = Input::checkKey(sf::Keyboard::W)) {
@@ -75,6 +81,7 @@ void PlayerShip::handleUserInput() {
 	}
 }
 
+///////////////////////////
 void PlayerShip::teleport(float angle) {
 	if(canBlink) {
 		sf::Vector2f nextPosition;
@@ -87,6 +94,7 @@ void PlayerShip::teleport(float angle) {
 
 }
 
+///////////////////////////
 void PlayerShip::firePrimary() {
 	if(shootTimer.getElapsedTime().asMilliseconds() > (int)EntityData::PlayerShip::SHOOT_DELAY){
 		sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
@@ -96,6 +104,7 @@ void PlayerShip::firePrimary() {
 	}
 }
 
+///////////////////////////
 void PlayerShip::fireSpecial() {
 	if(specialShootTimer.getElapsedTime().asMilliseconds() > (int)EntityData::PlayerShip::SPECIAL_SHOOT_DELAY) {
 		sf::Vector2f mousePosition(Input::mousePosition.x + level->getView().getCenter().x - level->getView().getSize().x / 2, Input::mousePosition.y + level->getView().getCenter().y - level->getView().getSize().y / 2);
@@ -105,18 +114,22 @@ void PlayerShip::fireSpecial() {
 	}
 }
 
+///////////////////////////
 void PlayerShip::giveSpecialAmmo(unsigned int amount) {
 
 }
 
+///////////////////////////
 void PlayerShip::giveSpecialWeapon() {
 
 }
 
+///////////////////////////
 Gun* PlayerShip::getPrimaryWeapon(){
 	return &this->gun;
 }
 
+///////////////////////////
 Gun* PlayerShip::getSecondaryWeapon(){
 	return &this->specialGun;
 }

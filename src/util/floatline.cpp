@@ -1,6 +1,7 @@
 #include "floatline.hpp"
 #include "stdpch.hpp"
 
+///////////////////////////
 FloatLine::FloatLine(float x1, float y1, float x2, float y2)
 : x1(x1)
 , y1(y1)
@@ -9,7 +10,7 @@ FloatLine::FloatLine(float x1, float y1, float x2, float y2)
 {
 }
 
-
+///////////////////////////
 FloatLine::FloatLine(sf::Vector2f point1, sf::Vector2f point2)
 : x1(point1.x)
 , y1(point1.y)
@@ -18,7 +19,7 @@ FloatLine::FloatLine(sf::Vector2f point1, sf::Vector2f point2)
 {
 }
 
-
+///////////////////////////
 FloatLine::FloatLine(const FloatLine& line)
 : x1(line.x1)
 , y1(line.y1)
@@ -27,17 +28,17 @@ FloatLine::FloatLine(const FloatLine& line)
 {
 }
 
-
+///////////////////////////
 bool FloatLine::intersects(const sf::Vector2f& p1, const sf::Vector2f& p2, sf::Vector2f* pointOfCollision) {
 	return intersects(p1.x, p1.y, p2.x, p2.y, pointOfCollision);
 }
 
-
+///////////////////////////
 bool FloatLine::intersects(const FloatLine& otherLine, sf::Vector2f* pointOfCollision) {
 	return intersects(otherLine.x1, otherLine.y1, otherLine.x2, otherLine.y2, pointOfCollision);
 }
 
-
+///////////////////////////
 bool FloatLine::intersects(float x1, float y1, float x2, float y2, sf::Vector2f* pointOfCollision)
 {
 
@@ -124,7 +125,7 @@ bool FloatLine::intersects(float x1, float y1, float x2, float y2, sf::Vector2f*
 	return false; // No collision
 }
 
-
+///////////////////////////
 float FloatLine::length() {
 	return sqrtf(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }

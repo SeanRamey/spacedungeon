@@ -2,20 +2,19 @@
 #include "resources.hpp"
 #include "level.hpp"
 
-void MainMenu::update(sf::Time frameTime){
-	menu.update(frameTime);
+///////////////////////////
+MainMenu::MainMenu(Game* game)
+: GameState(game)
+, menu() {
+
 }
 
-void MainMenu::draw(sf::RenderWindow& window){
-	window.setView(view);
-	menu.draw(window);
+///////////////////////////
+MainMenu::~MainMenu() {
+
 }
 
-void MainMenu::ButtonCallback(MainMenu* mm){
-	std::shared_ptr<Level> level = std::make_shared<Level>(mm->game, "data/levels/test-map.map", "data/levels/test-map.dat", "data/graphics/tileset-2-wall.png", "data/graphics/tileset-2-floor.png", 32);
-	mm->game->pushState(level);
-}
-
+///////////////////////////
 void MainMenu::init(){
 	menu.clear();
 	menu.addButton(new UIButton(sf::Vector2f(0, 0), Resources::getTexture(Resources::TextureID::BUTTON), this, &ButtonCallback));
@@ -24,18 +23,24 @@ void MainMenu::init(){
 	view.setCenter(0, 0);
 }
 
+///////////////////////////
+void MainMenu::update(sf::Time frameTime){
+	menu.update(frameTime);
+}
 
+///////////////////////////
+void MainMenu::draw(sf::RenderWindow& window){
+	window.setView(view);
+	menu.draw(window);
+}
+
+///////////////////////////
+void MainMenu::ButtonCallback(MainMenu* mm){
+	std::shared_ptr<Level> level = std::make_shared<Level>(mm->game, "data/levels/test-map.map", "data/levels/test-map.dat", "data/graphics/tileset-2-wall.png", "data/graphics/tileset-2-floor.png", 32);
+	mm->game->pushState(level);
+}
+
+///////////////////////////
 void MainMenu::clear(){
 	menu.clear();
-}
-
-
-MainMenu::MainMenu(Game* game)
-: GameState(game)
-, menu() {
-
-}
-
-MainMenu::~MainMenu() {
-
 }

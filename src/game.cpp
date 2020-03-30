@@ -6,16 +6,19 @@
 #include "main-menu.hpp"
 #include "input.hpp"
 
+///////////////////////////
 Game::Game(sf::VideoMode videoMode)
 : videoMode(videoMode)
 {
 	init();
 }
 
+///////////////////////////
 Game::~Game() {
 	Resources::unload();
 }
 
+///////////////////////////
 void Game::init() {
 
 	// set up window
@@ -31,7 +34,7 @@ void Game::init() {
 	pushState(menu);
 }
 
-
+///////////////////////////
 void Game::run() {
 	// Start the game loop
 	sf::Clock loopTimer;
@@ -81,6 +84,7 @@ void Game::run() {
 	}
 }
 
+///////////////////////////
 void Game::processEvents() {
 	sf::Event event;
 	while (this->window.pollEvent(event)) {
@@ -95,24 +99,29 @@ void Game::processEvents() {
 	}
 }
 
+///////////////////////////
 void Game::update(sf::Time frametime) {
 	gameStates.top()->update(frametime);
 }
 
+///////////////////////////
 void Game::draw(sf::RenderWindow& window) {
 	gameStates.top()->draw(window);
 }
 
+///////////////////////////
 void Game::changeState(std::shared_ptr<GameState> state) {
 	popState();
 	pushState(state);
 }
 
+///////////////////////////
 void Game::pushState(std::shared_ptr<GameState> state) {
 	state->init();
 	gameStates.push(state);
 }
 
+///////////////////////////
 void Game::popState() {
 	if ( !gameStates.empty() ) {
 		// check if gamestate is a level and if so, store the player
@@ -125,10 +134,12 @@ void Game::popState() {
 	}
 }
 
+///////////////////////////
 std::shared_ptr<GameState> Game::getGameState() {
 	return gameStates.top();
 }
 
+///////////////////////////
 PlayerShip* Game::getPlayer() {
 	return player;
 }

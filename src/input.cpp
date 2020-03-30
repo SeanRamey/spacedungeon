@@ -11,6 +11,7 @@ namespace Input
 	sf::Vector2f mouseWorldPosition;
 	float mouseWheelScrollDelta;
 
+	///////////////////////////
 	void updateMousePosition(sf::RenderWindow* window)
 	{
 		mousePosition = sf::Mouse::getPosition(*window);
@@ -18,6 +19,7 @@ namespace Input
 		mouseWorldPosition = window->mapPixelToCoords(mousePosition);
 	}
 
+	///////////////////////////
 	void handleEvent(const sf::Event* const event)
 	{
 		switch(event->type)
@@ -54,6 +56,7 @@ namespace Input
 		eventList.push_back(*event);
 	}
 
+	///////////////////////////
 	bool checkKey(sf::Keyboard::Key key)
 	{
 		if(key == -1)
@@ -64,16 +67,19 @@ namespace Input
 		return keyList[key];
 	}
 
+	///////////////////////////
 	bool checkMouse(sf::Mouse::Button mouseKey)
 	{
 
 		return mouseList[mouseKey];
 	}
 
+	///////////////////////////
 	std::vector<sf::Event> getEventList() {
 		return eventList;
 	}
 
+	///////////////////////////
 	void clearEventList() {
 		mouseWheelScrollDelta = 0.0;
 		eventList.clear();

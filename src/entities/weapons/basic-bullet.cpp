@@ -9,6 +9,7 @@
 #include "resources.hpp"
 #include "object-factories.hpp"
 
+///////////////////////////
 BasicBullet::BasicBullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, Level* level):
 Bullet(position, targetPosition, owner, sf::Vector2u(12,16), 200, 1, level){
 	setAnimation(AnimationFactory::createAnimation(AnimationFactory::AnimationType::BASIC_BULLET));
@@ -16,10 +17,12 @@ Bullet(position, targetPosition, owner, sf::Vector2u(12,16), 200, 1, level){
 	accelerate(sf::Vector2f(initialSpeed * cosf(degreesToRadians(getRotation() - 90 + offset)), initialSpeed * sinf(degreesToRadians(getRotation() - 90 + offset))));
 }
 
+///////////////////////////
 BasicBullet::~BasicBullet(){
 
 }
 
+///////////////////////////
 void BasicBullet::update(sf::Time frameTime) {
 	Bullet::update(frameTime);
 }

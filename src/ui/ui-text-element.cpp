@@ -1,11 +1,13 @@
 #include "ui-text-element.hpp"
 #include "log.hpp"
 
+///////////////////////////
 void UITextElement::setText(std::string text){
 	this->text.setString(text);
 	load();
 }
 
+///////////////////////////
 void UITextElement::load(){
 	this->text.setCharacterSize(35);
 	this->text.setFillColor(sf::Color::White);
@@ -13,14 +15,17 @@ void UITextElement::load(){
 	this->text.setPosition(sf::Vector2f(position));
 }
 
+///////////////////////////
 void UITextElement::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(text, states);
 }
 
+///////////////////////////
 void UITextElement::update(){
 
 }
 
+///////////////////////////
 void UITextElement::setPosition(sf::Vector2f position){
 	this->position = position;
 	text.setPosition(position);
@@ -30,7 +35,7 @@ void UITextElement::setPosition(sf::Vector2f position){
 	// centering text within point of given position
 }
 
-
+///////////////////////////
 UITextElement::UITextElement(sf::Vector2f position, std::string fontPath, std::string text):
 UIElement(position){
 	if(!font.loadFromFile(fontPath)){
@@ -42,6 +47,7 @@ UIElement(position){
 	}
 }
 
+///////////////////////////
 UITextElement::~UITextElement(){
 
 }

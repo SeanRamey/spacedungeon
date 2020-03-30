@@ -8,6 +8,7 @@
 #include "math-util.hpp"
 #include "object-factories.hpp"
 
+///////////////////////////
 Bullet::Bullet(sf::Vector2f position, sf::Vector2f targetPosition, Entity* owner, sf::Vector2u size, unsigned int initialSpeed, unsigned int damage, Level* level, sf::Time maxTimeAlive) :
 Entity(position, size, level){
 	this->type = Entity::Type::BULLET;
@@ -19,9 +20,11 @@ Entity(position, size, level){
 	accelerate(sf::Vector2f(initialSpeed * cosf(degreesToRadians(getRotation() - 90)), initialSpeed * sinf(degreesToRadians(getRotation() - 90 ))));
 }
 
+///////////////////////////
 Bullet::~Bullet(){
 }
 
+///////////////////////////
 void Bullet::update(sf::Time frameTime){
 	if(timeAlive.getElapsedTime().asMilliseconds() > maxTimeAlive.asMilliseconds()){
 		destroy();
@@ -29,6 +32,7 @@ void Bullet::update(sf::Time frameTime){
 	Entity::update(frameTime);
 }
 
+///////////////////////////
 unsigned int Bullet::getDamage() {
 	return damage;
 }

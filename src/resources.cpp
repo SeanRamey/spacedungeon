@@ -38,6 +38,7 @@ namespace Resources {
 		SND_HIT
 	};
 
+	///////////////////////////
 	void load() {
 
 		for(int i = 0; i < NUM_TEXTURES; i++) {
@@ -66,6 +67,7 @@ namespace Resources {
 		}
 	}
 
+	///////////////////////////
 	void unload() {
 		for(int i = 0; i < NUM_TEXTURES; i++) {
 			sf::Texture* texture = textureMap[(TextureID)i];
@@ -88,12 +90,14 @@ namespace Resources {
 		}
 	}
 
+	///////////////////////////
 	void playSound(SoundID id) {
 		if(soundMap[id] != nullptr) {
 			soundMap[id]->play();
 		}
 	}
 
+	///////////////////////////
 	sf::Sound* getSound(SoundID id) {
 		if(soundMap[id] == nullptr) {
 			return nullptr;
@@ -101,6 +105,7 @@ namespace Resources {
 		return soundMap[id];
 	}
 
+	///////////////////////////
 	sf::Texture* getTexture(TextureID id) {
 		if(textureMap[id] == nullptr) {
 			return nullptr;
@@ -108,6 +113,7 @@ namespace Resources {
 		return textureMap[id];
 	}
 
+	///////////////////////////
 	sf::SoundBuffer* getSoundBuffer(SoundID id) {
 		if(soundBufferMap[id] == nullptr) {
 			return nullptr;
