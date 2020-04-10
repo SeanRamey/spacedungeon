@@ -3,7 +3,7 @@
 A 2D Top-down Scrolling space shooter with a dungeon crawling element.
 
 ## Dependencies
-- [SFML](https://github.com/SFML/SFML)
+- [SDL2](https://www.libsdl.org/)
 - [Doctest](https://github.com/onqtam/doctest)
 
 ## Building
