@@ -14,7 +14,7 @@ CFLAGS =
 CXXFLAGS = -Wpedantic -Wall -Wextra -Wno-deprecated -Wno-deprecated-declarations -ggdb -std=c++17 -march=native -fno-omit-frame-pointer
 CPPFLAGS = -DDEBUG -DSFML
 LDFLAGS = -march=native -fno-omit-frame-pointer
-LDLIBS = -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-network
+LDLIBS = -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-network -lsfml-system
 TESTPROGFLAGS = -ne
 
 # output subdirectory
@@ -307,16 +307,31 @@ $(BUILD)/$(SUBBUILD)/%.d: %.cpp
 # include all dependency files in the makefile
 -include $(depends)
 
-.PHONY: clean cleandep install uninstall
+.PHONY: clean cleannod cleannop cleandep install uninstall
 clean:
-#	$(RM) $(subst /,$(SLASH),$(objects)) $(subst /,$(SLASH),$(depends)) $(subst /,$(SLASH),$(BUILD)/$(program))
 	@$(ECHO) cleaning...
 	@$(RMDIR) $(BUILD)
 	@$(RM) $(SRC)$(SLASH)*.gch
 	@$(ECHO) $(DONE_COLOR)done.$(NC)
 
+cleannod:
+	@$(ECHO) cleaning, but leaving dependency files...
+	@$(RM) $(subst /,$(SLASH),$(objects)) $(subst /,$(SLASH),$(unit-test-objects)) $(subst /,$(SLASH),$(program)) $(subst /,$(SLASH),$(testprogram))
+	@$(RM) $(SRC)$(SLASH)*.gch
+	@$(ECHO) $(DONE_COLOR)done.$(NC)
+
+cleannop:
+	@$(ECHO) cleaning, but leaving precompiled headers...
+	@$(RMDIR) $(BUILD)
+	@$(ECHO) $(DONE_COLOR)done.$(NC)
+
+cleannopd:
+	@$(ECHO) cleaning, but leaving precompiled headers and dependency files...
+	@$(RM) $(subst /,$(SLASH),$(objects)) $(subst /,$(SLASH),$(unit-test-objects)) $(subst /,$(SLASH),$(program)) $(subst /,$(SLASH),$(testprogram))
+	@$(ECHO) $(DONE_COLOR)done.$(NC)
+
 cleandep:
-	@$(ECHO) cleaning dependencies...
+	@$(ECHO) cleaning only dependencies...
 	@$(RM) $(subst /,$(SLASH),$(depends))
 	@$(ECHO) $(DONE_COLOR)done.$(NC)
 
