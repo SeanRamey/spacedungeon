@@ -13,9 +13,7 @@ class SpecialBullet : public Bullet {
 		void destroy();
 
 	private:
-		const unsigned int SPEED = 500;
 		const sf::Vector2u SIZE = sf::Vector2u(32,32);
-		const unsigned int DAMAGE = 2;
 
 		unsigned int numSplits;
 		std::vector<SpecialBulletSplit> splitoffs;
