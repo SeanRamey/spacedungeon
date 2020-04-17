@@ -307,7 +307,7 @@ $(BUILD)/$(SUBBUILD)/%.d: %.cpp
 # include all dependency files in the makefile
 -include $(depends)
 
-.PHONY: clean cleannod cleannop cleandep install uninstall
+.PHONY: clean cleannod cleannop cleannopd cleandep install uninstall
 clean:
 	@$(ECHO) cleaning...
 	@$(RMDIR) $(BUILD)
