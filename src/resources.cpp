@@ -4,6 +4,8 @@
 #include "animation.hpp"
 #include "resources.hpp"
 
+#define VOID_FILE "data/graphics/Void_2058.ttf"
+
 #define PLAYER_SHIP_FILE "data/graphics/new-playership-idle.png"
 #define ALIEN_SHIP_FILE "data/graphics/alien-ship.png"
 #define BULLET_FILE "data/graphics/new-bullet.png"
@@ -19,10 +21,15 @@
 
 namespace Resources {
 
+	std::map<FontID, sf::Font*> fontMap;
 	std::map<TextureID, sf::Texture*> textureMap;
 	std::map<SoundID, sf::SoundBuffer*> soundBufferMap;
 	std::map<SoundID, sf::Sound*> soundMap;
 	sf::RenderWindow* window;
+
+	std::string fontFiles[] = {
+		VOID_FILE
+	};
 
 	std::string textureFiles[] = {
 		PLAYER_SHIP_FILE,
@@ -42,6 +49,17 @@ namespace Resources {
 
 	///////////////////////////
 	void load() {
+
+		for(int i = 0; i < NUM_FONTS; i++) {
+			sf::Font *font = new sf::Font();
+			fontMap[(FontID)i] = nullptr; // make sure each texture pointer is initialized to null
+			if(!font->loadFromFile(fontFiles[i])) {
+				Log::error("Unable to load font: " + fontFiles[i]);
+				std::exit(-1);
+			} else {
+				fontMap[(FontID)i] = font;
+			}
+		}
 
 		for(int i = 0; i < NUM_TEXTURES; i++) {
 			sf::Texture *texture = new sf::Texture();
@@ -71,16 +89,24 @@ namespace Resources {
 
 	///////////////////////////
 	void unload() {
-		for(int i = 0; i < NUM_TEXTURES; i++) {
-			sf::Texture* texture = textureMap[(TextureID)i];
+
+		for(int i = 0; i < NUM_FONTS; ++i) {
+			sf::Font* font = fontMap.at((FontID)i);
+			if(font != nullptr) {
+				delete font;
+			}
+		}
+
+		for(int i = 0; i < NUM_TEXTURES; ++i) {
+			sf::Texture* texture = textureMap.at((TextureID)i);
 			if(texture != nullptr) {
 				delete texture;
 			}
 		}
 
-		for(int i = 0; i < NUM_SOUNDS; i++) {
-			sf::SoundBuffer *buffer = soundBufferMap[(SoundID)i];
-			sf::Sound *sound = soundMap[(SoundID)i];
+		for(int i = 0; i < NUM_SOUNDS; ++i) {
+			sf::SoundBuffer *buffer = soundBufferMap.at((SoundID)i);
+			sf::Sound *sound = soundMap.at((SoundID)i);
 
 			if(sound != nullptr) {
 				delete sound;
@@ -97,6 +123,14 @@ namespace Resources {
 		if(soundMap[id] != nullptr) {
 			soundMap[id]->play();
 		}
+	}
+
+	///////////////////////////
+	sf::Font* getFont(FontID id) {
+		if(fontMap.at(id) == nullptr) {
+			return nullptr;
+		}
+		return fontMap.at(id);
 	}
 
 	///////////////////////////

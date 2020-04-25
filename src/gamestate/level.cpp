@@ -8,9 +8,9 @@
 ///////////////////////////
 Level::Level(Game* game, std::string levelDataFileName, std::string entityDataFileName, std::string wallImagesFileName, std::string floorImagesFileName, unsigned int tileSize) :
 GameState(game),
-healthText(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", ""),
+healthText(sf::Vector2f(0, 0), Resources::getFont(Resources::FontID::VOID), ""),
 healthBar(sf::Vector2f(0, 0), nullptr),
-gameOver(sf::Vector2f(0, 0), "data/graphics/Void_2058.ttf", "Game Over"),
+gameOver(sf::Vector2f(0, 0), Resources::getFont(Resources::FontID::VOID), "Game Over"),
 tileSize(tileSize),
 floorImagesFileName(floorImagesFileName),
 wallImagesFileName(wallImagesFileName),

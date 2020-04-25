@@ -1,3 +1,4 @@
+#include "sfmlpch.hpp"
 #include "ui-text-element.hpp"
 #include "log.hpp"
 
@@ -11,7 +12,7 @@ void UITextElement::setText(std::string text){
 void UITextElement::load(){
 	this->text.setCharacterSize(35);
 	this->text.setFillColor(sf::Color::White);
-	this->text.setFont(font);
+	this->text.setFont(*font);
 	this->text.setPosition(sf::Vector2f(position));
 }
 
@@ -36,15 +37,17 @@ void UITextElement::setPosition(sf::Vector2f position){
 }
 
 ///////////////////////////
-UITextElement::UITextElement(sf::Vector2f position, std::string fontPath, std::string text):
+UITextElement::UITextElement(sf::Vector2f position, sf::Font* font, std::string text):
 UIElement(position){
-	if(!font.loadFromFile(fontPath)){
-		Log::error("Failed to load font for text element");
+	if(font == nullptr){
+		Log::error("Given font is null for text: " + text);
 	}
-	if(!text.empty()){
-		this->text.setString(text);
-		load();
+	if(text.empty()){
+		Log::error("No text given for UITextElement");
 	}
+	this->font = font;
+	this->text.setString(text);
+	load();
 }
 
 ///////////////////////////

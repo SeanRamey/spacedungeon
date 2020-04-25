@@ -80,6 +80,8 @@ void Game::run() {
 			secondsTime = sf::Time::Zero;
 			updatesPerSecond = 0;
 			framesPerSecond = 0;
+
+
 		}
 	}
 }
