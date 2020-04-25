@@ -172,15 +172,24 @@ void Level::processCollisions() {
 	for(CollisionPair pair : collisions) {
 
 		if(typeMatches(pair, Entity::Type::PLAYER_SHIP, Entity::Type::ALIEN_SHIP)) {
-			((PlayerShip*)getMatchingEntity(pair, Entity::Type::PLAYER_SHIP))->damage(1);
-			((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
+			PlayerShip* player = (PlayerShip*)getMatchingEntity(pair, Entity::Type::PLAYER_SHIP);
+			AlienShip* alien = (AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP);
+			player->damage(1);
+			alien->destroy();
 			Resources::playSound(Resources::SoundID::SND_HIT);
 		}
 
 		if(typeMatches(pair, Entity::Type::ALIEN_SHIP, Entity::Type::BULLET)) {
-			if(!((Bullet*)getMatchingEntity(pair, Entity::Type::BULLET))->isDestroyed()) {
-				((AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP))->destroy();
-				((Bullet*)getMatchingEntity(pair, Entity::Type::BULLET))->destroy();
+			Bullet* bullet = (Bullet*)getMatchingEntity(pair, Entity::Type::BULLET);
+			AlienShip* alien = (AlienShip*)getMatchingEntity(pair, Entity::Type::ALIEN_SHIP);
+			if(!bullet->isDestroyed()) {
+				alien->damage(20);
+				bullet->destroy();
+				if(alien->isDestroyed()) {
+					Resources::playSound(Resources::SoundID::SND_ENEMY_EXPLODE);
+				} else {
+					Resources::playSound(Resources::SoundID::SND_HIT);
+				}
 			}
 		}
 	}

@@ -55,7 +55,7 @@ class Entity : public sf::Transformable, public sf::Drawable, public Damageable 
 		bool isReadyToDelete = false;
 		Level* level;
 		sf::Time lastFrameTime;
-		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 };
 

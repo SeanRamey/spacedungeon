@@ -21,7 +21,9 @@ namespace Resources {
 
 	enum SoundID : int {
 		SND_PLAYER_SHOOT,
+		SND_ENEMY_EXPLODE,
 		SND_HIT,
+		
 		NUM_SOUNDS
 	};
 

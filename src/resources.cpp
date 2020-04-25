@@ -13,6 +13,7 @@
 #define BUTTON_FILE "data/graphics/button.png"
 
 #define SND_PLAYER_SHOOT_FILE "data/sounds/shoot.wav"
+#define SND_ENEMY_EXPLOSION_FILE "data/sounds/ded.wav"
 #define SND_HIT "data/sounds/hit.wav"
 #define MUSIC_1
 
@@ -35,6 +36,7 @@ namespace Resources {
 
 	std::string soundFiles[] = {
 		SND_PLAYER_SHOOT_FILE,
+		SND_ENEMY_EXPLOSION_FILE,
 		SND_HIT
 	};
 
@@ -55,7 +57,7 @@ namespace Resources {
 		for(int i = 0; i < NUM_SOUNDS; i++) {
 			sf::SoundBuffer *buffer = new sf::SoundBuffer();
 			sf::Sound *sound = new sf::Sound();
-			soundBufferMap[(SoundID)i] = nullptr; // make sure each texture pointer is initialized to null
+			soundBufferMap[(SoundID)i] = nullptr; // make sure each sound pointer is initialized to null
 			if(!buffer->loadFromFile(soundFiles[i])) {
 				Log::error("Unable to load sound: " + soundFiles[i]);
 				std::exit(-1);

@@ -22,40 +22,40 @@ struct CollisionPair {
 class Level : public GameState {
 
 	public:
-	Level(Game* game, std::string levelDataFileName, std::string entityDataFileName, std::string wallImagesFileName, std::string floorImagesFileName, unsigned int tileSize = 32);
-	~Level();
-	void processCollisions();
-	bool checkWon();
-	bool checkLose();
-	void loadEntites(std::string);
-	void removeDestroyedEntities();
-	PlayerShip* getPlayer();
-	void setPlayer(PlayerShip* playerShip);
-	void loadMap();
-	void addEntity(Entity* entity);
-	void deleteEntity(Entity* entity);
+		Level(Game* game, std::string levelDataFileName, std::string entityDataFileName, std::string wallImagesFileName, std::string floorImagesFileName, unsigned int tileSize = 32);
+		~Level();
+		void processCollisions();
+		bool checkWon();
+		bool checkLose();
+		void loadEntites(std::string);
+		void removeDestroyedEntities();
+		PlayerShip* getPlayer();
+		void setPlayer(PlayerShip* playerShip);
+		void loadMap();
+		void addEntity(Entity* entity);
+		void deleteEntity(Entity* entity);
 
-	void init();
-	void clear();
-	void update(sf::Time frameTime);
-	void draw(sf::RenderWindow& window);
+		void init();
+		void clear();
+		void update(sf::Time frameTime);
+		void draw(sf::RenderWindow& window);
 
 	private:
-	Map map;
-	std::vector<Entity*> entities;
-	PlayerShip* playerShip;
+		Map map;
+		std::vector<Entity*> entities;
+		PlayerShip* playerShip;
 
-	bool hasWon = false;
-	bool playerIsDead = false;
+		bool hasWon = false;
+		bool playerIsDead = false;
 
-	UITextElement healthText;
-	UIImageElement healthBar;
-	UITextElement gameOver;
+		UITextElement healthText;
+		UIImageElement healthBar;
+		UITextElement gameOver;
 
-	unsigned int tileSize = 32;
-	const std::string floorImagesFileName;
-	const std::string wallImagesFileName;
-	const std::string levelDataFileName;
-	const std::string entityDataFileName;
+		unsigned int tileSize = 32;
+		const std::string floorImagesFileName;
+		const std::string wallImagesFileName;
+		const std::string levelDataFileName;
+		const std::string entityDataFileName;
 };
 #endif

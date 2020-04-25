@@ -7,8 +7,9 @@
 #include "gun.hpp"
 #include "entity.hpp"
 #include "entity-data.hpp"
+#include "controllable.hpp"
 
-class PlayerShip : public Entity {
+class PlayerShip : public Entity, public Controllable {
 	public:
 		PlayerShip(float x, float y, unsigned int w, unsigned int h, Level* level);
 		PlayerShip(sf::Vector2f position, sf::Vector2u size, Level* level);
@@ -16,8 +17,11 @@ class PlayerShip : public Entity {
 		void init();
 
 		void update(sf::Time frameTime);
-		void handleUserInput();
-		void teleport(float angle);
+		void moveUp();
+		void moveDown();
+		void moveLeft();
+		void moveRight();
+		void teleport();
 		void firePrimary();
 		void fireSpecial();
 		void giveSpecialAmmo(unsigned int amount);
@@ -27,20 +31,25 @@ class PlayerShip : public Entity {
 		Gun* getSecondaryWeapon();
 
 	private:
-	// stats
-		unsigned int shieldLevel;
-		unsigned int powerLevel;
-
-		bool up = false;
-		bool down = false;
-		bool right = false;
-		bool left = false;
-
+		enum State {
+			STILL,
+			MOVING
+		};
+		State state = STILL;
+		enum Action {
+			MOVE_UP,
+			MOVE_DOWN,
+			MOVE_LEFT,
+			MOVE_RIGHT,
+			TELEPORT,
+			FIRE_PRIMARY,
+			FIRE_SPECIAL
+		};
+		unsigned int shieldLevel = 0;
+		unsigned int powerLevel = 0;
+		bool canBlink = true;
 		Gun gun;
 		Gun specialGun;
-
-	// teleporting
-		bool canBlink;
 		sf::Clock teleportTimer;
 		sf::Clock shootTimer;
 		sf::Clock specialShootTimer;
