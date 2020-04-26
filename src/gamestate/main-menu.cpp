@@ -18,7 +18,7 @@ MainMenu::~MainMenu() {
 void MainMenu::init(){
 	menu.clear();
 	menu.addButton(new UIButton(sf::Vector2f(0, 0), Resources::getTexture(Resources::TextureID::BUTTON), this, &ButtonCallback));
-	menu.getButton(0)->setProperties(35, sf::Color::Blue, "data/graphics/Void_2058.ttf");
+	menu.getButton(0)->setProperties(Resources::getFont(Resources::FontID::VOID), sf::Vector2f(0,0), 35, sf::Color::Blue);
 	menu.getButton(0)->setText("Restart?");
 	view.setCenter(0, 0);
 }

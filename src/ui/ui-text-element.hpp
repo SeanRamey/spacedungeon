@@ -9,6 +9,8 @@ class UITextElement : public UIElement {
 	private:
 		sf::Text text;
 		sf::Font* font;
+		unsigned int fontSize = 35;
+		sf::Color textColor = sf::Color::White;
 
 	public:
 		void load();
@@ -16,7 +18,7 @@ class UITextElement : public UIElement {
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		void setText(std::string text);
 		void setPosition(sf::Vector2f position);
-		UITextElement(sf::Vector2f position, sf::Font* font, std::string text);
+		UITextElement(sf::Vector2f position, sf::Font* font, std::string text, unsigned int fontSize = 32, sf::Color textColor = sf::Color::White);
 		~UITextElement();
 };
 #endif

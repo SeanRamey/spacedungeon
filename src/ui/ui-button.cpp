@@ -21,12 +21,12 @@ UIButton::~UIButton(){
 }
 
 ///////////////////////////
-void UIButton::setProperties(unsigned int fontSize, sf::Color color, std::string fontPath, sf::Vector2f position){
-	if(!font.loadFromFile(fontPath)){
-		Log::error("failed to load font in button");
-	} else {
-		this->text.setFont(this->font);
+void UIButton::setProperties(sf::Font* font, sf::Vector2f position, unsigned int fontSize, sf::Color color){
+	if(font == nullptr){
+		Log::error("Given font for button is null");
 	}
+	this->font = font;
+	this->text.setFont(*font);
 	this->text.setCharacterSize(fontSize);
 	this->text.setFillColor(color);
 	this->text.setPosition(position);

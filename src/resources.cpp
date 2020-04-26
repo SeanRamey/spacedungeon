@@ -4,7 +4,8 @@
 #include "animation.hpp"
 #include "resources.hpp"
 
-#define VOID_FILE "data/graphics/Void_2058.ttf"
+#define VOID_FILE "data/graphics/fonts/Void_2058.ttf"
+#define PERFECTDOS_FILE "data/graphics/fonts/PerfectDOSVGA437.ttf"
 
 #define PLAYER_SHIP_FILE "data/graphics/new-playership-idle.png"
 #define ALIEN_SHIP_FILE "data/graphics/alien-ship.png"
@@ -28,7 +29,8 @@ namespace Resources {
 	sf::RenderWindow* window;
 
 	std::string fontFiles[] = {
-		VOID_FILE
+		VOID_FILE,
+		PERFECTDOS_FILE
 	};
 
 	std::string textureFiles[] = {

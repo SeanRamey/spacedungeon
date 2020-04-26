@@ -10,6 +10,7 @@ namespace Resources {
 
 	enum FontID : int {
 		VOID,
+		PERFECTDOS,
 		NUM_FONTS
 	};
 

@@ -5,6 +5,7 @@
 #include "resources.hpp"
 #include "main-menu.hpp"
 #include "input.hpp"
+#include "ui-text-element.hpp"
 
 ///////////////////////////
 Game::Game(sf::VideoMode videoMode)
@@ -43,6 +44,9 @@ void Game::run() {
 	const sf::Time FRAME_TIME = sf::seconds(1.0f/60.0f); // 60 FPS
 	unsigned int framesPerSecond = 0;
 	unsigned int updatesPerSecond = 0;
+	sf::Font* font = Resources::getFont(Resources::FontID::PERFECTDOS);
+	UITextElement fpsText(sf::Vector2f(0,0), font, std::to_string(framesPerSecond), 12);
+	UITextElement updatesText(sf::Vector2f(0,30), font, std::to_string(updatesPerSecond), 12);
 
 	window.setVerticalSyncEnabled(true);
 
@@ -66,6 +70,8 @@ void Game::run() {
 
 		// Draw graphics to buffer
 		draw(window);
+		window.draw(fpsText);
+		window.draw(updatesText);
 
 		// Display buffer
 		window.display();
@@ -77,10 +83,11 @@ void Game::run() {
 			#ifdef DEBUG
 			std::cout << "FPS: " << framesPerSecond << ", Updates Per Second: " << updatesPerSecond << "\n";
 			#endif
+			fpsText.setText("FPS:" + std::to_string(framesPerSecond));
+			updatesText.setText("Updates:" + std::to_string(updatesPerSecond));
 			secondsTime = sf::Time::Zero;
 			updatesPerSecond = 0;
 			framesPerSecond = 0;
-
 
 		}
 	}

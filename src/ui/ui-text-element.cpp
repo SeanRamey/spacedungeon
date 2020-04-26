@@ -10,7 +10,7 @@ void UITextElement::setText(std::string text){
 
 ///////////////////////////
 void UITextElement::load(){
-	this->text.setCharacterSize(35);
+	this->text.setCharacterSize(fontSize);
 	this->text.setFillColor(sf::Color::White);
 	this->text.setFont(*font);
 	this->text.setPosition(sf::Vector2f(position));
@@ -37,16 +37,15 @@ void UITextElement::setPosition(sf::Vector2f position){
 }
 
 ///////////////////////////
-UITextElement::UITextElement(sf::Vector2f position, sf::Font* font, std::string text):
+UITextElement::UITextElement(sf::Vector2f position, sf::Font* font, std::string text, unsigned int fontSize, sf::Color textColor):
 UIElement(position){
 	if(font == nullptr){
 		Log::error("Given font is null for text: " + text);
 	}
-	if(text.empty()){
-		Log::error("No text given for UITextElement");
-	}
 	this->font = font;
 	this->text.setString(text);
+	this->fontSize = fontSize;
+	this->textColor = textColor;
 	load();
 }
 
