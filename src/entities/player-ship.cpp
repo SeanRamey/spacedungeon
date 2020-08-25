@@ -38,19 +38,19 @@ void PlayerShip::init() {
 	setAnimation(AnimationFactory::createAnimation(AnimationFactory::AnimationType::PLAYER_IDLE));
 
 	std::shared_ptr<EntityCommand<PlayerShip>> moveUpCommand = std::make_shared<EntityCommand<PlayerShip>> (this, &PlayerShip::moveUp);
-	addKeyboardAction(sf::Keyboard::Key::W, std::dynamic_pointer_cast<Command>(moveUpCommand));
+	addKeyboardAction(sf::Keyboard::Scancode::ScanW, std::dynamic_pointer_cast<Command>(moveUpCommand));
 
 	std::shared_ptr<EntityCommand<PlayerShip>> moveDownCommand = std::make_shared<EntityCommand<PlayerShip>> (this, &PlayerShip::moveDown);
-	addKeyboardAction(sf::Keyboard::Key::S, std::dynamic_pointer_cast<Command>(moveDownCommand));
+	addKeyboardAction(sf::Keyboard::Scancode::ScanS, std::dynamic_pointer_cast<Command>(moveDownCommand));
 
 	std::shared_ptr<EntityCommand<PlayerShip>> moveLeftCommand = std::make_shared<EntityCommand<PlayerShip>> (this, &PlayerShip::moveLeft);
-	addKeyboardAction(sf::Keyboard::Key::A, std::dynamic_pointer_cast<Command>(moveLeftCommand));
+	addKeyboardAction(sf::Keyboard::Scancode::ScanA, std::dynamic_pointer_cast<Command>(moveLeftCommand));
 
 	std::shared_ptr<EntityCommand<PlayerShip>> moveRightCommand = std::make_shared<EntityCommand<PlayerShip>> (this, &PlayerShip::moveRight);
-	addKeyboardAction(sf::Keyboard::Key::D, std::dynamic_pointer_cast<Command>(moveRightCommand));
+	addKeyboardAction(sf::Keyboard::Scancode::ScanD, std::dynamic_pointer_cast<Command>(moveRightCommand));
 
 	std::shared_ptr<EntityCommand<PlayerShip>> teleport = std::make_shared<EntityCommand<PlayerShip>> (this, &PlayerShip::teleport);
-	addKeyboardAction(sf::Keyboard::Key::Space, std::dynamic_pointer_cast<Command>(teleport));
+	addKeyboardAction(sf::Keyboard::Scancode::ScanSpace, std::dynamic_pointer_cast<Command>(teleport));
 
 	std::shared_ptr<EntityCommand<PlayerShip>> fireCommand = std::make_shared<EntityCommand<PlayerShip>> (this, &PlayerShip::firePrimary);
 	addMouseAction(sf::Mouse::Button::Left, std::dynamic_pointer_cast<Command>(fireCommand));

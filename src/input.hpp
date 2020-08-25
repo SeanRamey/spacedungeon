@@ -10,7 +10,7 @@ namespace Input
 {
 	extern sf::Vector2i mousePosition;
 	void handleEvent(const sf::Event* const event);
-	bool checkKey(sf::Keyboard::Key key);
+	bool checkKey(sf::Keyboard::Scancode key);
 	bool checkMouse(sf::Mouse::Button mouseKey);
 	void updateMousePosition(sf::RenderWindow* window);
 }

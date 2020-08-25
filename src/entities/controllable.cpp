@@ -28,7 +28,7 @@ void Controllable::handleUserInput() {
 }
 
 ///////////////////////////
-void Controllable::addKeyboardAction(sf::Keyboard::Key key, std::shared_ptr<Command> command) {
+void Controllable::addKeyboardAction(sf::Keyboard::Scancode key, std::shared_ptr<Command> command) {
 	keyboardActionMap[key] = command;
 }
 
@@ -38,7 +38,7 @@ void Controllable::addMouseAction(sf::Mouse::Button button, std::shared_ptr<Comm
 }
 
 ///////////////////////////
-void Controllable::removeKeyboardAction(sf::Keyboard::Key key) {
+void Controllable::removeKeyboardAction(sf::Keyboard::Scancode key) {
 	auto search = keyboardActionMap.find(key);
 	if (search != keyboardActionMap.end()) {
 		// found key, now remove it
@@ -56,7 +56,7 @@ void Controllable::removeMouseAction(sf::Mouse::Button button) {
 }
 
 ///////////////////////////
-void Controllable::replaceKeyboardAction(sf::Keyboard::Key key, std::shared_ptr<Command> command) {
+void Controllable::replaceKeyboardAction(sf::Keyboard::Scancode key, std::shared_ptr<Command> command) {
 	keyboardActionMap.at(key) = command;
 }
 

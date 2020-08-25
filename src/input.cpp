@@ -4,7 +4,8 @@
 
 namespace Input
 {
-	unsigned char keyList[sf::Keyboard::KeyCount];
+	// TODO: figure out what the heck is going on here with scancodes and keycodes
+	unsigned char keyList[sf::Keyboard::Key::KeyCount];
 	unsigned char mouseList[sf::Mouse::ButtonCount];
 	std::vector<sf::Event> eventList;
 	sf::Vector2i mousePosition;
@@ -57,7 +58,7 @@ namespace Input
 	}
 
 	///////////////////////////
-	bool checkKey(sf::Keyboard::Key key)
+	bool checkKey(sf::Keyboard::Scancode key)
 	{
 		if(key == -1)
 		{
