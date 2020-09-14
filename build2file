@@ -21,6 +21,16 @@ libue{spacedungeon} : src/{cxx hxx}{ ** -main -unit-tests/** }
 libue{spacedungeon} : $sfml_libs
 
 exe{spacedungeon} : src/cxx{main} libue{spacedungeon}
+exe{spacedungeon} : data/file{**}
+
+data/file{**} :
+{
+    install = $install.root/data/
+    install.subdirs = true
+}
+
+
+# file{**}@./data/ : install = true
 
 import test_dependencies = doctest%lib{doctest}
 
