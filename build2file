@@ -8,7 +8,7 @@
 for src_dir : src/dir{ ** -unit-tests/ } src/
 {
     dir_name = $name.directory($src_dir)
-    info "$dir_name"
+    # info "$dir_name"
     cxx.poptions =+ "-I$out_root/$dir_name" "-I$src_root/$dir_name"
 }
 
