@@ -15,8 +15,10 @@ for src_dir : src/dir{ ** -unit-tests/ } src/
 # info $cxx.poptions
 
 # Targets
+import sfml_libs = sfml%lib{sfml-graphics sfml-window sfml-audio sfml-network sfml-system}
 
 libue{spacedungeon} : src/{cxx hxx}{ ** -main -unit-tests/** }
+libue{spacedungeon} : $sfml_libs
 
 exe{spacedungeon} : src/cxx{main} libue{spacedungeon}
 
