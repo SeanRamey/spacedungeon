@@ -1,0 +1,15 @@
+: 1
+name: spacedungeon
+version: 0.1.0-a.0.z
+summary: A 2D Top-down Scrolling space shooter with a dungeon crawling element.
+license: other: proprietary ; Not free/open source.
+description-file: README.md
+url: https://github.com/SeanRamey/spacedungeon
+package-email: mjklaim@gmail.com
+depends: * build2 >= 0.13.0
+depends: * bpkg >= 0.13.0
+
+requires: sfml ^2.5.1 ; Not available as a build2 package yet.
+depends: doctest ^2.3.6
+
+

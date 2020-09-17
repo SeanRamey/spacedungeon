@@ -1,0 +1,44 @@
+
+./ : doc{README.md}
+
+./ : exe{spacedungeon} exe{tests}
+
+
+# General Build Options
+for src_dir : src/dir{ ** -unit-tests/ } src/
+{
+    dir_name = $name.directory($src_dir)
+    # info "$dir_name"
+    cxx.poptions =+ "-I$out_root/$dir_name" "-I$src_root/$dir_name"
+}
+
+# info $cxx.poptions
+
+# Targets
+import sfml_libs = sfml%lib{sfml-graphics sfml-window sfml-audio sfml-network sfml-system}
+
+libue{spacedungeon} : src/{cxx hxx}{ ** -main -unit-tests/** }
+libue{spacedungeon} : $sfml_libs
+
+exe{spacedungeon} : src/cxx{main} libue{spacedungeon}
+exe{spacedungeon} : data/file{**}
+
+data/file{**} :
+{
+    install = "$install.root/data/"
+    install.subdirs = true
+}
+
+
+# file{**}@./data/ : install = true
+
+import test_dependencies = doctest%lib{doctest}
+
+exe{tests} : libue{spacedungeon} src/unit-tests/{cxx hxx}{*} $test_dependencies
+exe{tests} :
+{
+    test = true
+    install = false
+}
+
+
