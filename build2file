@@ -25,7 +25,7 @@ exe{spacedungeon} : data/file{**}
 
 data/file{**} :
 {
-    install = $install.root/data/
+    install = "$install.root/data/"
     install.subdirs = true
 }
 
