@@ -13,3 +13,4 @@ log.txt
 *.hpp.gch
 src/sfmlpch.hpp.gch
 .gdbinit
+.xmake
