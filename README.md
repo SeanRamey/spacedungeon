@@ -7,12 +7,20 @@ A 2D Top-down Scrolling space shooter with a dungeon crawling element.
 - [Doctest](https://github.com/onqtam/doctest)
 
 ## Building
-Simply do:
-
+The dependencies are taken care of by xrepo. They should be automatically downloaded upon building for the first time.
+To build everything, including unit tests:
 ```
-make all
+xmake
 ```
-To build Spacedungeon and run it after building do:
+To run both the unit tests and spacedungeon after building:
 ```
-make run
+xmake run
+```
+To run only unit-tests:
+```
+xmake run unit-tests
+```
+To run only spacedungeon:
+```
+xmake run spacedungeon
 ```
