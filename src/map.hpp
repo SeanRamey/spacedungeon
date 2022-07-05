@@ -8,6 +8,7 @@ struct MapLayer {
 	int wall;
 };
 
+// TODO: rewrite map class to work with ldtk editor
 class Map : public sf::Drawable {
 	public:
 	Map();
