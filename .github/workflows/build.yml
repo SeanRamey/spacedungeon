@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: install xmake
+    - name: install xmake -y
       run: sudo add-apt-repository ppa:xmake-io/xmake && sudo apt update && sudo apt install xmake
     - name: make
       run: xmake
